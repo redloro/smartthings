@@ -1,0 +1,62 @@
+{
+  // SmartThings Node Proxy (required)
+  "port": 8080,                   // STNP service port
+  "authCode": "secret-key",       // Set the auth code to access STNP
+
+  // Russound RNET (required)
+  "rnet": {
+    "serialPort": "/dev/usbser",  // RS-232 port connected to Russound controller
+    "sources": [                  // Set this to define sources
+      "Sonos",
+      "Airplay",
+      "Apple TV",
+      "Source 4",
+      "Source 5",
+      "Source 6"
+    ],
+    "controllerConfig": {         // Set this to define zones
+      "type": "discover",
+      "zones": [
+        {"zone": 0, "name": "Family Room"},
+        {"zone": 1, "name": "Kitchen"},
+        {"zone": 2, "name": "Living Room"},
+        {"zone": 3, "name": "Patio"},
+        {"zone": 4, "name": "Dining Room"},
+        {"zone": 5, "name": "Office"}
+      ]
+    }
+  },
+
+  // Envisalink Vista TPI (optional - can be set by SmartThings SmartApp)
+  "envisalink": {
+    "address": "192.168.1.11",    // Address of Envisalink Vista TPI
+    "port": "4025",               // Service port - default is 4025
+    "password": "user",           // Service password - default is user
+    "securityCode": "1234",       // Security code to arm/disarm the panel
+
+    "panelConfig": {              // Set this to manual define partitions and zones
+      "type": "discover",
+      "partitions": [
+        {"partition": 1, "name": "Security Panel"}
+      ],
+      "zones": [
+        {"zone": 1, "type": "smoke", "name": "Smoke Detector"},
+        {"zone": 2, "type": "contact", "name": "Front Door"},
+        {"zone": 3, "type": "contact", "name": "Back Door"},
+        {"zone": 4, "type": "contact", "name": "Kitchen Door"},
+        {"zone": 5, "type": "contact", "name": "Kitchen Window"}
+      ]
+    },
+    /****************************************
+     ONLY SET THIS IF YOU ARE SURE DISCOVERY WILL WORK !!!
+     ****************************************/
+    "installerCode": ""           // Set this to enable auto-discovery
+    /****************************************/
+  },
+  
+  // SmartThings Hub (optional - will be set by SmartThings SmartApp)
+  "notify": {
+    "address": "192.168.1.12",    // SmartThings Hub IP
+    "port": "39500"               // SmartThings Hub HTTP NOTIFY port - default is 39500
+  }
+}

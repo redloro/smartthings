@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+forever stop server.js
+rm -rf ~/.forever/*.log
+forever start server.js
+forever list

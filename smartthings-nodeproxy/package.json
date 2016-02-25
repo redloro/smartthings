@@ -1,0 +1,16 @@
+{
+  "name": "SmartThingsNodeProxy",
+  "description": "SmartThings Node Proxy",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "^4.13.4",
+    "forever": "^0.15.1",
+    "nconf": "^0.8.4",
+    "serialport": "^1.7.4"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "devDependencies": {}
+}

@@ -1,1 +1,1 @@
-# smartthings
+# SmartThings
