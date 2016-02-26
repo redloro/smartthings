@@ -13,15 +13,15 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-	definition (name: "Russound Zone", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
+  definition (name: "Russound Zone", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
     
     /**
      * List our capabilties. Doing so adds predefined command(s) which
      * belong to the capability.
      */
-  	capability "Music Player"
+    capability "Music Player"
     capability "Switch"
-  	capability "Refresh"
+    capability "Refresh"
     capability "Polling"
         
     /**
@@ -39,10 +39,10 @@ metadata {
     command "source4"
     command "source5"
     command "loudnessOn"
-		command "loudnessOff"
-		command "allOff"    
+    command "loudnessOff"
+    command "allOff"    
     command "zone"
-	}
+  }
 
   /**
    * Define the various tiles and the states that they can be in.
@@ -54,7 +54,7 @@ metadata {
    * single quotes, otherwise it will only be interpreted at time of
    * launch, instead of every time the event triggers.
    */
-	tiles(scale: 2) {
+  tiles(scale: 2) {
     multiAttributeTile(name:"state", type:"generic", width:6, height:4) {
       tileAttribute ("device.switch", key: "PRIMARY_CONTROL") {
         attributeState "on", label:'On', action:"switch.off", icon:"st.Electronics.electronics16", backgroundColor:"#79b821", nextState:"off"
@@ -65,12 +65,12 @@ metadata {
       }
     }
 
-		// Row 1
-		controlTile("volume", "device.volume", "slider", height: 2, width: 6, range:"(0..100)") {
-			state "volume", label: "Volume", action:"music Player.setLevel", backgroundColor:"#ffffff"
-		}
+    // Row 1
+    controlTile("volume", "device.volume", "slider", height: 2, width: 6, range:"(0..100)") {
+      state "volume", label: "Volume", action:"music Player.setLevel", backgroundColor:"#ffffff"
+    }
 
-		// Row 2-3
+    // Row 2-3
     standardTile("0", "device.source0", decoration: "flat", width: 2, height: 2) {
       state("off", label:"Source 1", action:"source0", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
       state("on", label:"Source 1", action:"source0", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
@@ -96,29 +96,29 @@ metadata {
       state("on", label:"Source 6", action:"source5", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
     }
 
-		// Row 4
+    // Row 4
     standardTile("loudness", "device.loudness", decoration: "flat", width: 2, height: 2) {
       state("off", label:'Loudness', action:"loudnessOn", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
       state("on", label:'Loudness', action:"loudnessOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
     }
-		standardTile("alloff", "device.status", decoration: "flat", width: 2, height: 2, inactiveLabel: false) {
-			state "default", action:"allOff", icon:"st.thermostat.heating-cooling-off", backgroundColor:"#ffffff"
-		}
-		standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
-			state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh", backgroundColor:"#ffffff"
-		}
+    standardTile("alloff", "device.status", decoration: "flat", width: 2, height: 2, inactiveLabel: false) {
+      state "default", action:"allOff", icon:"st.thermostat.heating-cooling-off", backgroundColor:"#ffffff"
+    }
+    standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
+      state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh", backgroundColor:"#ffffff"
+    }
 
-		// Defines which tile to show in the overview    
-		main "state"
+    // Defines which tile to show in the overview    
+    main "state"
 
-		// Defines which tile(s) to show when user opens the detailed view
-		details([
-			"state",
+    // Defines which tile(s) to show when user opens the detailed view
+    details([
+      "state",
       "volume",
-			"0","1","2","3","4","5",
-			"loudness", "alloff","refresh"
-		])
-	}
+      "0","1","2","3","4","5",
+      "loudness", "alloff","refresh"
+    ])
+  }
 }
 
 /**************************************************************************
@@ -196,6 +196,6 @@ def zone(evt) {
 }
 
 private sendCommand(part) {
-	def id = new String(device.deviceNetworkId).tokenize('|')[1].replace('zone', '')
+  def id = new String(device.deviceNetworkId).tokenize('|')[1].replace('zone', '')
   parent.sendCommand("/plugins/rnet/zones/${id}${part}")
 }
