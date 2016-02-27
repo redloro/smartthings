@@ -141,7 +141,6 @@ function Rnet() {
 
     if (!nconf.get('rnet:serialPort')) {
         console.log('** NOTICE ** RNET serial port not set in config file!');
-        console.log('Detected serial ports: ' + JSON.stringify(serialPorts));
         return;
     }
 
@@ -163,7 +162,6 @@ function Rnet() {
     device.open(function (error) {
       if (error) {
         console.log('RNET connection error: '+error);
-        console.log('Detected serial ports: ' + JSON.stringify(serialPorts));
         device = null;
         return;
       } else {
@@ -368,11 +366,12 @@ function Rnet() {
   }
 
   function getSerialPorts() {
-    serialPorts = [];
+    if (serialPorts.length > 0) { return; }
     serialport.list(function (err, ports) {
       ports.forEach(function(port) {
         serialPorts.push(port.comName);
       });
+      console.log('Detected serial ports: ' + JSON.stringify(serialPorts));
     });
   }
 
