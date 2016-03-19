@@ -16,7 +16,7 @@ metadata {
   definition (name: "Honeywell Zone Contact", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
     capability "Contact Sensor"
     capability "Sensor"
-        
+
     command "zone"
   }
 
@@ -30,7 +30,7 @@ metadata {
     }
 
     main "zone"
-        
+
     details(["zone"])
   }
 }
@@ -42,6 +42,6 @@ def zone(String state) {
     'alarm':"Alarm Triggered"
   ]
   def desc = descMap."${state}"
-  
+
   sendEvent (name: "contact", value: "${state}", descriptionText: "${desc}")
 }

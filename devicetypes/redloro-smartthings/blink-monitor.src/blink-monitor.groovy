@@ -33,7 +33,7 @@ metadata {
       state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh", backgroundColor:"#ffffff"
     }
 
-    // Defines which tile to show in the overview    
+    // Defines which tile to show in the overview
     main "state"
 
     // Defines which tile(s) to show when user opens the detailed view

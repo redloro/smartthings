@@ -48,7 +48,7 @@ def installed() {
   def deviceId = 'blink|network'+getNetworks(getAuthToken())[0].id
   if (!getChildDevice(deviceId)) {
     addChildDevice("redloro-smartthings", "Blink Monitor", deviceId, hostHub.id, ["name": "Blink Monitor", label: "Blink Monitor", completedSetup: true])
-  } 
+  }
 }
 
 def subscribeToEvents() {
@@ -64,11 +64,11 @@ def alarmHandler(evt) {
   if (!settings.enableSHM) {
     return
   }
-  
+
   if (state.alarmSystemStatus == evt.value) {
     return
   }
-  
+
   state.alarmSystemStatus = evt.value
   if (evt.value == "stay") {
     setStatus("on")
