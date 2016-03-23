@@ -64,7 +64,10 @@ def uninstalled() {
 
 def updated() {
   //remove child devices as we will reload
-  removeChildDevices()
+  if (settings.enableDiscovery) {
+    log.debug "Deleting Exisiting Child Devices"
+  	removeChildDevices()
+  }
   
   //subscribe to callback/notifications from STNP
   sendCommand('/subscribe/'+getNotifyAddress())
@@ -74,8 +77,10 @@ def updated() {
     sendCommand('/plugins/envisalink/config/'+settings.evlAddress+":"+settings.evlPort+":"+settings.evlPassword+":"+settings.securityCode)
   }
 
-  //delay discovery for 5 seconds
-  runIn(5, discoverChildDevices)
+  if (settings.enableDiscovery) {
+    //delay discovery for 5 seconds
+    runIn(5, discoverChildDevices)
+  }
 }
 
 def lanResponseHandler(evt) {
