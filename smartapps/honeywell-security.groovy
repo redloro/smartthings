@@ -39,7 +39,7 @@ preferences {
     input "evlAddress", "text", title: "Host Address", description: "(ie. 192.168.1.11)", required: false
     input "evlPort", "text", title: "Host Port", description: "(ie. 4025)", required: false
     input "evlPassword", "password", title: "Password", description: "", required: false
-    input "enableDiscovery", "bool", title: "Enable-Discovery of Partitions & Zones", required: false, defaultValue: false
+    input "enableDiscovery", "bool", title: "Enable Discovery of Partitions & Zones", required: false, defaultValue: false
   }
   section("Security Panel") {
     input "securityCode", "password", title: "Security Code", description: "User code to arm/disarm the security panel", required: false
@@ -63,10 +63,9 @@ def uninstalled() {
 }
 
 def updated() {
-  //remove child devices as we will reload
   if (settings.enableDiscovery) {
-    log.debug "Deleting Exisiting Child Devices"
-  	removeChildDevices()
+    //remove child devices as we will reload
+    removeChildDevices()
   }
   
   //subscribe to callback/notifications from STNP
