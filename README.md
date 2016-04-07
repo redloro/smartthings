@@ -190,16 +190,36 @@ SmartThings Hub <-> SmartThings Node Proxy <-> Envisalink plugin <-> Envisalink 
 ```
 
 #### Installation
-1. Create a new SmartApp and use the code from ./smartapps/honeywell-security.groovy
+
+##### SmartThings IDE GitHub Integration
+
+
+If you have not set up the GitHub integration yet or do not know about it, take a look at the SmartThings documentation [here](http://docs.smartthings.com/en/latest/tools-and-ide/github-integration.html). Note that if you do not have a GitHub account or are not familiar with GitHub, the manual method of installation is recommended.
+
+1. Add a new repository with user `redloro`, repository `smartthings`, and branch `master`. This can be done in either the "My Device Handlers" or "My SmartApps" sections
+2. Go to "My Device Handlers". Click "Update from Repo". Select the "smartthings" repository. You should see the device types in the "New (only in GitHub)" section. Check both boxes next to them. Check the "Publish" checkbox in the bottom right hand corner. Click "Execute Update".
+3. Go to "My SmartApps". Click "Update from Repo". Select the "smartthings" repository. You should see the SmartApp in the "New (only in GitHub)" section. Check both boxes next to them. Check the "Publish" checkbox in the bottom right hand corner. Click "Execute Update".
+4. In your mobile app, tap the "Marketplace" , go to "My Apps" in "SmartApps" tab, set up the "Honeywell Security SmartApp":
+  - SmartThings Hub: REQUIRED
+  - SmartThings Node Proxy: REQUIRED to connect to the SmartThings Node Proxy
+  - Envisalink Vista TPI: OPTIONAL as this can also be set in `config.json`
+  - Security Panel: OPTIONAL as this can also be set in `config.json`
+  - Smart Home Monitor: OPTIONAL integration with SmartThings Smart Home Monitor
+5. Done! *Note that all the zones defined in `config.json` will be loaded 10 seconds after the SmartApp is configured and all the devices should show up under your Things.  If the zones/devices do not show up, simply open the SmartApp again and hit done to force a refresh of the zones/devices.*
+
+In the future, should you wish to update, simply repeat steps 2 and 3. The only difference is you will see the device types/SmartApp show up in the "Obsolete (updated in GitHub)" column instead.
+
+##### Manual Installation
+1. Create a new SmartApp and use the code from [`honeywell-security.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/smartapps/redloro-smartthings/honeywell-security.src/honeywell-security.groovy)
 2. Create the following new Device Handlers:
-  - ./devicetypes/honeywell-partition.groovy
-  - ./devicetypes/honeywell-zone-contact.groovy
-  - ./devicetypes/honeywell-zone-motion.groovy
-  - ./devicetypes/honeywell-zone-smoke.groovy
+  - [`honeywell-partition.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/honeywell-partition.src/honeywell-partition.groovy)
+  - [`honeywell-zone-contact.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/honeywell-zone-contact.src/honeywell-zone-contact.groovy)
+  - [`honeywell-zone-motion.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/honeywell-zone-motion.src/honeywell-zone-motion.groovy)
+  - [`honeywell-zone-smoke.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/honeywell-zone-smoke.src/honeywell-zone-smoke.groovy)
 3. Add the Honeywell Security SmartApp from the SmartThings marketplace
 4. Configure the SmartApp
   - SmartThings Hub: REQUIRED
-  - SmartThings Node Proxy: REQUIRED to connect to the SmarThings Node Proxy
+  - SmartThings Node Proxy: REQUIRED to connect to the SmartThings Node Proxy
   - Envisalink Vista TPI: OPTIONAL as this can also be set in `config.json`
   - Security Panel: OPTIONAL as this can also be set in `config.json`
   - Smart Home Monitor: OPTIONAL integration with SmartThings Smart Home Monitor
