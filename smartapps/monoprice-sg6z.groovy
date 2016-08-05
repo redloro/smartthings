@@ -3,7 +3,7 @@
  *
  *  Author: tcjennings@hotmail.com
  *  
- *  Base on Russound RNT by Author: redloro@gmail.com
+ *  Based on Russound RNET by Author: redloro@gmail.com
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -22,9 +22,9 @@ definition(
   author: "tcjennings@hotmail.com",
   description: "Monoprice 6-Zone Amplifier SmartApp",
   category: "My Apps",
-  iconUrl: "https://raw.githubusercontent.com/redloro/smartthings/master/images/russound-rnet.png",
-  iconX2Url: "https://raw.githubusercontent.com/redloro/smartthings/master/images/russound-rnet.png",
-  iconX3Url: "https://raw.githubusercontent.com/redloro/smartthings/master/images/russound-rnet.png",
+  iconUrl: "https://raw.githubusercontent.com/tcjennings/smartthings/MPR-SG6Z/images/monoprice.png",
+  iconX2Url: "https://raw.githubusercontent.com/tcjennings/smartthings/MPR-SG6Z/images/monoprice.png",
+  iconX3Url: "https://raw.githubusercontent.com/tcjennings/smartthings/MPR-SG6Z/images/monoprice.png",
   singleInstance: true
 )
 
