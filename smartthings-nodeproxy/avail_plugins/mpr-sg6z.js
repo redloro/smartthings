@@ -129,10 +129,10 @@ app.get('/zones/:id/dnd/:state', function (req, res) {
   mpr6z.setZoneDoNotDisturb(Number(req.params.id), Number(req.params.state));
   res.end();
 });
-//app.get('/zones/:id/all/:state', function (req, res) {
-//  mpr6z.setAllZones(Number(req.params.state));
-//  res.end();
-//});
+app.get('/zones/:id/all/:state', function (req, res) {
+  mpr6z.setAllZones(Number(req.params.state));
+  res.end();
+});
 
 module.exports = function(f) {
   notify = f;
@@ -293,10 +293,16 @@ function Mpr6z() {
     // inquiry '?xx\r' where xx is the zone #
     write('?' + id + '\r');
   };
-//  this.setAllZones = function(state) {
-//    write([0xF0, 0x7E, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x05, 0x02, 0x02, 0x00, 0x00, 0xF1, 0x22, 0x00, 0x00, state, 0x00, 0x00, 0x01]);
-//    notify_handler({type: 'zone', controller: controllerId, zone: -1, state: state});
-//  };
+   this.setAllZones = function(state) {
+	   //MPR-6Z doesn't have an "all-off" or "all-on" function, but we can build one.
+	   zones = nconf.get('mpr6z:controllerConfig')['zones'];
+	   for(var i = 0; i < zones.length; i++)
+	   {
+   			this.setZoneState(zones[i]['zone'],state);
+	   } 
+	   //I don't think I need this since each setZoneState sends its own notification
+	   //notify_handler({type: 'zone', controller: 1, zone: -1, state: state});
+   };
 
   function zone_state(data) {
     z = (data[0]*10) + data[1]
@@ -317,7 +323,8 @@ function Mpr6z() {
   };
   
   function zone_dnd(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], state: data[2]});
+    z = (data[0]*10) + data[1]
+    notify_handler({type: 'zone', controller: data[0], zone: z, state: data[2]});
   }
   this.getZoneDoNotDisturb = function(id) {
     write('?' + id + "DT" + '\r');
@@ -334,7 +341,8 @@ function Mpr6z() {
   };
 
   function zone_source(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], source: data[2], sourceName: nconf.get('mpr6z:sources')[data[2]-1]});
+    z = (data[0]*10) + data[1]
+    notify_handler({type: 'zone', controller: data[0], zone: z, source: data[2], sourceName: nconf.get('mpr6z:sources')[data[2]-1]});
   }
   this.getZoneSource = function(id) {
     write('?' + id + "CH" + '\r');
@@ -351,7 +359,8 @@ function Mpr6z() {
   };
 
   function zone_mute(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], mute: data[2]});
+    z = (data[0]*10) + data[1]
+    notify_handler({type: 'zone', controller: data[0], zone: z, mute: data[2]});
   }
   this.getZoneMute = function(id) {
     write('?' + id + "MU" + '\r');
@@ -369,7 +378,8 @@ function Mpr6z() {
 
   //Keypad status is get-only
   function zone_keypad(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], keypad: data[2]});
+    z = (data[0]*10) + data[1]
+    notify_handler({type: 'zone', controller: data[0], zone: z, keypad: data[2]});
   }
   this.getZoneKeypad = function(id) {
     write('?' + id + "LS" + '\r');
@@ -377,14 +387,16 @@ function Mpr6z() {
   
   //PA status is get-only
   function zone_pa(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], pa: data[2]});
+    z = (data[0]*10) + data[1]
+    notify_handler({type: 'zone', controller: data[0], zone: z, pa: data[2]});
   }
   this.getZonePublicAddress = function(id) {
     write('?' + id + "PA" + '\r');
   };
 
   function zone_volume(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], volume: data[2]});
+    z = (data[0]*10) + data[1]
+    notify_handler({type: 'zone', controller: data[0], zone: z, volume: data[2]});
   }
   this.getZoneVolume = function(id) {
     write('?' + id + "VO" + '\r');
@@ -401,7 +413,8 @@ function Mpr6z() {
   };
 
   function zone_bass(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], bass: data[2]});
+    z = (data[0]*10) + data[1]
+    notify_handler({type: 'zone', controller: data[0], zone: z, bass: data[2]});
   }
   this.getZoneBass = function(id) {
     write('?' + id + "BS" + '\r');
@@ -418,7 +431,8 @@ function Mpr6z() {
   };
 
   function zone_treble(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], treble: data[2]});
+    z = (data[0]*10) + data[1]
+    notify_handler({type: 'zone', controller: data[0], zone: z, treble: data[2]});
   }
   this.getZoneTreble = function(id) {
     write('?' + id + "TR" + '\r');
@@ -435,7 +449,8 @@ function Mpr6z() {
   };
 
   function zone_balance(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], balance: data[2]});
+    z = (data[0]*10) + data[1]
+    notify_handler({type: 'zone', controller: data[0], zone: z, balance: data[2]});
   }
   this.getZoneBalance = function(id) {
     //get Zone balance should look like ?xxBL'CR' where xx is the zone number
@@ -459,7 +474,7 @@ function Mpr6z() {
    */
   function notify_handler(data) {
     notify(JSON.stringify(data));
-    console.log(JSON.stringify(data));
+    //console.log(JSON.stringify(data));
   }
 
   function getSerialPorts() {
