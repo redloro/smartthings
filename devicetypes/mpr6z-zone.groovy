@@ -38,7 +38,9 @@ metadata {
     command "source4"
     command "source5"
     command "source6"
-    //command "allOff"    
+    command "allOff"
+    command "muteOn"
+    command "muteOff"
     command "zone"
   }
 
@@ -95,10 +97,16 @@ metadata {
     }
 
     // Row 4
+	standardTile("mute", "device.mute", decoration: "flat", width: 2, height: 2) {
+      state("off", label:'Mute',  action:"muteOn", icon:"https://raw.githubusercontent.com/tcjennings/smartthings/MPR-SG6Z/images/mute-off.png", backgroundColor:"#ffffff")
+      state( "on", label:'Mute', action:"muteOff", icon:"https://raw.githubusercontent.com/tcjennings/smartthings/MPR-SG6Z/images/mute-on.png", backgroundColor:"#ffffff")
+    }
     standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
       state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh", backgroundColor:"#ffffff"
     }
-
+    standardTile("alloff", "device.status", decoration: "flat", width: 2, height: 2, inactiveLabel: false) {
+      state "default", action:"allOff", icon:"st.thermostat.heating-cooling-off", backgroundColor:"#ffffff"
+    }
     // Defines which tile to show in the overview    
     main "state"
 
@@ -107,7 +115,7 @@ metadata {
       "state",
       "volume",
       "1","2","3","4","5","6",
-      "refresh"
+      "mute","refresh","alloff"
     ])
   }
 }
@@ -130,9 +138,9 @@ def source4() { sendCommand("/source/4") }
 def source5() { sendCommand("/source/5") }
 def source6() { sendCommand("/source/6") }
 def setLevel(value) { sendCommand("/volume/${value.intValue()}") }
-//def loudnessOn() { sendCommand("/loudness/1") }
-//def loudnessOff() { sendCommand("/loudness/0") }
-//def allOff() { sendCommand("/all/0") }
+def muteOn() { sendCommand("/mute/1") }
+def muteOff() { sendCommand("/mute/0") }
+def allOff() { sendCommand("/all/0") }
 def refresh() { sendCommand("") }
 /**************************************************************************/
 
@@ -169,6 +177,9 @@ def zone(evt) {
     sendEvent(name: "loudness", value: (evt.loudness == 1) ? "on" : "off")
   }
   */
+  if (evt.containsKey("mute")) {
+    sendEvent(name: "mute", value: (evt.mute == 1) ? "on" : "off")
+  }
 
   /*
   * Zone Source selected (1-6)
