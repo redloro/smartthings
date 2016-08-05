@@ -271,10 +271,11 @@ function Mpr6z() {
    * Generic Handlers
    */
   function zone_info(data) {
+    z = (data[0]*10) + data[1]
     notify_handler({
       type: 'zone',
       controller: data[0],
-      zone: data[1],
+      zone: z,
       pa: data[2],
       state: data[3],
       mute: data[4],
@@ -298,7 +299,8 @@ function Mpr6z() {
 //  };
 
   function zone_state(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], state: data[2]});
+    z = (data[0]*10) + data[1]
+    notify_handler({type: 'zone', controller: data[0], zone: z, state: data[2]});
   }
   this.getZoneState = function(id) {
     write('?' + id + "PR" + '\r');
@@ -311,7 +313,7 @@ function Mpr6z() {
     if ( value < 10 ) { value = "0" + value; };
     write('<' + id + 'PR' + value + '\r');
     
-    this.getZoneSource(id);
+    this.getZoneState(id);
   };
   
   function zone_dnd(data) {
