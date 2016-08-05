@@ -17,14 +17,16 @@
  *
  *  Supported Commands:
  *   Zone On/Off state (0x00 = OFF or 0x01 = ON)
- *   Source selected -1
+ *   Source selected 0-6
  *   Volume level (0x00 - 0x32, 0x00 = 0 Displayed ... 0x32 = 100 Displayed)
  *   Bass level (0x00 = -10 ... 0x0A = Flat ... 0x14 = +10)
  *   Treble level (0x00 = -10 ... 0x0A = Flat ... 0x14 = +10)
- *   Balance level (0x00 = More Left ... 0x0A = Center ... 0x14 = More Right)
+ *   Balance level (00 = More Left ... 10 = Center ... 20 = More Right)
  *   System On state (0x00 = All Zones Off, 0x01 = Any Zone is On)
  *   Do Not Disturb state (0x00 = OFF, 0x01 = ON )
  *   Keypad Connected Status (0x00 = NO, 0x01 = YES)
+ *
+ *  Note: The Zone must be ON or else commands for that zone will not be processed.
 */
 var express = require('express');
 var serialport = require("serialport");
@@ -43,76 +45,84 @@ app.get('/discover', function (req, res) {
   mpr6z.discover();
   res.end();
 });
-app.get('/zones/:id/partyMode/:partyMode', function (req, res) {
-  mpr6z.setZonePartyMode(Number(req.params.id), Number(req.params.partyMode));
-  res.end();
-});
+ 
+/**
+ * Parameter Getters
+*/
 app.get('/zones/:id/partyMode', function (req, res) {
   mpr6z.getZonePartyMode(Number(req.params.id));
-  res.end();
-});
-app.get('/zones/:id/balance/:balance', function (req, res) {
-  mpr6z.setZoneBalance(Number(req.params.id), Number(req.params.balance));
   res.end();
 });
 app.get('/zones/:id/balance', function (req, res) {
   mpr6z.getZoneBalance(Number(req.params.id));
   res.end();
 });
-app.get('/zones/:id/treble/:treble', function (req, res) {
-  mpr6z.setZoneTreble(Number(req.params.id), Number(req.params.treble));
-  res.end();
-});
 app.get('/zones/:id/treble', function (req, res) {
   mpr6z.getZoneTreble(Number(req.params.id));
-  res.end();
-});
-app.get('/zones/:id/bass/:bass', function (req, res) {
-  mpr6z.setZoneBass(Number(req.params.id), Number(req.params.bass));
   res.end();
 });
 app.get('/zones/:id/bass', function (req, res) {
   mpr6z.getZoneBass(Number(req.params.id));
   res.end();
 });
-app.get('/zones/:id/loudness/:loudness', function (req, res) {
-  mpr6z.setZoneLoudness(Number(req.params.id), Number(req.params.loudness));
-  res.end();
-});
 app.get('/zones/:id/loudness', function (req, res) {
   mpr6z.getZoneLoudness(Number(req.params.id));
-  res.end();
-});
-app.get('/zones/:id/volume/:volume', function (req, res) {
-  mpr6z.setZoneVolume(Number(req.params.id), Number(req.params.volume));
   res.end();
 });
 app.get('/zones/:id/volume', function (req, res) {
   mpr6z.getZoneVolume(Number(req.params.id));
   res.end();
 });
-app.get('/zones/:id/source/:source', function (req, res) {
-  mpr6z.setZoneSource(Number(req.params.id), Number(req.params.source));
-  res.end();
-});
 app.get('/zones/:id/source', function (req, res) {
   mpr6z.getZoneSource(Number(req.params.id));
-  res.end();
-});
-app.get('/zones/:id/state/:state', function (req, res) {
-  mpr6z.setZoneState(Number(req.params.id), Number(req.params.state));
   res.end();
 });
 app.get('/zones/:id/state', function (req, res) {
   mpr6z.getZoneState(Number(req.params.id));
   res.end();
 });
-app.get('/zones/:id/all/:state', function (req, res) {
-  mpr6z.setAllZones(Number(req.params.state));
-  res.end();
-});
 app.get('/zones/:id', function (req, res) {
   mpr6z.getZone(Number(req.params.id));
+  res.end();
+});
+
+/**
+ * Parameter Setters
+*/
+app.get('/zones/:id/partyMode/:partyMode', function (req, res) {
+  mpr6z.setZonePartyMode(Number(req.params.id), Number(req.params.partyMode));
+  res.end();
+});
+app.get('/zones/:id/balance/:balance', function (req, res) {
+  mpr6z.setZoneBalance(Number(req.params.id), Number(req.params.balance));
+  res.end();
+});
+app.get('/zones/:id/treble/:treble', function (req, res) {
+  mpr6z.setZoneTreble(Number(req.params.id), Number(req.params.treble));
+  res.end();
+});
+app.get('/zones/:id/bass/:bass', function (req, res) {
+  mpr6z.setZoneBass(Number(req.params.id), Number(req.params.bass));
+  res.end();
+});
+app.get('/zones/:id/loudness/:loudness', function (req, res) {
+  mpr6z.setZoneLoudness(Number(req.params.id), Number(req.params.loudness));
+  res.end();
+});
+app.get('/zones/:id/volume/:volume', function (req, res) {
+  mpr6z.setZoneVolume(Number(req.params.id), Number(req.params.volume));
+  res.end();
+});
+app.get('/zones/:id/source/:source', function (req, res) {
+  mpr6z.setZoneSource(Number(req.params.id), Number(req.params.source));
+  res.end();
+});
+app.get('/zones/:id/state/:state', function (req, res) {
+  mpr6z.setZoneState(Number(req.params.id), Number(req.params.state));
+  res.end();
+});
+app.get('/zones/:id/all/:state', function (req, res) {
+  mpr6z.setAllZones(Number(req.params.state));
   res.end();
 });
 
@@ -147,17 +157,14 @@ function Mpr6z() {
 
     if (device && device.isOpen()) { return };
 
-    device = new serialport.SerialPort(nconf.get('mpr6z:serialPort'), { baudrate: nconf.get('mpr6z:baudRate') }, false);
+    device = new serialport.SerialPort(nconf.get('mpr6z:serialPort'),
+                                       { baudrate: nconf.get('mpr6z:baudRate'),
+                                         parser: serialport.parsers.readline('\n')
+                                        },
+                                        false);
 
     device.on('data', function(data) {
-      for(var i=0; i<data.length; i++) {
-        buffer.push(data[i]);
-        if (data[i] == 0x0D) { //MPR6Z ends its responses with CR
-          console.log('data: ' + stringifyByteArray(data));
-          read(buffer);
-          buffer = new Array(); //after reaching the end of the data, reset the buffer
-        }
-      }
+		read(data);
     });
 
     device.open(function (error) {
@@ -195,9 +202,9 @@ function Mpr6z() {
 
     if (!cmd || cmd.length == 0) { return; }
     //console.log('TX > '+cmd);
-    device.write(buildCommand(cmd), function(err, results) {
-      if (err) console.log('MPR6Z write error: '+err);
-    });
+     device.write(cmd, function(err, results) {
+       if (err) console.log('MPR6Z write error: '+err);
+     });
   }
 
   this.command = function(cmd) {
@@ -209,32 +216,34 @@ function Mpr6z() {
    * The MPR6Z has 2 different reply structures:
    *    >xxPPuu'CR' for reply to control order OR reply to inquiry(2)
    *    >xxaabbccddeeffgghhiijj'CR' for reply to inquiry(1)
+   * After trim, data lengths for the responses are
+   *  inquiry(1) == 24
+   *  inquiry(2) == 8
+   * Which includes a leading prompt ('#') character.
    */
   function read(data) {
+  	data = data.trim()
+  	console.log("data length : " + data.length);
     if (data.length == 0) { return; }
-    //chop off the leading > and the trailing 'CR'
-    data.slice(1,-1)
-    
-    if (data.length == 6) {
-    	//case 1
-    } else {
-    	//case 2
+    console.log("data");
+    console.log("====");
+    console.log(data);
+
+	if ( data.length == 8 ) {
+     var code = getCommandCode(data);
+    } else if ( data.length == 24) {
+     var code = 'ALL';
     }
-    console.log('RX < '+stringifyByteArray(data));
+    if (!code) { return; }
+	
+    var response = RESPONSE_TYPES[code];
+    if (!response) { return; }
 
-    //var code = getSignificantBytes(data);
-    //if (!code) { return; }
+    var matches = getMatches(data, response['pattern']);
+    if (!matches) { return; }
 
-    // generic handler
-    //console.log('Handler: '+JSON.stringify(RESPONSE_TYPES[code]));
-    //var response = RESPONSE_TYPES[code];
-    //if (!response) { return; }
-
-    //var matches = getMatches(data, response['pattern']);
-    //if (!matches) { return; }
-
-    //responseHandler = response['handler'];
-    //responseHandler(matches);
+    responseHandler = response['handler'];
+    responseHandler(matches.map(Number));
   }
 
   /**
@@ -258,21 +267,22 @@ function Mpr6z() {
       type: 'zone',
       controller: data[0],
       zone: data[1],
-      state: data[2],
-      source: data[3],
-      sourceName: nconf.get('mpr6z:sources')[data[3]],
-      volume: data[4],
-      bass: data[5],
-      treble: data[6],
-      loudness: data[7],
-      balance: data[8],
-      system: data[9],
-      sharedSource: data[10],
-      partyMode: data[11],
-      doNotDisturb: data[12] });
+      pa: data[2],
+      state: data[3],
+      mute: data[4],
+      doNotDisturb: data[5],
+      volume: data[6],
+      treble: data[7],
+      bass: data[8],
+      balance: data[9],
+      source: data[10],
+      sourceName: nconf.get('mpr6z:sources')[data[10]-1],
+      keypad: data[11] });
   }
   this.getZone = function(id) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x04, 0x02, 0x00, id, 0x07, 0x00, 0x00]);
+    //this one wants to get all the things for a zone
+    // inquiry '?xx\r' where xx is the zone #
+    write('?' + id + '\r');
   };
   this.setAllZones = function(state) {
     write([0xF0, 0x7E, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x05, 0x02, 0x02, 0x00, 0x00, 0xF1, 0x22, 0x00, 0x00, state, 0x00, 0x00, 0x01]);
@@ -291,7 +301,7 @@ function Mpr6z() {
   };
 
   function zone_source(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], source: data[2], sourceName: nconf.get('mpr6z:sources')[data[2]]});
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], source: data[2], sourceName: nconf.get('mpr6z:sources')[data[2]-1]});
   }
   this.getZoneSource = function(id) {
     write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x04, 0x02, 0x00, id, 0x02, 0x00, 0x00]);
@@ -300,6 +310,13 @@ function Mpr6z() {
     write([0xF0, controllerId, 0x00, 0x7F, 0x00, id, 0x70, 0x05, 0x02, 0x00, 0x00, 0x00, 0xF1, 0x3E, 0x00, 0x00, 0x00, source, 0x00, 0x01]);
     zone_source([controllerId, id, source, nconf.get('mpr6z:sources')[source]]);
   };
+
+  function zone_mute(data) {
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], mute: data[2]});
+  }
+  function zone_keypad(data) {
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], keypad: data[2]});
+  }
 
   function zone_volume(data) {
     notify_handler({type: 'zone', controller: data[0], zone: data[1], volume: data[2]});
@@ -350,22 +367,19 @@ function Mpr6z() {
     notify_handler({type: 'zone', controller: data[0], zone: data[1], balance: data[2]});
   }
   this.getZoneBalance = function(id) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x05, 0x02, 0x00, id, 0x00, 0x03, 0x00, 0x00]);
+    //get Zone balance should look like ?xxBL'CR' where xx is the zone number
+    write('?' + id + "BL" + '\r');
   };
   this.setZoneBalance = function(id, balance) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, id, 0x00, 0x03, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, balance]);
-    zone_balance([controllerId, id, balance]);
-  };
-
-  function zone_party_mode(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], partyMode: data[2]});
-  }
-  this.getZonePartyMode = function(id) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x05, 0x02, 0x00, id, 0x00, 0x07, 0x00, 0x00]);
-  };
-  this.setZonePartyMode = function(id, partyMode) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, id, 0x00, 0x07, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, partyMode]);
-    zone_party_mode([controllerId, id, partyMode]);
+    //set Zone balance should look like <xxBLnn'CR' where xx is the zone number and nn is the value
+    if ( balance < 0 ) { balance = 0; }
+    if ( balance > 20) { balance = 20; }
+    
+    write('<' + id + 'BL' + balance + '\r');
+    
+    //unit will respond with inquiry(2) response -- but it doesn't.
+    this.getZoneBalance(id);
+    //zone_balance([controllerId, id, balance]);
   };
 
   /**
@@ -386,23 +400,26 @@ function Mpr6z() {
     });
   }
 
-  function getSignificantBytes(arr) {
-    if (arr.length < 15) { return null; };
-    return ("0" + arr[9].toString(16)).slice(-2)+
-           ("0" + arr[13].toString(16)).slice(-2)+
-           ("0" + arr[14].toString(16)).slice(-2);
+  function getCommandCode(str) {
+  	response = getMatches(str,'^#>\\d{2}(.{2})\\d{2}$');
+  	if (!response) { return null; }
+  	return response[0];
   }
 
   function getMatches(arr, pattern) {
     if (!pattern) { return null; }
+ 
     var re = new RegExp(pattern);
-    var tmp = re.exec(stringifyByteArrayNpad(arr));
-
+    var tmp = re.exec(arr);
+ 
     if (!tmp) { return null; }
+ 
     var matches = [];
     for(var i=1; i<tmp.length; i++) {
-      matches.push(parseInt(tmp[i],16));
+      //console.log(parseInt(tmp[i]));
+      matches.push(tmp[i]);
     }
+    //console.log(matches);
     return matches;
   }
 
@@ -424,66 +441,57 @@ function Mpr6z() {
 
   //The MPR6Z isn't that sophisticated.
   function buildCommand(cmd) {
-      //var chksum=0;
-      //var i=cmd.length;
-      //while(i--) chksum += cmd[i];
-      //chksum += cmd.length;
-      //chksum = chksum & 0x007F;
-      //cmd.push(chksum, 0xF7);
-      cmd.push(0x0D);
-      console.log('command: ' + stringifyByteArray(cmd));
       return cmd;
   }
 
   /**
    * Constants
    */
-  // match bytes [9][13][14]
   var RESPONSE_TYPES = {
-    '040700': {
+  	'BL': {
+  	  'name' : 'Zone Balance',
+  	  'description' : 'Zone balance level (00 = more left .. 10 = center .. 20 = more right)',
+  	  'pattern' : '^#>(\\d)(\\d)BL(\\d{2})$',
+  	  'handler' : zone_balance },
+  	'VO': {
+  	  'name' : 'Zone Volume',
+  	  'description' : 'Zone volume level (00 = more quiet .. 38 = more loud)',
+  	  'pattern' : '^#>(\\d)(\\d)VO(\\d{2})$',
+  	  'handler' : zone_volume },
+  	'BS': {
+  	  'name' : 'Zone Bass',
+  	  'description' : 'Zone bass level (00 = less bass .. 7 = center .. 14 = most bass)',
+  	  'pattern' : '^#>(\\d)(\\d)BS(\\d{2})$',
+  	  'handler' : zone_bass },
+  	'TR': {
+  	  'name' : 'Zone Treble',
+  	  'description' : 'Zone treble level (00 = less treble .. 7 = center .. 14 = most treble)',
+  	  'pattern' : '^#>(\\d)(\\d)TR(\\d{2})$',
+  	  'handler' : zone_treble },
+  	'CH': {
+  	  'name' : 'Zone Source',
+  	  'description' : 'Zone source selected [01-06]',
+  	  'pattern' : '^#>(\\d)(\\d)CH(\\d{2})$',
+  	  'handler' : zone_source },
+  	'MU': {
+  	  'name' : 'Zone Mute',
+  	  'description' : 'Zone mute status [00 = off, 01 = on]',
+  	  'pattern' : '^#>(\\d)(\\d)MU(\\d{2})$',
+  	  'handler' : zone_mute },
+  	'LS': {
+  	  'name' : 'Zone Keypad Status',
+  	  'description' : 'Zone keypad status [00 = not connected, 01 = connected]',
+  	  'pattern' : '^#>(\\d)(\\d)LS(\\d{2})$',
+  	  'handler' : zone_keypad },
+  	'PR': {
+  	  'name' : 'Zone Power Status',
+  	  'description' : 'Zone power status [00 = off, 01 = on]',
+  	  'pattern' : '^#>(\\d)(\\d)PR(\\d{2})$',
+  	  'handler' : zone_state },
+    'ALL': {
       'name' : 'Zone Info',
       'description' : 'All zone info',
-      'pattern' : '^f0000070(.{2})007f0000040200(.{2})07000001000c00(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})00$',
-      'handler' : zone_info },
-    '040600': {
-      'name' : 'Zone State',
-      'description' : 'Zone state change (on/off)',
-      'pattern' : '^f0000070(.{2})007f0000040200(.{2})06000001000100(.{2})$',
-      'handler' : zone_state },
-    '040200' : {
-      'name' : 'Zone Source', 
-      'description' : 'Zone source selected (0-5)',
-      'pattern' : '^f0000070(.{2})007f0000040200(.{2})02000001000100(.{2})$',
-      'handler' : zone_source },
-    '040100' : {
-      'name' : 'Zone Volume',
-      'description' : 'Zone volume level (0x00 - 0x32, 0x00 = 0 ... 0x32 = 100 displayed)',
-      'pattern' : '^f0000070(.{2})007f0000040200(.{2})01000001000100(.{2})$',
-      'handler' : zone_volume },
-    '050000' : {
-      'name' : 'Zone Bass',
-      'description' : 'Zone bass level (0x00 = -10 ... 0x0A = Flat ... 0x14 = +10)',
-      'pattern' : '^f0000070(.{2})007f0000050200(.{2})0000000001000100(.{2})$',
-      'handler' : zone_bass },
-    '050001' : {
-      'name' : 'Zone Treble',
-      'description' : 'Zone treble level (0x00 = -10 ... 0x0A = Flat ... 0x14 = +10)',
-      'pattern' : '^f0000070(.{2})007f0000050200(.{2})0001000001000100(.{2})$',
-      'handler' : zone_treble },
-    '050002' : {
-      'name' : 'Zone Loudness',
-      'description' : 'Zone loudness (0x00 = off, 0x01 = on )',
-      'pattern' : '^f0000070(.{2})007f0000050200(.{2})0002000001000100(.{2})$',
-      'handler' : zone_loudness },
-    '050003' : {
-      'name' : 'Zone Balance',
-      'description' : 'Zone balance level (0x00 = more left ... 0x0A = center ... 0x14 = more right)',
-      'pattern' : '^f0000070(.{2})007f0000050200(.{2})0003000001000100(.{2})$',
-      'handler' : zone_balance },
-    '050007' : {
-      'name' : 'Zone Party Mode',
-      'description' : 'Zone party mode state (0x00 = off, 0x01 = on, 0x02 = master)',
-      'pattern' : '^f0000070(.{2})007f0000050200(.{2})0007000001000100(.{2})$',
-      'handler' : zone_party_mode }
+      'pattern' : '^#>(\\d)(\\d)(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})$',
+      'handler' : zone_info }
   };
 }
