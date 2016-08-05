@@ -38,7 +38,7 @@ metadata {
     command "source4"
     command "source5"
     command "source6"
-    command "allOff"    
+    //command "allOff"    
     command "zone"
   }
 
@@ -64,7 +64,7 @@ metadata {
     }
 
     // Row 1
-    controlTile("volume", "device.volume", "slider", height: 2, width: 6, range:"(0..100)") {
+    controlTile("volume", "device.volume", "slider", height: 2, width: 6, range:"(0..38)") {
       state "volume", label: "Volume", action:"music Player.setLevel", backgroundColor:"#ffffff"
     }
 
@@ -95,9 +95,6 @@ metadata {
     }
 
     // Row 4
-    standardTile("alloff", "device.status", decoration: "flat", width: 2, height: 2, inactiveLabel: false) {
-      state "default", action:"allOff", icon:"st.thermostat.heating-cooling-off", backgroundColor:"#ffffff"
-    }
     standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
       state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh", backgroundColor:"#ffffff"
     }
@@ -109,8 +106,8 @@ metadata {
     details([
       "state",
       "volume",
-      "0","1","2","3","4","5",
-      "alloff","refresh"
+      "1","2","3","4","5","6",
+      "refresh"
     ])
   }
 }
@@ -132,10 +129,10 @@ def source3() { sendCommand("/source/3") }
 def source4() { sendCommand("/source/4") }
 def source5() { sendCommand("/source/5") }
 def source6() { sendCommand("/source/6") }
-def setLevel(value) { sendCommand("/volume/${(value/2).intValue()}") }
+def setLevel(value) { sendCommand("/volume/${value.intValue()}") }
 //def loudnessOn() { sendCommand("/loudness/1") }
 //def loudnessOff() { sendCommand("/loudness/0") }
-def allOff() { sendCommand("/all/0") }
+//def allOff() { sendCommand("/all/0") }
 def refresh() { sendCommand("") }
 /**************************************************************************/
 

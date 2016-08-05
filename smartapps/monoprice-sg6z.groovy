@@ -87,7 +87,7 @@ def lanResponseHandler(evt) {
   //log.trace "Body: ${body}"
     
   //verify that this message is for this plugin
-  if (headers.'stnp-plugin' != 'rnet') {
+  if (headers.'stnp-plugin' != 'mpr-sg6z') {
     return
   }
 
@@ -157,7 +157,7 @@ private updateZoneDevices(evt) {
     return
   }
   
-  def zonedevice = getChildDevice("rnet|zone${evt.zone}")
+  def zonedevice = getChildDevice("mpr-sg6z|zone${evt.zone}")
   if (zonedevice) {
     zonedevice.zone(evt)
   }
