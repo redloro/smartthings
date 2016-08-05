@@ -4,6 +4,7 @@ Requires=network.target
 
 [Service]
 Type=simple
+Restart=on-failure
 User=nobody
 Group=dialout
 EnvironmentFile=/etc/default/smartthings-nodeproxy
