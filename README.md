@@ -306,11 +306,29 @@ SmartThings Hub <-> SmartThings Node Proxy <-> Russound RNET plugin <-> Russound
 SmartApp and Devices to support basic SmartThings integration with a Blink Monitoring System.  This will allow you to view status of the monitoring system and arm/disarm the system, as well as integrate with the SmartThings Smart Home Monitor
 
 #### Installation
-1. Create a new SmartApp and use the code from ./smartapps/blink-home-monitoring.groovy
-2. Create a new Device Handler and use the code from ./devicetypes/blink-monitor.groovy
+1. Create a new SmartApp and use the code from [`blink-home-monitoring.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/smartapps/redloro-smartthings/blink-home-monitoring.src/blink-home-monitoring.groovy)
+2. Create a new Device Handler and use the code from [`blink-monitor.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/blink-monitor.src/blink-monitor.groovy)
 3. Add the Blink Home Monitoring SmartApp from the SmartThings marketplace
 4. Configure the SmartApp
   - SmartThings Hub: REQUIRED
   - Blink Credentials: REQUIRED to connect to the Blink monitoring system
   - Smart Home Monitor: OPTIONAL integration with SmartThings Smart Home Monitor
+5. Done!
+
+### Yamaha Network Receiver
+SmartApp and Device to support basic SmartThings integration with a Yamaha Network Receiver and natively support multi-zone control.  This will allow you to view the status of each zone and the following actions:
+- Zone Status (on/off)
+- Zone Source
+- Zone Volume Control
+- Zone Mute (on/off)
+- Zone Party Mode (on/off)
+
+#### Installation
+1. Create a new SmartApp and use the code from [`yamaha-receiver.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/smartapps/redloro-smartthings/yamaha-receiver.src/yamaha-receiver.groovy)
+2. Create a new Device Handler and use the code from [`yamaha-zone.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/yamaha-zone.src/yamaha-zone.groovy)
+3. Add the Yamaha Network Receiver SmartApp from the SmartThings marketplace
+4. Configure the SmartApp
+  - SmartThings Hub: REQUIRED
+  - Yamaha Receiver IP: REQUIRED to connect to the Yamaha Network Receiver
+  - Yamaha Receiver Zones: REQUIRED zones that your Yamaha Network Receiver is capable of supporting
 5. Done!
