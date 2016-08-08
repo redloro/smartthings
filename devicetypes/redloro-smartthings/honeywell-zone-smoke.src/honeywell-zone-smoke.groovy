@@ -1,5 +1,5 @@
 /**
- *  SmartThings Device Handler: Honeywell Zone Motion
+ *  SmartThings Device Handler: Honeywell Zone Smoke
  *
  *  Author: redloro@gmail.com
  *
@@ -13,43 +13,45 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-  definition (name: "Honeywell Zone Motion", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
-    capability "Motion Sensor"
+  definition (name: "Honeywell Zone Smoke", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
+    capability "Smoke Detector"
     capability "Sensor"
-        
+
     command "zone"
   }
 
   tiles(scale: 2) {
     multiAttributeTile(name:"zone", type: "generic", width: 6, height: 4){
-      tileAttribute ("device.motion", key: "PRIMARY_CONTROL") {
-        attributeState "inactive", label:'no motion', icon:"st.motion.motion.inactive", backgroundColor:"#ffffff"
-        attributeState "active", label:'motion', icon:"st.motion.motion.active", backgroundColor:"#53a7c0"
-        attributeState "alarm", label:'ALARM', icon:"st.motion.motion.active", backgroundColor:"#ff0000"
+      tileAttribute ("device.smoke", key: "PRIMARY_CONTROL") {
+        attributeState "clear", label:"CLEAR", icon:"st.alarm.smoke.clear", backgroundColor:"#ffffff"
+        attributeState "detected", label:"SMOKE", icon:"st.alarm.smoke.smoke", backgroundColor:"#ff0000"
+        attributeState "tested", label:"TEST", icon:"st.alarm.smoke.test", backgroundColor:"#ffa81e"
       }
     }
 
     main "zone"
-        
+
     details(["zone"])
   }
 }
 
 def zone(String state) {
-  // need to convert open to active and closed to inactive
+  // need to convert open to detected and closed to clear
   def eventMap = [
-    'closed':"inactive",
-    'open':"active",
-    'alarm':"alarm"
+    'closed':"clear",
+    'open':"detected",
+    'alarm':"detected",
+    'tested':"tested"
   ]
   def newState = eventMap."${state}"
-  
+
   def descMap = [
-    'closed':"Motion Has Stopped",
-    'open':"Detected Motion",
-    'alarm':"Alarm Triggered"
+    'closed':"Was Cleared",
+    'open':"Was Detected",
+    'alarm':"Was Detected",
+    'tested':"Was Tested"
   ]
   def desc = descMap."${state}"
-  
-  sendEvent (name: "motion", value: "${newState}", descriptionText: "${desc}")
+
+  sendEvent (name: "smoke", value: "${newState}", descriptionText: "${desc}")
 }

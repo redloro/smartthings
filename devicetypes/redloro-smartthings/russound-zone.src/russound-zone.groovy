@@ -14,7 +14,7 @@
  */
 metadata {
   definition (name: "Russound Zone", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
-    
+
     /**
      * List our capabilties. Doing so adds predefined command(s) which
      * belong to the capability.
@@ -23,7 +23,7 @@ metadata {
     capability "Switch"
     capability "Refresh"
     capability "Polling"
-        
+
     /**
      * Define all commands, ie, if you have a custom action not
      * covered by a capability, you NEED to define it here or
@@ -40,7 +40,7 @@ metadata {
     command "source5"
     command "loudnessOn"
     command "loudnessOff"
-    command "allOff"    
+    command "allOff"
     command "zone"
   }
 
@@ -108,7 +108,7 @@ metadata {
       state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh", backgroundColor:"#ffffff"
     }
 
-    // Defines which tile to show in the overview    
+    // Defines which tile to show in the overview
     main "state"
 
     // Defines which tile(s) to show when user opens the detailed view

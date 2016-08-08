@@ -43,15 +43,15 @@ metadata {
     standardTile("armAwayButton","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
       state "default", label: 'Away', action: "armAway", icon: "st.Home.home3", backgroundColor: "#79b821"
     }
-  
+
     standardTile("armStayButton","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
       state "default", label: 'Stay', action: "armStay", icon: "st.Home.home3", backgroundColor: "#79b821"
     }
-  
+
     standardTile("disarmButton","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
       state "default", label: 'Disarm', action: "disarm", icon: "st.Home.home2", backgroundColor: "#C0C0C0"
     }
-      
+
     main "partition"
 
     details(["partition",
@@ -59,7 +59,7 @@ metadata {
   }
 }
 
-def partition(String state, String alpha) {  
+def partition(String state, String alpha) {
   sendEvent (name: "dscpartition", value: "${state}", descriptionText: "${alpha}")
   sendEvent (name: "panelStatus", value: "${alpha}", displayed: false)
 }
