@@ -1,0 +1,16 @@
+[Unit]
+Description=SmartThings Node Proxy
+Requires=network.target
+
+[Service]
+Type=simple
+Restart=on-failure
+User=nobody
+Group=dialout
+EnvironmentFile=/etc/default/smartthings-nodeproxy
+WorkingDirectory=/opt/local/smartthings-nodeproxy
+ExecStart=/usr/local/bin/node /opt/local/smartthings-nodeproxy/server.js
+
+[Install]
+WantedBy=multi-user.target
+

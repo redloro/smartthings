@@ -4,9 +4,11 @@ Repository for all things related to SmartThings.
 - SmartThing Node Proxy
   - Envisalink Vista TPI Plugin
   - Russound RNET Plugin
+  - Monoprice 6-Zone Amplifier Plugin
 - SmartThings SmartApps
   - Honeywell Security
   - Russound RNET
+  - Monoprice MPR6Z
   - Blink Home Monitoring
 
 ## SmartThings Node Proxy
@@ -180,6 +182,63 @@ config.json
   ```
 4. Check log files to verify startup and connectivity to the Russound controller.  *NOTE: if you do not know the name of the USB serial device, check the logs after service startup as the plugin will dump a list of known/detected USB serial devices for you to identify.*
 
+### Monoprice 6-Zone Amplifier Plugin
+SmartThings Node Proxy plugin to connect over RS-232 to Monoprice multi-zone controller such as MPR-SG6Z (10761).
+
+Supports by default 6 zones and 6 sources. Zones are numbered with the controller ID (1) in the 10s position. Might work on stacks with controllers 2 and 3 for up to 18 zones.
+
+Supports the following actions:
+- Zone ON/OFF
+- Source assignment
+- Volume level
+- Bass level
+- Treble level
+- Mute
+- Balance
+- Do Not Disturb
+
+#### Config
+```
+config.json
+{
+  "mpr6z": {
+    "serialPort": "/dev/usbser",  // REQUIRED: RS-232 port connected to Monoprice controller
+    "baudRate": 9600,             // REQUIRED: Baud rate supported by controller
+    "sources": [                  // REQUIRED: Set this to define sources
+      "Sonos",
+      "Airplay",
+      "Apple TV",
+      "Source 4",
+      "Source 5",
+      "Source 6"
+    ],
+    "controllerConfig": {         // REQUIRED: Set this to define zones
+      "type": "discover",
+      "zones": [
+        {"zone": 11, "name": "Family Room"},
+        {"zone": 12, "name": "Kitchen"},
+        {"zone": 13, "name": "Living Room"},
+        {"zone": 14, "name": "Patio"},
+        {"zone": 15, "name": "Dining Room"},
+        {"zone": 16, "name": "Office"}
+      ]
+    }
+  }
+}
+```
+
+#### Installation
+1. Verify `mpr-sg6z.js` plugin is in `./plugins` folder
+2. Edit `config.json`
+  * Remove all comments
+  * Set *mpr6z* configuration settings
+3. Restart the SmartThings Node Proxy service using the included script:
+
+  ```
+  ./restart.me
+  ```
+4. Check log files to verify startup and connectivity to the Monoprice controller.  *NOTE: if you do not know the name of the USB serial device, check the logs after service startup as the plugin will dump a list of known/detected USB serial devices for you to identify.*
+
 ## SmartThings SmartApps
 
 ### Honeywell Security
@@ -225,17 +284,19 @@ In the future, should you wish to update, simply repeat steps 2 and 3. The only 
   - Smart Home Monitor: OPTIONAL integration with SmartThings Smart Home Monitor
 5. Done! *Note that all the zones defined in `config.json` will be loaded 10 seconds after the SmartApp is configured and all the devices should show up under your Things.  If the zones/devices do not show up, simply open the SmartApp again and hit done to force a refresh of the zones/devices.*
 
-### Russound RNET
+### Russound RNET and Monoprice MPR6Z
 SmartApp and Devices to support full SmartThings integration with a Russound multi-zone controller.  This will allow you to view status of the zones and perform actions against the controller.  The SmartApp and Devices communicate with the audio controller via the SmartThings Node Proxy Russound RNET plugin (pictured below).  Make sure that you have the SmartThings Node Proxy and Russound RNET plugin installed and working before adding the SmartApp and Devices to SmartThings.
+
+These instructions are nearly identical for integrating the Monoprice device.
 
 ```
 SmartThings Hub <-> SmartThings Node Proxy <-> Russound RNET plugin <-> Russound multi-zone controller
 ```
 
 #### Installation
-1. Create a new SmartApp and use the code from ./smartapps/russound-rnet.groovy
-2. Create a new Device Handler and use the code from ./devicetypes/russound-zone.groovy
-3. Add the Russound RNET SmartApp from the SmartThings marketplace
+1. Create a new SmartApp and use the code from ./smartapps/russound-rnet.groovy (monoprice-sg6z.groovy)
+2. Create a new Device Handler and use the code from ./devicetypes/russound-zone.groovy (mpr6z-zone.groovy)
+3. Add the Russound RNET (Monoprice) SmartApp from the SmartThings marketplace
 4. Configure the SmartApp
   - SmartThings Hub: REQUIRED
   - SmartThings Node Proxy: REQUIRED to connect to the SmarThings Node Proxy
