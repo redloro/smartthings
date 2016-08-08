@@ -10,6 +10,7 @@ Repository for all things related to SmartThings.
   - Russound RNET
   - Monoprice MPR6Z
   - Blink Home Monitoring
+  - Yamaha Network Receiver
 
 ## SmartThings Node Proxy
 
@@ -294,8 +295,8 @@ SmartThings Hub <-> SmartThings Node Proxy <-> Russound RNET plugin <-> Russound
 ```
 
 #### Installation
-1. Create a new SmartApp and use the code from ./smartapps/russound-rnet.groovy (monoprice-sg6z.groovy)
-2. Create a new Device Handler and use the code from ./devicetypes/russound-zone.groovy (mpr6z-zone.groovy)
+1. Create a new SmartApp and use the code from [`russound-rnet.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/smartapps/redloro-smartthings/russound-rnet.src/russound-rnet.groovy) or [`monoprice-sg6z.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/smartapps/redloro-smartthings/monoprice-sg6z.src/monoprice-sg6z.groovy)
+2. Create a new Device Handler and use the code from [`russound-zone.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/russound-zone.src/russound-zone.groovy) or [`mpr6z-zone.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/mpr6z-zone.src/mpr6z-zone.groovy)
 3. Add the Russound RNET (Monoprice) SmartApp from the SmartThings marketplace
 4. Configure the SmartApp
   - SmartThings Hub: REQUIRED
