@@ -2,7 +2,7 @@
  *  SmartThings SmartApp: Monoprice 6-Zone Amplifier
  *
  *  Author: tcjennings@hotmail.com
- *  
+ *
  *  Based on Russound RNET by Author: redloro@gmail.com
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -22,9 +22,9 @@ definition(
   author: "tcjennings@hotmail.com",
   description: "Monoprice 6-Zone Amplifier SmartApp",
   category: "My Apps",
-  iconUrl: "https://raw.githubusercontent.com/tcjennings/smartthings/MPR-SG6Z/images/monoprice.png",
-  iconX2Url: "https://raw.githubusercontent.com/tcjennings/smartthings/MPR-SG6Z/images/monoprice.png",
-  iconX3Url: "https://raw.githubusercontent.com/tcjennings/smartthings/MPR-SG6Z/images/monoprice.png",
+  iconUrl: "https://raw.githubusercontent.com/redloro/smartthings/master/images/monoprice.png",
+  iconX2Url: "https://raw.githubusercontent.com/redloro/smartthings/master/images/monoprice.png",
+  iconX3Url: "https://raw.githubusercontent.com/redloro/smartthings/master/images/monoprice.png",
   singleInstance: true
 )
 
@@ -54,7 +54,7 @@ def uninstalled() {
 def updated() {
   //remove child devices as we will reload
   removeChildDevices()
-  
+
   //subscribe to callback/notifications from STNP
   sendCommand('/subscribe/'+getNotifyAddress())
 
@@ -64,7 +64,7 @@ def updated() {
 
 def lanResponseHandler(evt) {
   def map = stringToMap(evt.stringValue)
- 
+
   //verify that this message is from STNP IP:Port
   //IP and Port are only set on HTTP GET response and we need the MAC
   if (map.ip == convertIPtoHex(settings.proxyAddress) &&
@@ -73,19 +73,19 @@ def lanResponseHandler(evt) {
         state.proxyMac = map.mac
       }
   }
-  
+
   //verify that this message is from STNP MAC
   //MAC is set on both HTTP GET response and NOTIFY
   if (map.mac != state.proxyMac) {
     return
   }
-  
+
   def headers = getHttpHeaders(map.headers);
   def body = getHttpBody(map.body);
   //log.trace "SmartThings Node Proxy: ${evt.stringValue}"
   //log.trace "Headers: ${headers}"
   //log.trace "Body: ${body}"
-    
+
   //verify that this message is for this plugin
   if (headers.'stnp-plugin' != 'mpr-sg6z') {
     return
@@ -97,7 +97,7 @@ def lanResponseHandler(evt) {
 
 private sendCommand(path) {
   //log.trace "Monoprice 6Z send command: ${path}"
-    
+
   if (settings.proxyAddress.length() == 0 ||
     settings.proxyPort.length() == 0) {
     log.error "SmartThings Node Proxy configuration not set!"
@@ -105,11 +105,11 @@ private sendCommand(path) {
   }
 
   def host = getProxyAddress()
-  def headers = [:] 
+  def headers = [:]
   headers.put("HOST", host)
   headers.put("Content-Type", "application/json")
   headers.put("stnp-auth", settings.authCode)
-  
+
   def hubAction = new physicalgraph.device.HubAction(
       method: "GET",
       path: path,
@@ -127,13 +127,13 @@ private processEvent(evt) {
   }
 }
 
-private addChildDevices(zones) {    
-  zones.each { 
+private addChildDevices(zones) {
+  zones.each {
     def deviceId = 'mpr-sg6z|zone'+it.zone
     if (!getChildDevice(deviceId)) {
       addChildDevice("tcjennings", "MPR6Z Zone", deviceId, hostHub.id, ["name": it.name, label: "MPR: "+it.name, completedSetup: true])
       //log.debug "Added zone device: ${deviceId}"
-    } 
+    }
   }
 
   childDevices*.refresh()
@@ -149,14 +149,14 @@ def discoverChildDevices() {
 
 private updateZoneDevices(evt) {
   //log.debug "updateZoneDevices: ${evt}"
-  
+
   //setState for all zones in case All On/Off was called
   if (evt.zone == -1) {
     //log.debug "Update all zones"
     childDevices*.zone(evt)
     return
   }
-  
+
   def zonedevice = getChildDevice("mpr-sg6z|zone${evt.zone}")
   if (zonedevice) {
     zonedevice.zone(evt)
@@ -189,7 +189,7 @@ private getNotifyAddress() {
   return settings.hostHub.localIP + ":" + settings.hostHub.localSrvPortTCP
 }
 
-private String convertIPtoHex(ipAddress) { 
+private String convertIPtoHex(ipAddress) {
   String hex = ipAddress.tokenize( '.' ).collect {  String.format( '%02x', it.toInteger() ) }.join().toUpperCase()
   return hex
 }
