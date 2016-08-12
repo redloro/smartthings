@@ -124,13 +124,13 @@ function Envisalink () {
     device.on('error', function(err) {
       console.log("Envisalink connection error: "+err.description);
       device.destroy();
-      self.init();
+      setTimeout(self.init(), 4000);
     });
 
     device.on('close', function() {
       console.log('Envisalink connection closed.');
       device.destroy();
-      self.init();
+      setTimeout(self.init(), 4000);
     });
 
     device.on('data', function (data) {
