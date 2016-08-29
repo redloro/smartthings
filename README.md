@@ -42,12 +42,13 @@ config.json
   * Remove all comments
   * Set *port*
   * Set *authCode*.
-5. Start the service using the included script:
+5. Create folder ~/smartthings-nodeproxy/plugins
+6. Start the service using the included script:
 
   ```
   ./restart.me
   ```
-6. Open a browser and test access:
+7. Open a browser and test access:
 
   ```
   http://<proxy-ip>:<port>
