@@ -118,16 +118,17 @@ config.json
 ```
 
 #### Installation
-1. Verify `envisalink.js` plugin is in `./plugins` folder
-2. Edit `config.json`
+1. Verify that Envisalink EVL is correctly configured and functional with EyezOn.
+2. Verify `envisalink.js` plugin is in `./plugins` folder
+3. Edit `config.json`
   * Remove all comments
   * Set *envisalink* configuration settings
-3. Restart the SmartThings Node Proxy service using the included script:
+4. Restart the SmartThings Node Proxy service using the included script:
 
   ```
   ./restart.me
   ```
-4. Check log files to verify startup and connectivity to the Envisalink Vista TPI module
+5. Check log files to verify startup and connectivity to the Envisalink Vista TPI module
 
 ### Russound RNET Plugin
 SmartThings Node Proxy plugin to connect over RS-232 to Russound multi-zone controller such as CAA66, CAM66, CAV66, etc.
