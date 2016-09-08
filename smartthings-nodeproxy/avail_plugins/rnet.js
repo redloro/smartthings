@@ -212,16 +212,29 @@ function Rnet() {
     //console.log('RX < '+stringifyByteArray(data));
 
     var code = getSignificantBytes(data);
-    if (!code) { return; }
+    if (!code) {
+      //console.log('** no significant bytes found');
+      unhandledMessage(data);
+      return;
+    }
 
     // generic handler
     //console.log('Handler: '+JSON.stringify(RESPONSE_TYPES[code]));
     var response = RESPONSE_TYPES[code];
-    if (!response) { return; }
+    if (!response) {
+      //console.log('** no response handler found: ' + code);
+      unhandledMessage(data);
+      return;
+    }
 
     var matches = getMatches(data, response['pattern']);
-    if (!matches) { return; }
+    if (!matches) {
+      //console.log('** no matches found for code: ' + code);
+      unhandledMessage(data);
+      return;
+    }
 
+    //console.log('** OK matches: ' + matches);
     responseHandler = response['handler'];
     responseHandler(matches);
   }
@@ -357,6 +370,16 @@ function Rnet() {
     zone_party_mode([controllerId, id, partyMode]);
   };
 
+  function display_feedback(data) {
+    var buffer = byteArrayFromString(data[1].substr(0,data[0]*2)).slice(1);
+    var msgTypeSource = buffer.shift();
+    var flashTimeLow = buffer.shift();
+    var flashTimeHigh = buffer.shift();
+    var msgText = byteArrayToString(buffer);
+    //notify_handler({type: 'broadcast', controller: data[0], type: (msgTypeSource & 0x10) ? 'single' : 'multi', source: msgTypeSource & 0x0F, text: msgText});
+    console.log({type: 'broadcast', controller: controllerId, type: (msgTypeSource & 0x10) ? 'single' : 'multi', source: msgTypeSource & 0x0F, text: msgText});
+  }
+
   /**
    * Helper Functions
    */
@@ -376,8 +399,11 @@ function Rnet() {
   }
 
   function getSignificantBytes(arr) {
+    //ignore arr[7] = 0x02 (handshake message)
+    //ignore arr[7] = 0x06 (unknown message type)
     if (arr.length < 15) { return null; };
-    return ("0" + arr[9].toString(16)).slice(-2)+
+    return ("0" + arr[3].toString(16)).slice(-2)+
+           ("0" + arr[9].toString(16)).slice(-2)+
            ("0" + arr[13].toString(16)).slice(-2)+
            ("0" + arr[14].toString(16)).slice(-2);
   }
@@ -390,9 +416,14 @@ function Rnet() {
     if (!tmp) { return null; }
     var matches = [];
     for(var i=1; i<tmp.length; i++) {
-      matches.push(parseInt(tmp[i],16));
+      if (tmp[i].length == 2) { matches.push(parseInt(tmp[i],16)); }
+      else { matches.push(tmp[i]); }
     }
     return matches;
+  }
+
+  function stringifyByte(byte) {
+    return '0x'+("0" + byte.toString(16)).slice(-2);
   }
 
   function stringifyByteArray(arr) {
@@ -400,6 +431,7 @@ function Rnet() {
     for(var i=0; i<arr.length; i++) {
       str = str+' 0x'+("0" + arr[i].toString(16)).slice(-2);
     }
+    str = str.trim();
     return str;
   }
 
@@ -409,6 +441,23 @@ function Rnet() {
       str = str+("0" + arr[i].toString(16)).slice(-2);
     }
     return str;
+  }
+
+  function byteArrayFromString(str) {
+    var arr = [];
+    while(str.length) {
+      arr.push(parseInt(str.substring(0,2),16));
+      str = str.substring(2);
+    }
+    return arr;
+  }
+
+  function byteArrayToString(arr) {
+    var string = '';
+    while(char = arr.shift()) {
+      string += String.fromCharCode(char);
+    }
+    return string.trim();
   }
 
   function buildCommand(cmd) {
@@ -422,55 +471,84 @@ function Rnet() {
       return cmd;
   }
 
+  function unhandledMessage(data) {
+    if (data[0] != 0xF0) {
+      console.log('** invalid message: ' + stringifyByteArray(data));
+      return;
+    }
+
+    // remove start of message byte 0xF0
+    data.shift();
+    var msg = { "Target Device" : {
+                  "Controller": stringifyByte(data.shift()),
+                  "Zone": stringifyByte(data.shift()),
+                  "Keypad": stringifyByte(data.shift())
+                },
+                "Source Device" : {
+                  "Controller": stringifyByte(data.shift()),
+                  "Zone": stringifyByte(data.shift()),
+                  "Keypad": stringifyByte(data.shift())
+                },
+                "Message Type" : stringifyByte(data.shift()),
+                "Message Body" : stringifyByteArray(data)
+              };
+    console.log('** unknown message: ' + JSON.stringify(msg));
+  }
+
   /**
    * Constants
    */
   // match bytes [9][13][14]
   var RESPONSE_TYPES = {
-    '040700': {
+    '70040700': {
       'name' : 'Zone Info',
       'description' : 'All zone info',
       'pattern' : '^f0000070(.{2})007f0000040200(.{2})07000001000c00(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})00$',
       'handler' : zone_info },
-    '040600': {
+    '70040600': {
       'name' : 'Zone State',
       'description' : 'Zone state change (on/off)',
       'pattern' : '^f0000070(.{2})007f0000040200(.{2})06000001000100(.{2})$',
       'handler' : zone_state },
-    '040200' : {
-      'name' : 'Zone Source', 
+    '70040200' : {
+      'name' : 'Zone Source',
       'description' : 'Zone source selected (0-5)',
       'pattern' : '^f0000070(.{2})007f0000040200(.{2})02000001000100(.{2})$',
       'handler' : zone_source },
-    '040100' : {
+    '70040100' : {
       'name' : 'Zone Volume',
       'description' : 'Zone volume level (0x00 - 0x32, 0x00 = 0 ... 0x32 = 100 displayed)',
       'pattern' : '^f0000070(.{2})007f0000040200(.{2})01000001000100(.{2})$',
       'handler' : zone_volume },
-    '050000' : {
+    '70050000' : {
       'name' : 'Zone Bass',
       'description' : 'Zone bass level (0x00 = -10 ... 0x0A = Flat ... 0x14 = +10)',
       'pattern' : '^f0000070(.{2})007f0000050200(.{2})0000000001000100(.{2})$',
       'handler' : zone_bass },
-    '050001' : {
+    '70050001' : {
       'name' : 'Zone Treble',
       'description' : 'Zone treble level (0x00 = -10 ... 0x0A = Flat ... 0x14 = +10)',
       'pattern' : '^f0000070(.{2})007f0000050200(.{2})0001000001000100(.{2})$',
       'handler' : zone_treble },
-    '050002' : {
+    '70050002' : {
       'name' : 'Zone Loudness',
       'description' : 'Zone loudness (0x00 = off, 0x01 = on )',
       'pattern' : '^f0000070(.{2})007f0000050200(.{2})0002000001000100(.{2})$',
       'handler' : zone_loudness },
-    '050003' : {
+    '70050003' : {
       'name' : 'Zone Balance',
       'description' : 'Zone balance level (0x00 = more left ... 0x0A = center ... 0x14 = more right)',
       'pattern' : '^f0000070(.{2})007f0000050200(.{2})0003000001000100(.{2})$',
       'handler' : zone_balance },
-    '050007' : {
+    '70050007' : {
       'name' : 'Zone Party Mode',
       'description' : 'Zone party mode state (0x00 = off, 0x01 = on, 0x02 = master)',
       'pattern' : '^f0000070(.{2})007f0000050200(.{2})0007000001000100(.{2})$',
-      'handler' : zone_party_mode }
+      'handler' : zone_party_mode },
+    '79010100' : {
+        'name' : 'Display Feedback',
+        'description' : 'Show display feedback for given zone',
+        'pattern' : '^f0000079007d000002010102010100000100(.{2})(.*)$',
+        'handler' : display_feedback }
   };
 }
