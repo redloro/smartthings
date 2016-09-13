@@ -121,6 +121,15 @@ metadata {
       "muted", "partyMode","refresh"
     ])
   }
+
+  preferences {
+    input name: "source0", type: "text", title: "Source 1", defaultValue: "AV1"
+    input name: "source1", type: "text", title: "Source 2", defaultValue: "AV2"
+    input name: "source2", type: "text", title: "Source 3", defaultValue: "AV3"
+    input name: "source3", type: "text", title: "Source 4", defaultValue: "AV4"
+    input name: "source4", type: "text", title: "Source 5", defaultValue: "AV5"
+    input name: "source5", type: "text", title: "Source 6", defaultValue: "AV6"
+  }
 }
 
 /**************************************************************************
@@ -196,19 +205,16 @@ def parse(String description) {
   return
 }
 
-def installed() {
-  state.sources = ['AV1', 'AV2', 'AV3', 'AV4', 'AV5', 'AV6']
-}
-
 def setSource(id) {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Input><Input_Sel>${state.sources[id]}</Input_Sel></Input></${getZone()}></YAMAHA_AV>")
-  setSourceTile(state.sources[id])
+  //log.debug "source: "+settings."source${id}"
+  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Input><Input_Sel>"+settings."source${id}"+"</Input_Sel></Input></${getZone()}></YAMAHA_AV>")
+  setSourceTile(settings."source${id}")
 }
 
 def setSourceTile(name) {
   sendEvent(name: "source", value: "Source: ${name}")
   for (def i = 0; i < 6; i++) {
-    if (name == state.sources[i]) {
+    if (name == settings."source${i}") {
       sendEvent(name: "source${i}", value: "on")
     }
     else {
