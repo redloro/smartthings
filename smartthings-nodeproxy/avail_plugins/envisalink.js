@@ -34,6 +34,13 @@ app.get('/', function (req, res) {
   res.status(200).json({ status: 'Envisalink Vista TPI plugin running' });
 });
 
+app.get('/disarm', function (req, res) {
+  if (nconf.get('envisalink:securityCode')) {
+    evl.command(nconf.get('envisalink:securityCode')+'1');
+  }
+  res.end();
+});
+
 app.get('/armAway', function (req, res) {
   if (nconf.get('envisalink:securityCode')) {
     evl.command(nconf.get('envisalink:securityCode')+'2');
@@ -48,9 +55,16 @@ app.get('/armStay', function (req, res) {
   res.end();
 });
 
-app.get('/disarm', function (req, res) {
+app.get('/armInstant', function (req, res) {
   if (nconf.get('envisalink:securityCode')) {
-    evl.command(nconf.get('envisalink:securityCode')+'1');
+    evl.command(nconf.get('envisalink:securityCode')+'7');
+  }
+  res.end();
+});
+
+app.get('/chime', function (req, res) {
+  if (nconf.get('envisalink:securityCode')) {
+    evl.command(nconf.get('envisalink:securityCode')+'9');
   }
   res.end();
 });
@@ -119,7 +133,7 @@ function Envisalink () {
 
     if (device && device.writable) { return; }
     if (device) { device.destroy(); }
-    
+
     device = new net.Socket();
     device.on('error', function(err) {
       console.log("Envisalink connection error: "+err.description);
@@ -537,7 +551,7 @@ function Envisalink () {
       'description' : 'Send During Session Login Only, successful login',
       'handler' : login_success },
     'FAILED' : {
-      'name' : 'Login Failure', 
+      'name' : 'Login Failure',
       'description' : 'Sent During Session Login Only, password not accepted',
       'handler' : login_failure },
     'Timed Out!' : {
@@ -554,8 +568,8 @@ function Envisalink () {
       'handler' : zone_state_change,
       'type' : 'zone'},
     '%02' : {
-      'name' : 'Partition State Change', 
-      'description' : 'A partition change-of-state has occured', 
+      'name' : 'Partition State Change',
+      'description' : 'A partition change-of-state has occured',
       'handler' : partition_state_change,
       'type' : 'partition' },
     '%03' : {

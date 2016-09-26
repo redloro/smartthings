@@ -24,7 +24,7 @@ metadata {
   }
 
   tiles(scale: 2) {
-    multiAttributeTile(name:"partition", type: "generic", width: 6, height: 4){
+    multiAttributeTile(name:"partition", type: "generic", width: 6, height: 4) {
       tileAttribute ("device.dscpartition", key: "PRIMARY_CONTROL") {
         attributeState "ready", label: 'Ready', icon:"st.Home.home2"
         attributeState "notready", label: 'Not Ready', backgroundColor: "#ffcc00", icon:"st.Home.home2"
@@ -52,16 +52,29 @@ metadata {
       state "default", label: 'Disarm', action: "disarm", icon: "st.Home.home2", backgroundColor: "#C0C0C0"
     }
 
+    standardTile("armInstantButton","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
+      state "default", label: 'Instant', action: "armInstant", icon: "st.Home.home3", backgroundColor: "#79b821"
+    }
+
+    standardTile("chimeButton","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
+      state "default", label: 'Chime', action: "chime", icon: "st.custom.sonos.unmuted", backgroundColor: "#79b821"
+    }
+
     main "partition"
 
     details(["partition",
-             "armAwayButton", "armStayButton", "disarmButton"])
+             "armAwayButton", "armStayButton", "disarmButton",
+             "armInstantButton", "chimeButton"])
   }
 }
 
 def partition(String state, String alpha) {
   sendEvent (name: "dscpartition", value: "${state}", descriptionText: "${alpha}")
   sendEvent (name: "panelStatus", value: "${alpha}", displayed: false)
+}
+
+def disarm() {
+    parent.sendCommand('/plugins/envisalink/disarm');
 }
 
 def armAway() {
@@ -72,6 +85,10 @@ def armStay() {
     parent.sendCommand('/plugins/envisalink/armStay');
 }
 
-def disarm() {
-    parent.sendCommand('/plugins/envisalink/disarm');
+def armInstant() {
+    parent.sendCommand('/plugins/envisalink/armInstant');
+}
+
+def chime() {
+    parent.sendCommand('/plugins/envisalink/chime');
 }
