@@ -20,7 +20,7 @@ Node JS proxy service for connecting SmartThings apps and devices via local LAN 
 ```
 config.json
 {
-  "port": 8080,                   // REQUIRED: SmartThings Node Porxy service port
+  "port": 8080,                   // REQUIRED: SmartThings Node Proxy service port
   "authCode": "secret-key"        // REQUIRED: Auth code used to gain access to SmartThings Node Proxy
   "notify": {
     "address": "192.168.2.31",    // OPTIONAL (will be set automatically): See /subscribe route below
