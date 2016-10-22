@@ -80,7 +80,7 @@ A plugin can post data to the SmartThings Hub asynchronously via an HTTP NOTIFY.
 ### Generic Plugin
 SmartThings Node Proxy sample plugin with corresponding SmartThings SmartApp and DeviceType.  The Generic plugin was built to demonstrate how the system interacts with SmartThings and also provide a template for building new plugins, SmartApps and DeviceTypes that leverage the power of the SmartThings Node Proxy.  The plugin itself, the SmartApp and DeviceType are considered barebones, with minimum functionality so highlight how the the pieces tie together.  The plugin provides the following functionality, showing how the system integrates with SmartThings;
 
-1. Generic Plugin will listen at http://<stnp_ip_address:port>/plugins/generic/ AND echo back the message
+1. Generic Plugin will listen at http://stnp_ip_address:port/plugins/generic/ AND echo back the message
 2. Generic SmartApp will route inbound messages to Generic Device AND route outbound messages to SmartThings Node Proxy
 3. Generic Device will submit a message to Generic SmartApp (parent app) to send to STNP AND update the tiles with any message received and flip the on/off switch
 
