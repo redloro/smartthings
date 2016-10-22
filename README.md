@@ -77,6 +77,12 @@ Configuration data for the plugins is also stored in the `config.json` configura
 #### Callback / Notifications
 A plugin can post data to the SmartThings Hub asynchronously via an HTTP NOTIFY.  The `notify()` method is exposed to a plugin by the SmartThings Node Proxy, to be used for this purpose.  The plugin can call the `notify()` method to post data back to the SmartThings Hub whenever an update or change of state is required.  It is the responsibility of the corresponding SmartThings app/device to process the notification.
 
+### Generic Plugin
+SmartThings Node Proxy sample plugin with corresponding SmartThings SmartApp and DeviceType.  The Generic plugin was built to demonstrate how the system interacts with SmartThings and also provide a template for building new plugins, SmartApps and DeviceTypes that leverage the power of the SmartThings Node Proxy.  The plugin itself, the SmartApp and DeviceType are considered barebones, with minimum functionality so highlight how the the pieces tie together.  The plugin provides the following functionality, showing how the system integrates with SmartThings;
+1. Generic Plugin will listen at http://<stnp_ip_address:port>/plugins/generic/ AND echo back the message
+2. Generic SmartApp will route inbound messages to Generic Device AND route outbound messages to SmartThings Node Proxy
+3. Generic Device will submit a message to Generic SmartApp (parent app) to send to STNP AND update the tiles with any message received and flip the on/off switch
+
 ### Envisalink Vista TPI Plugin
 SmartThings Node Proxy plugin to connect over local lan to a Honeywell / Ademco Vista 20p alarm panel.
 
