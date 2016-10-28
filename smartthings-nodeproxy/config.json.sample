@@ -46,12 +46,7 @@
         {"zone": 4, "type": "contact", "name": "Kitchen Door"},
         {"zone": 5, "type": "contact", "name": "Kitchen Window"}
       ]
-    },
-    /****************************************
-     ONLY SET THIS IF YOU ARE SURE DISCOVERY WILL WORK !!!
-     ****************************************/
-    "installerCode": ""           // Set this to enable auto-discovery
-    /****************************************/
+    }
   },
   
   // SmartThings Hub (optional - will be set by SmartThings SmartApp)
