@@ -161,6 +161,10 @@ private updateZoneDevices(evt) {
   }
 }
 
+private partyMode(evt) {
+  childDevices*.partyMode(evt)
+}
+
 private getHttpHeaders(headers) {
 	def obj = [:]
 	new String(headers.decodeBase64()).split("\r\n").each {param ->
