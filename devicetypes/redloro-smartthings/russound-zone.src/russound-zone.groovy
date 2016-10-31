@@ -103,52 +103,30 @@ metadata {
 
     // Row 4
     standardTile("loudness", "device.loudness", decoration: "flat", width: 2, height: 2) {
-      state "off", label:'Loudness', action:"loudnessOn", icon:"http://redloro.com/temp/indicator-dot-gray.png", backgroundColor:"#ffffff"
-      state "on", label:'Loudness', action:"loudnessOff", icon:"http://redloro.com/temp/indicator-dot-loudness.png", backgroundColor:"#ffffff"
+      state "off", label:'Loudness', action:"loudnessOn", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff"
+      state "on", label:'Loudness', action:"loudnessOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-loudness.png", backgroundColor:"#ffffff"
     }
     standardTile("partyMode", "device.partyMode", decoration: "flat", width: 2, height: 2, inactiveLabel: false) {
-      state "off", label:'Party Mode', action:"partyModeOn", icon:"http://redloro.com/temp/indicator-dot-gray.png", backgroundColor:"#ffffff"
-      state "on", label:'Party Mode', action:"partyModeOff", icon:"http://redloro.com/temp/indicator-dot-party.png", backgroundColor:"#ffffff"
+      state "off", label:'Party Mode', action:"partyModeOn", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff"
+      state "on", label:'Party Mode', action:"partyModeOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-party.png", backgroundColor:"#ffffff"
     }
     standardTile("alloff", "device.status", decoration: "flat", width: 2, height: 2, inactiveLabel: false) {
-      state "default", label:"All Off", action:"allOff", icon:"http://redloro.com/temp/indicator-dot-power.png", backgroundColor:"#ffffff"
+      state "default", label:"All Off", action:"allOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-power.png", backgroundColor:"#ffffff"
     }
 
     // Row 5-6
     standardTile("bassLevelLabel", "default", decoration: "flat", height: 1, width: 1) {
-      state "default", icon:"http://redloro.com/temp/bass.png"
+      state "default", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/bass.png"
     }
     controlTile("bassLevel", "device.bassLevel", "slider", height: 1, width: 3, range:"(-10..10)") {
       state "default", action:"bassLevel", backgroundColor:"#00a0dc"
     }
     standardTile("trebleLevelLabel", "default", decoration: "flat", height: 1, width: 1) {
-      state "default", icon:"http://redloro.com/temp/treble.png"
+      state "default", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/treble.png"
     }
     controlTile("trebleLevel", "device.trebleLevel", "slider", height: 1, width: 3, range:"(-10..10)") {
       state "default", action:"trebleLevel", backgroundColor:"#00a0dc"
     }
-
-    /*
-    valueTile("bassLevel", "device.bassLevel", width: 2, height: 2) {
-      state "default", label: '${currentValue}', icon:"http://redloro.com/temp/bass.png"
-    }
-    standardTile("bassLevelUp", "device.bassLevel", width: 1, height: 1, canChangeIcon: false, decoration: "flat") {
-      state "default", label:'', action:"bassLevelUp", icon:"http://redloro.com/temp/arrow_up.png"
-    }
-    standardTile("trebleLevelUp", "device.trebleLevel", width: 1, height: 1, canChangeIcon: false, decoration: "flat") {
-      state "default", label:'', action:"trebleLevelUp", icon:"http://redloro.com/temp/arrow_up.png"
-    }
-    
-    valueTile("trebleLevel", "device.trebleLevel", width: 2, height: 2) {
-      state "default", label: '${currentValue}', icon:"http://redloro.com/temp/treble.png"
-    }
-    standardTile("bassLevelDown", "device.bassLevel", width: 1, height: 1, canChangeIcon: false, decoration: "flat") {
-      state "default", label:'', action:"bassLevelDown", icon:"http://redloro.com/temp/arrow_down.png"
-    }
-    standardTile("trebleLevelDown", "device.trebleLevel", width: 1, height: 1, canChangeIcon: false, decoration: "flat") {
-      state "default", label:'', action:"trebleLevelDown", icon:"http://redloro.com/temp/arrow_down.png"
-    }
-    */
     
     standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
       state "default", label:"Refresh", action:"refresh.refresh", icon:"st.secondary.refresh-icon", backgroundColor:"#ffffff"
@@ -166,7 +144,6 @@ metadata {
       "bassLevelLabel", "bassLevel",
       "refresh",
       "trebleLevelLabel", "trebleLevel"
-      //"bassLevel", "bassLevelUp", "trebleLevel", "trebleLevelUp", "bassLevelDown", "trebleLevelDown",
     ])
   }
 }
@@ -195,12 +172,6 @@ def partyModeOn() { parent.partyMode(["state": 1, "master": getZone(), "source":
 def partyModeOff() { partyMode(["state": 0]) }
 def bassLevel(value) { sendCommand(["bass": value+10], false) }
 def trebleLevel(value) { sendCommand(["treble": value+10], false) }
-/*
-def bassLevelUp() { if (getBassLevel() < 10) { sendCommand(["bass": getBassLevel()+11], false) } }
-def bassLevelDown() { if (getBassLevel() > -10) { sendCommand(["bass": getBassLevel()+9], false) } }
-def trebelLevelUp() { if (getTrebelLevel() < 10) { sendCommand(["trebel": getTrebelLevel()+11], false) } }
-def trebelLevelDown() { if (getTrebelLevel() > -10) { sendCommand(["trebel": getTrebelLevel()+9], false) } }
-*/
 def allOff() { sendCommand(["all": 0], false) }
 def refresh() { sendCommand([], false) }
 /**************************************************************************/
