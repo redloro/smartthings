@@ -14,7 +14,7 @@
  */
 metadata {
   definition (name: "Russound Zone", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
-
+    
     /**
      * List our capabilties. Doing so adds predefined command(s) which
      * belong to the capability.
@@ -23,7 +23,7 @@ metadata {
     capability "Switch"
     capability "Refresh"
     capability "Polling"
-
+        
     /**
      * Define all commands, ie, if you have a custom action not
      * covered by a capability, you NEED to define it here or
@@ -40,6 +40,10 @@ metadata {
     command "source5"
     command "loudnessOn"
     command "loudnessOff"
+    command "bassLevel"
+    command "trebleLevel"
+    command "partyModeOn"
+    command "partyModeOff"
     command "allOff"
     command "zone"
   }
@@ -66,8 +70,8 @@ metadata {
     }
 
     // Row 1
-    controlTile("volume", "device.volume", "slider", height: 2, width: 6, range:"(0..100)") {
-      state "volume", label: "Volume", action:"music Player.setLevel", backgroundColor:"#ffffff"
+    controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(0..100)") {
+      state "volume", label: "Volume", action:"music Player.setLevel", backgroundColor:"#00a0dc"
     }
 
     // Row 2-3
@@ -96,19 +100,61 @@ metadata {
       state("on", label:"Source 6", action:"source5", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
     }
 
+
     // Row 4
     standardTile("loudness", "device.loudness", decoration: "flat", width: 2, height: 2) {
-      state("off", label:'Loudness', action:"loudnessOn", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
-      state("on", label:'Loudness', action:"loudnessOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
+      state "off", label:'Loudness', action:"loudnessOn", icon:"http://redloro.com/temp/indicator-dot-gray.png", backgroundColor:"#ffffff"
+      state "on", label:'Loudness', action:"loudnessOff", icon:"http://redloro.com/temp/indicator-dot-loudness.png", backgroundColor:"#ffffff"
+    }
+    standardTile("partyMode", "device.partyMode", decoration: "flat", width: 2, height: 2, inactiveLabel: false) {
+      state "off", label:'Party Mode', action:"partyModeOn", icon:"http://redloro.com/temp/indicator-dot-gray.png", backgroundColor:"#ffffff"
+      state "on", label:'Party Mode', action:"partyModeOff", icon:"http://redloro.com/temp/indicator-dot-party.png", backgroundColor:"#ffffff"
     }
     standardTile("alloff", "device.status", decoration: "flat", width: 2, height: 2, inactiveLabel: false) {
-      state "default", action:"allOff", icon:"st.thermostat.heating-cooling-off", backgroundColor:"#ffffff"
-    }
-    standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
-      state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh", backgroundColor:"#ffffff"
+      state "default", label:"All Off", action:"allOff", icon:"http://redloro.com/temp/indicator-dot-power.png", backgroundColor:"#ffffff"
     }
 
-    // Defines which tile to show in the overview
+    // Row 5-6
+    standardTile("bassLevelLabel", "default", decoration: "flat", height: 1, width: 1) {
+      state "default", icon:"http://redloro.com/temp/bass.png"
+    }
+    controlTile("bassLevel", "device.bassLevel", "slider", height: 1, width: 3, range:"(-10..10)") {
+      state "default", action:"bassLevel", backgroundColor:"#00a0dc"
+    }
+    standardTile("trebleLevelLabel", "default", decoration: "flat", height: 1, width: 1) {
+      state "default", icon:"http://redloro.com/temp/treble.png"
+    }
+    controlTile("trebleLevel", "device.trebleLevel", "slider", height: 1, width: 3, range:"(-10..10)") {
+      state "default", action:"trebleLevel", backgroundColor:"#00a0dc"
+    }
+
+    /*
+    valueTile("bassLevel", "device.bassLevel", width: 2, height: 2) {
+      state "default", label: '${currentValue}', icon:"http://redloro.com/temp/bass.png"
+    }
+    standardTile("bassLevelUp", "device.bassLevel", width: 1, height: 1, canChangeIcon: false, decoration: "flat") {
+      state "default", label:'', action:"bassLevelUp", icon:"http://redloro.com/temp/arrow_up.png"
+    }
+    standardTile("trebleLevelUp", "device.trebleLevel", width: 1, height: 1, canChangeIcon: false, decoration: "flat") {
+      state "default", label:'', action:"trebleLevelUp", icon:"http://redloro.com/temp/arrow_up.png"
+    }
+    
+    valueTile("trebleLevel", "device.trebleLevel", width: 2, height: 2) {
+      state "default", label: '${currentValue}', icon:"http://redloro.com/temp/treble.png"
+    }
+    standardTile("bassLevelDown", "device.bassLevel", width: 1, height: 1, canChangeIcon: false, decoration: "flat") {
+      state "default", label:'', action:"bassLevelDown", icon:"http://redloro.com/temp/arrow_down.png"
+    }
+    standardTile("trebleLevelDown", "device.trebleLevel", width: 1, height: 1, canChangeIcon: false, decoration: "flat") {
+      state "default", label:'', action:"trebleLevelDown", icon:"http://redloro.com/temp/arrow_down.png"
+    }
+    */
+    
+    standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
+      state "default", label:"Refresh", action:"refresh.refresh", icon:"st.secondary.refresh-icon", backgroundColor:"#ffffff"
+    }
+
+    // Defines which tile to show in the overview    
     main "state"
 
     // Defines which tile(s) to show when user opens the detailed view
@@ -116,7 +162,11 @@ metadata {
       "state",
       "volume",
       "0","1","2","3","4","5",
-      "loudness", "alloff","refresh"
+      "loudness", "partyMode", "alloff",
+      "bassLevelLabel", "bassLevel",
+      "refresh",
+      "trebleLevelLabel", "trebleLevel"
+      //"bassLevel", "bassLevelUp", "trebleLevel", "trebleLevelUp", "bassLevelDown", "trebleLevelDown",
     ])
   }
 }
@@ -130,19 +180,29 @@ metadata {
  * one place.
  *
  */
-def on() { sendCommand("/state/1") }
-def off() { sendCommand("/state/0") }
-def source0() { sendCommand("/source/0") }
-def source1() { sendCommand("/source/1") }
-def source2() { sendCommand("/source/2") }
-def source3() { sendCommand("/source/3") }
-def source4() { sendCommand("/source/4") }
-def source5() { sendCommand("/source/5") }
-def setLevel(value) { sendCommand("/volume/${(value/2).intValue()}") }
-def loudnessOn() { sendCommand("/loudness/1") }
-def loudnessOff() { sendCommand("/loudness/0") }
-def allOff() { sendCommand("/all/0") }
-def refresh() { sendCommand("") }
+def on() { sendCommand(["state": 1], false) }
+def off() { sendCommand(["state": 0], false) }
+def source0() { sendCommand(["source": 0], true) }
+def source1() { sendCommand(["source": 1], true) }
+def source2() { sendCommand(["source": 2], true) }
+def source3() { sendCommand(["source": 3], true) }
+def source4() { sendCommand(["source": 4], true) }
+def source5() { sendCommand(["source": 5], true) }
+def setLevel(value) { sendCommand(["volume": (value/2).intValue()], true) }
+def loudnessOn() { sendCommand(["loudness": 1], false) }
+def loudnessOff() { sendCommand(["loudness": 0], false) }
+def partyModeOn() { parent.partyMode(["state": 1, "master": getZone(), "source": getSource(), "volume": getVolume()]) }
+def partyModeOff() { partyMode(["state": 0]) }
+def bassLevel(value) { sendCommand(["bass": value+10], false) }
+def trebleLevel(value) { sendCommand(["treble": value+10], false) }
+/*
+def bassLevelUp() { if (getBassLevel() < 10) { sendCommand(["bass": getBassLevel()+11], false) } }
+def bassLevelDown() { if (getBassLevel() > -10) { sendCommand(["bass": getBassLevel()+9], false) } }
+def trebelLevelUp() { if (getTrebelLevel() < 10) { sendCommand(["trebel": getTrebelLevel()+11], false) } }
+def trebelLevelDown() { if (getTrebelLevel() > -10) { sendCommand(["trebel": getTrebelLevel()+9], false) } }
+*/
+def allOff() { sendCommand(["all": 0], false) }
+def refresh() { sendCommand([], false) }
 /**************************************************************************/
 
 /**
@@ -154,12 +214,19 @@ def poll() {
 }
 
 def zone(evt) {
+  //log.debug "ZONE${getZone()} zone(${evt})"
+
   /*
   * Zone On/Off state (0x00 = OFF or 0x01 = ON)
   */
   if (evt.containsKey("state")) {
     //log.debug "setting state to ${result.state}"
     sendEvent(name: "switch", value: (evt.state == 1) ? "on" : "off")
+    
+    //turn off party mode
+    if (evt.state == 0) {
+      partyMode(["state": 0])
+    }
   }
 
   /*
@@ -177,6 +244,22 @@ def zone(evt) {
     //log.debug "setting loudness to ${result.loudness}"
     sendEvent(name: "loudness", value: (evt.loudness == 1) ? "on" : "off")
   }
+  
+  /*
+  * Zone Bass level (0x00 = -10 ... 0x0A = Flat ... 0x14 = +10)
+  */
+  if (evt.containsKey("bass")) {
+    //log.debug "setting bass to ${result.bass - 10}"
+    sendEvent(name: "bassLevel", value: evt.bass - 10)
+  }
+  
+  /*
+  * Zone Treble level (0x00 = -10 ... 0x0A = Flat ... 0x14 = +10)
+  */
+  if (evt.containsKey("treble")) {
+    //log.debug "setting treble to ${result.treble - 10}"
+    sendEvent(name: "trebleLevel", value: evt.treble - 10)
+  }
 
   /*
   * Zone Source selected (0-5)
@@ -185,6 +268,7 @@ def zone(evt) {
     //log.debug "setting source to ${result.source}"
     for (def i = 0; i < 6; i++) {
       if (i == evt.source) {
+        state.source = i
         sendEvent(name: "source${i}", value: "on")
         sendEvent(name: "source", value: "Source ${i+1}: ${evt.sourceName}")
       }
@@ -195,7 +279,73 @@ def zone(evt) {
   }
 }
 
-private sendCommand(part) {
-  def id = new String(device.deviceNetworkId).tokenize('|')[1].replace('zone', '')
-  parent.sendCommand("/plugins/rnet/zones/${id}${part}")
+def partyMode(evt) {
+  // ["state": "", "master": "", "source": "", "volume": ""]
+  //log.debug "ZONE${getZone()} partyMode(${evt})"
+  if (evt.containsKey("state")) {
+    sendEvent(name: "partyMode", value: (evt.state == 1) ? "on" : "off")
+    if (evt.state == 1) {
+      sendCommand(["state": 1], false)
+    }
+  } else {
+    // exit if partyMode is off
+    if (getPartyMode() == 0) {
+      return
+    }
+  }
+    
+  if (evt.containsKey("volume")) {
+    sendCommand(["volume": evt.volume], false)
+  }
+
+  if (evt.containsKey("source")) {
+    sendCommand(["source": evt.source], false)
+  }
+}
+
+private sendCommand(evt, broadcast) {
+  //log.debug "ZONE${getZone()} sendCommand(${evt}, ${broadcast})"
+  
+  // send command to partyMode
+  if (broadcast && getPartyMode()) {
+    parent.partyMode(evt)
+    return
+  }
+
+  // send command to Russound
+  def part = ""
+  if (evt.size() == 1) {
+    part = "/${evt.keySet()[0]}/${evt.values()[0]}"
+  }
+  
+  //log.debug "ZONE${getZone()} calling parent.sendCommand"
+  parent.sendCommand("/plugins/rnet/zones/${getZone()}${part}")
+}
+
+private getTrebelLevel() {
+  return device.currentState("trebleLevel").getValue().toInteger()
+}
+
+private getBassLevel() {
+  return device.currentState("bassLevel").getValue().toInteger()
+}
+
+private getPartyMode() {
+  return (device.currentState("partyMode").getValue() == "on") ? 1 : 0;
+}
+
+private getVolume() {
+  return (device.currentState("volume").getValue().toInteger())/2
+}
+
+private getSource() {
+    for (def i = 0; i < 6; i++) {
+      if (device.currentState("source${i}").getValue()  == "on") {
+        return i
+      }
+    }
+}
+
+private getZone() {
+  return new String(device.deviceNetworkId).tokenize('|')[1].replace('zone', '')
 }
