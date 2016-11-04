@@ -87,7 +87,7 @@ fs.readdir('./plugins', function(err, files) {
 
 /**
  * Callback to the SmartThings Hub via HTTP NOTIFY
- * @param {String} plugin - The name of the STNP plugin 
+ * @param {String} plugin - The name of the STNP plugin
  * @param {String} data - The HTTP message body
  */
 var notify = function(plugin, data) {

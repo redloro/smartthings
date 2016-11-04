@@ -110,7 +110,7 @@ evl.init();
 function Envisalink () {
   var self = this;
   var locked = false;
-  var panel = {alpha: '', partitions: [], zones: []};
+  var panel = {alpha: '', timer: [], partition: 1, zones: []};
   var device = null;
   var deviceRequest = null;
   var deviceResponse = null;
@@ -138,13 +138,13 @@ function Envisalink () {
     device.on('error', function(err) {
       console.log("Envisalink connection error: "+err.description);
       device.destroy();
-      setTimeout(self.init(), 4000);
+      setTimeout(function() { self.init() }, 4000);
     });
 
     device.on('close', function() {
       console.log('Envisalink connection closed.');
       device.destroy();
-      setTimeout(self.init(), 4000);
+      setTimeout(function() { self.init() }, 4000);
     });
 
     device.on('data', function (data) {
@@ -160,6 +160,9 @@ function Envisalink () {
 
   // check connection every 60 secs
   setInterval(function() { self.init(); }, 60*1000);
+
+  // dump zone timers every 30 secs
+  setInterval(function() { write('^02,$'); }, 30*1000);
 
   /**
    * write
@@ -391,43 +394,60 @@ function Envisalink () {
     msg.alpha = map[4].trim();
     msg.dscCode = getDscCode(msg.flags);
     //console.log(JSON.stringify(msg));
+    //console.log(JSON.stringify(panel));
 
     //////////
     // ZONE UPDATE
     //////////
+
+    // all zones are closed
     if (msg.dscCode == 'READY') {
+      panel.timer = [];
       for (var n in panel.zones){
         if (panel.zones[n] != 'closed') {
-          panel.zones[n] = 'closed';
-
           // notify
-          notify(JSON.stringify({type: 'zone', partition: msg.partitionNumber, zone: parseInt(n), state: 'closed'}));
-          console.log(JSON.stringify({type: 'zone', partition: msg.partitionNumber, zone: parseInt(n), state: 'closed'}));
+          updateZone(msg.partitionNumber, n, 'closed');
         }
       }
     }
 
+    // one or more zones are open
     if (msg.dscCode == '' && !isNaN(msg.userOrZone)) {
-      // determine if this is a new message
       if (panel.zones[msg.userOrZone] != 'open') {
-        // persist panel status
-        panel.zones[msg.userOrZone] = 'open';
+        // reset timer when new zone added
+        panel.timer[msg.userOrZone] = 0;
+        for (var n in panel.timer) {
+          panel.timer[n] = 0;
+        }
 
         // notify
-        notify(JSON.stringify({type: 'zone', partition: msg.partitionNumber, zone: msg.userOrZone, state: 'open'}));
-        console.log(JSON.stringify({type: 'zone', partition: msg.partitionNumber, zone: msg.userOrZone, state: 'open'}));
+        updateZone(msg.partitionNumber, msg.userOrZone, 'open');
+      } else {
+        panel.timer[msg.userOrZone]++;
+
+        // experimental: close all zones that have not updated after three ticks
+        if (panel.timer[msg.userOrZone] == 3) {
+          for (var n in panel.timer) {
+            if (panel.timer[n] == 0) {
+              // close orphaned zone
+              delete panel.timer[n];
+
+              // notify
+              updateZone(msg.partitionNumber, n, 'closed');
+            } else {
+              // reset timer
+              panel.timer[n] = 0;
+            }
+          }
+        }
       }
     }
 
+    // zone in alarm
     if (msg.dscCode == 'IN_ALARM' && !isNaN(msg.userOrZone)) {
-      // determine if this is a new message
       if (panel.zones[msg.userOrZone] != 'alarm') {
-        // persist panel status
-        panel.zones[msg.userOrZone] = 'alarm';
-
         // notify
-        notify(JSON.stringify({type: 'zone', partition: msg.partitionNumber, zone: msg.userOrZone, state: 'alarm'}));
-        console.log(JSON.stringify({type: 'zone', partition: msg.partitionNumber, zone: msg.userOrZone, state: 'alarm'}));
+        updateZone(msg.partitionNumber, msg.userOrZone, 'alarm');
       }
     }
 
@@ -435,12 +455,8 @@ function Envisalink () {
     // PARTITION UPDATE
     //////////
     if (panel.alpha != msg.alpha) {
-      panel.alpha = msg.alpha;
-      var partitionState = getPartitionState(msg.flags);
-
       //notify
-      notify(JSON.stringify({type: 'partition', partition: msg.partitionNumber, state: partitionState, alpha: msg.alpha}));
-      console.log(JSON.stringify({type: 'partition', partition: msg.partitionNumber, state: partitionState, alpha: msg.alpha}));
+      updatePartition(msg.partitionNumber, getPartitionState(msg.flags), msg.alpha);
     }
   }
 
@@ -458,6 +474,36 @@ function Envisalink () {
 
   function zone_state_change(data) {
     //console.log('Execute zone_state_change: '+data);
+
+    // Swap the couples of every four bytes (little endian to big endian)
+    var bigEndianHexString = '';
+    for (var i=0; i<data.length; i+=4) {
+      bigEndianHexString += data[i+2]+data[i+3]+data[i]+data[i+1];
+    }
+
+    // convert hex string to 64 bit bitstring
+    var bitfieldString = lpad(parseInt(bigEndianHexString, 16).toString(2),64);
+    // reverse every 16 bits so "lowest" zone is on the left
+    var zonefieldString = '';
+    for (var i=0; i<bitfieldString.length; i+=16) {
+      zonefieldString += bitfieldString.slice(i,i+16).split('').reverse().join('');
+    }
+
+    for (var i=0; i<zonefieldString.length; i++) {
+      var msg = {};
+      msg.zoneNumber = (i+1);
+      msg.zoneBit = zonefieldString[i];
+      msg.zoneStatus = (zonefieldString[i] == '1') ? 'open' : 'closed';
+
+      // zone state changes are not guaranteed
+      // only consider zone status closed; zone status open not accurate
+      if (msg.zoneStatus == 'closed' &&
+          panel.zones[msg.zoneNumber] != 'closed') {
+        // notify
+        updateZone(panel.partition, msg.zoneNumber, 'closed');
+      }
+      //console.log(JSON.stringify(msg));
+    }
   }
 
   function partition_state_change(data) {
@@ -470,6 +516,26 @@ function Envisalink () {
 
   function zone_timer_dump(data) {
     //console.log('Execute zone_timer_dump: '+data);
+
+    // Swap the couples of every four bytes (little endian to big endian)
+    for (var i=0; i<data.length; i+=4) {
+      var zoneTimer = data[i+2]+data[i+3]+data[i]+data[i+1];
+
+      var msg = {};
+      msg.zoneNumber = (i/4)+1;
+      msg.zoneTimer = (parseInt('FFFF', 16) - parseInt(zoneTimer, 16)) * 5;
+
+      // zone timer over 30 secs will be considered closed
+      msg.zoneStatus = (msg.zoneTimer < 30) ? 'open' : 'closed';
+
+      // use zone timer dump as backup to check for orphaned zones
+      if (msg.zoneStatus == 'closed' &&
+          panel.zones[msg.zoneNumber] != 'closed') {
+        // notify
+        updateZone(panel.partition, msg.zoneNumber, 'closed');
+      }
+      //console.log(JSON.stringify(msg));
+    }
   }
 
   function poll_response(data) {
@@ -483,6 +549,22 @@ function Envisalink () {
   /**
    * Helper Functions
    */
+  function updateZone(partitionNumber, zoneNumber, state) {
+    panel.zones[zoneNumber] = state;
+
+    var msg = JSON.stringify({type: 'zone', partition: partitionNumber, zone: zoneNumber, state: state});
+    console.log(msg);
+    notify(msg);
+  }
+
+  function updatePartition(partitionNumber, state, alpha) {
+    panel.alpha = alpha;
+
+    var msg = JSON.stringify({type: 'partition', partition: partitionNumber, state: state, alpha: alpha});
+    console.log(msg);
+    notify(msg);
+  }
+
   function cleanBuffer(data) {
     //trim from response: 13,10
     data = (data[data.length-1]==10) ? data.slice(0,data.length-1) : data;
