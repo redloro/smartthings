@@ -217,157 +217,16 @@ function Envisalink () {
   var outputs = [];
 
   this.discover = function() {
-    if (!nconf.get('envisalink:installerCode') || nconf.get('envisalink:installerCode').length == 0) {
-      if (nconf.get('envisalink:panelConfig')) {
-        notify(JSON.stringify(nconf.get('envisalink:panelConfig')));
-        console.log('Completed panel discovery');
-      } else {
-        console.log('** NOTICE ** Panel configuration not set in config file!');
-      }
-      return;
+    if (nconf.get('envisalink:panelConfig')) {
+      notify(JSON.stringify(nconf.get('envisalink:panelConfig')));
+      console.log('Completed panel discovery');
+    } else {
+      console.log('** NOTICE ** Panel configuration not set in config file!');
     }
 
-    //lock writing during auto-discovery
-    locked = true;
-
-    //console.log('Begin panel discovery');
-    //console.log('Request programming mode');
-    requestHandler(nconf.get('envisalink:installerCode')+'800', 'Installer', function(data) {
-      //console.log('Request field data');
-      requestHandler('*', 'Field', function(data) {
-        //console.log('Request zone data');
-        requestHandler('*56*', 'Enter Zn', function(data) {
-          addZones();
-        });
-      });
-    });
+    //never do auto-discovery
+    return;
   };
-
-  function addZones() {
-    // load max 20 zones
-    if (count == 20) {
-      //console.log('Exit zone programming');
-      //console.log('Dump all zones: '+ JSON.stringify(zones));
-      requestHandler('00', 'Enter *', function(data) {
-        if (zones.length) {
-          //console.log('Request alpha programming');
-          requestHandler('*8210', '* Zn ', function(data) {
-            count = 0;
-            addZonesAlpha();
-          });
-        }
-      });
-      return;
-    }
-
-    //console.log('Request next zone');
-    requestHandler('*', 'Zn ZT', function(data) {
-      zones.push(getZone(data));
-      count++;
-
-      requestHandler('#', 'Enter Zn', function(data) {
-        addZones();
-      });
-    });
-  }
-
-  function addZonesAlpha() {
-    if (count == zones.length) {
-      //console.log('Exit zone alpha programming');
-      //console.log('Dump all zones: '+ JSON.stringify(zones));
-      requestHandler('*00', 'Program Alpha', function(data) {
-        //console.log('Exit alpha programming');
-        requestHandler('0', 'Enter', function(data) {
-          //console.log('Request output programming');
-          requestHandler('*79', 'Enter Output', function(data) {
-            count = 0;
-            addOutputs();
-          });
-        });
-      });
-      return;
-    }
-
-    //console.log('Dump zone: '+ JSON.stringify(zones[count]));
-    //console.log('Request alpha for zone: '+zones[count].display);
-    var cmd = (count == 0) ? '' : zones[count].display;
-    requestHandler('*'+cmd, '* Zn '+zones[count].display, function(data) {
-      var alpha = data.substring(23,30).trim()+' '+data.substring(30,46).trim();
-      zones[count].alpha = toTitleCase(alpha.trim());
-      count++;
-
-      addZonesAlpha();
-    });
-  }
-
-  function addOutputs() {
-    if (count == 16) {
-      //console.log('Exit output programming');
-      //console.log('Dump all outputs: '+ JSON.stringify(outputs));
-      requestHandler('00', 'Enter ', function(data) {
-        //console.log('Exit programming mode');
-        requestHandler('*99', 'Enter *', function(data) {
-          count = 0;
-          locked = false;
-
-          //Remove empty zones
-          for (var i = 0; i < zones.length; i++){
-            if (zones[i].type == 0) {
-              zones.splice(i, 1);
-              i--;
-            }
-          }
-
-          // notify
-          notify(JSON.stringify({
-            type: 'discover',
-            partitions: [{partition: 1, name: 'Security Panel'}],
-            zones: zones}));
-          console.log('Completed panel discovery');
-
-          //console.log('Dump all zones: '+ JSON.stringify(zones));
-          //console.log('Dump all outputs: '+ JSON.stringify(outputs));
-          requestHandler(null, null, null);
-        });
-      });
-      return;
-    }
-
-    var cmd = ("0" + (count+1)).slice(-2);
-    //console.log('Request output: '+cmd);
-    requestHandler(cmd+'*', 'Output Type', function(data) {
-      //console.log('output data: '+data);
-      if ("0" != data.substring(45,46)) {
-        outputs.push(getOutput(cmd, data));
-      }
-      requestHandler('#', 'Enter Output', function(data) {
-        count++;
-        addOutputs();
-      });
-    });
-  }
-
-  function getZone(data) {
-    var zone = {};
-    zone.number = parseInt(data.substring(8, 10));
-    zone.display = data.substring(30,32);
-    zone.type = parseInt(data.substring(33,35));
-    zone.partition = parseInt(data.substring(36,37));
-    //zone.reportCode = data.substring(38,40);
-    //zone.hwin = data.substring(25,27);
-    //zone.adlp = data.substring(28,30);
-    //zone.hw_in = data.substring(41,43);
-    //zone.ht_lp = data.substring(44,46);
-    return zone;
-  }
-
-  function getOutput(cmd, data) {
-    return {
-      output: cmd,
-      type: data.substring(30,45).trim(),
-      typeNum: data.substring(45,46)
-    };
-  }
 
   /**
    * Generic Handlers
@@ -474,36 +333,6 @@ function Envisalink () {
 
   function zone_state_change(data) {
     //console.log('Execute zone_state_change: '+data);
-
-    // Swap the couples of every four bytes (little endian to big endian)
-    var bigEndianHexString = '';
-    for (var i=0; i<data.length; i+=4) {
-      bigEndianHexString += data[i+2]+data[i+3]+data[i]+data[i+1];
-    }
-
-    // convert hex string to 64 bit bitstring
-    var bitfieldString = lpad(parseInt(bigEndianHexString, 16).toString(2),64);
-    // reverse every 16 bits so "lowest" zone is on the left
-    var zonefieldString = '';
-    for (var i=0; i<bitfieldString.length; i+=16) {
-      zonefieldString += bitfieldString.slice(i,i+16).split('').reverse().join('');
-    }
-
-    for (var i=0; i<zonefieldString.length; i++) {
-      var msg = {};
-      msg.zoneNumber = (i+1);
-      msg.zoneBit = zonefieldString[i];
-      msg.zoneStatus = (zonefieldString[i] == '1') ? 'open' : 'closed';
-
-      // zone state changes are not guaranteed
-      // only consider zone status closed; zone status open not accurate
-      if (msg.zoneStatus == 'closed' &&
-          panel.zones[msg.zoneNumber] != 'closed') {
-        // notify
-        updateZone(panel.partition, msg.zoneNumber, 'closed');
-      }
-      //console.log(JSON.stringify(msg));
-    }
   }
 
   function partition_state_change(data) {
