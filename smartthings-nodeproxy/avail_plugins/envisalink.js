@@ -210,12 +210,8 @@ function Envisalink () {
   }
 
   /**
-   * Discovery Handlers
+   * discover
    */
-  var count = 0;
-  var zones = [];
-  var outputs = [];
-
   this.discover = function() {
     if (nconf.get('envisalink:panelConfig')) {
       notify(JSON.stringify(nconf.get('envisalink:panelConfig')));
