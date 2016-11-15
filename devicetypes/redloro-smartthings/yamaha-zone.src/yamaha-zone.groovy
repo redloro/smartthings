@@ -150,7 +150,7 @@ def off() {
   sendEvent(name: "switch", value: "off")
 }
 def setLevel(value) {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Lvl><Val>${(value * 9 - 800).intValue()}</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Volume></${getZone()}></YAMAHA_AV>")
+  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Lvl><Val>${(Math.round(value * 9 / 5) * 5 - 800).intValue()}</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Volume></${getZone()}></YAMAHA_AV>")
   sendEvent(name: "volume", value: value)
 }
 def source0() {
