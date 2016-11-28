@@ -26,6 +26,10 @@ var app = express();
 var nconf = require('nconf');
 nconf.file({ file: './config.json' });
 var notify;
+var logger = function(str) {
+  mod = 'evl3';
+  console.log("[%s] [%s] %s", new Date().toISOString(), mod, str);
+}
 
 /**
  * Routes
@@ -77,7 +81,7 @@ app.get('/config/:host', function (req, res) {
   nconf.set('envisalink:securityCode', parts[3]);
   nconf.save(function (err) {
     if (err) {
-      console.log('Configuration error: '+err.message);
+      logger('Configuration error: '+err.message);
       res.status(500).json({ error: 'Configuration error: '+err.message });
       return;
     }
@@ -127,7 +131,7 @@ function Envisalink () {
    */
   this.init = function() {
     if (!nconf.get('envisalink:address') || !nconf.get('envisalink:port') || !nconf.get('envisalink:password')) {
-        console.log('** NOTICE ** Envisalink settings not set in config file!');
+        logger('** NOTICE ** Envisalink settings not set in config file!');
         return;
     }
 
@@ -136,13 +140,13 @@ function Envisalink () {
 
     device = new net.Socket();
     device.on('error', function(err) {
-      console.log("Envisalink connection error: "+err.description);
+      logger("Envisalink connection error: "+err.description);
       device.destroy();
       setTimeout(function() { self.init() }, 4000);
     });
 
     device.on('close', function() {
-      console.log('Envisalink connection closed.');
+      logger('Envisalink connection closed.');
       device.destroy();
       setTimeout(function() { self.init() }, 4000);
     });
@@ -154,27 +158,29 @@ function Envisalink () {
     });
 
     device.connect(nconf.get('envisalink:port'), nconf.get('envisalink:address'), function() {
-      console.log('Connected to Envisalink at %s:%s', nconf.get('envisalink:address'), nconf.get('envisalink:port'));
+      logger('Connected to Envisalink at '+nconf.get('envisalink:address')+':'+nconf.get('envisalink:port'));
     });
   };
 
   // check connection every 60 secs
   setInterval(function() { self.init(); }, 60*1000);
 
-  // dump zone timers every 30 secs
-  setInterval(function() { write('^02,$'); }, 30*1000);
+  // dump zone timers
+  if (nconf.get('envisalink:dumpZoneTimer')) {
+    setInterval(function() { write('^02,$'); }, 60*1000*nconf.get('envisalink:dumpZoneTimer'));
+  }
 
   /**
    * write
    */
   function write(cmd) {
     if (!device || !device.writable) {
-      console.log('Envisalink not connected.');
+      logger('Envisalink not connected.');
       return;
     }
 
     if (!cmd || cmd.length == 0) { return; }
-    //console.log('TX > '+cmd);
+    //logger('TX > '+cmd);
     device.write(cmd);
   }
 
@@ -188,7 +194,7 @@ function Envisalink () {
    */
   function read(data) {
     if (data.length == 0) { return; }
-    //console.log('RX < '+data);
+    //logger('RX < '+data);
 
     var code = data;
     if (data[0] == '%' || data[0] == '^') {
@@ -215,9 +221,9 @@ function Envisalink () {
   this.discover = function() {
     if (nconf.get('envisalink:panelConfig')) {
       notify(JSON.stringify(nconf.get('envisalink:panelConfig')));
-      console.log('Completed panel discovery');
+      logger('Completed panel discovery');
     } else {
-      console.log('** NOTICE ** Panel configuration not set in config file!');
+      logger('** NOTICE ** Panel configuration not set in config file!');
     }
 
     //never do auto-discovery
@@ -228,16 +234,16 @@ function Envisalink () {
    * Generic Handlers
    */
   function login() {
-    //console.log('Execute login');
+    //logger('Execute login');
     write(nconf.get('envisalink:password'));
   }
 
   function keypad_update(data) {
-    //console.log('Execute keypad_update: '+data);
+    //logger('Execute keypad_update: '+data);
 
     var map = data.split(',');
     if (map.length != 5 || data.indexOf('%') != -1) {
-      console.log("Data format invalid from Envisalink, ignoring...")
+      logger("Data format invalid from Envisalink, ignoring...")
       return;
     }
 
@@ -248,8 +254,8 @@ function Envisalink () {
     msg.beep = VIRTUAL_KEYPAD_BEEP[map[3]];
     msg.alpha = map[4].trim();
     msg.dscCode = getDscCode(msg.flags);
-    //console.log(JSON.stringify(msg));
-    //console.log(JSON.stringify(panel));
+    //logger(JSON.stringify(msg));
+    //logger(JSON.stringify(panel));
 
     //////////
     // ZONE UPDATE
@@ -311,36 +317,36 @@ function Envisalink () {
     //////////
     if (panel.alpha != msg.alpha) {
       //notify
-      updatePartition(msg.partitionNumber, getPartitionState(msg.flags), msg.alpha);
+      updatePartition(msg.partitionNumber, getPartitionState(msg.flags, msg.alpha), msg.alpha);
     }
   }
 
   function login_success() {
-    //console.log('Execute login_success');
+    //logger('Execute login_success');
   }
 
   function login_failure() {
-    //console.log('Execute login_failure');
+    //logger('Execute login_failure');
   }
 
   function login_timeout() {
-    //console.log('Execute login_timeout');
+    //logger('Execute login_timeout');
   }
 
   function zone_state_change(data) {
-    //console.log('Execute zone_state_change: '+data);
+    //logger('Execute zone_state_change: '+data);
   }
 
   function partition_state_change(data) {
-    //console.log('Execute partition_state_change: '+data);
+    //logger('Execute partition_state_change: '+data);
   }
 
   function realtime_cid_event(data) {
-    //console.log('Execute realtime_cid_event: '+data);
+    //logger('Execute realtime_cid_event: '+data);
   }
 
   function zone_timer_dump(data) {
-    //console.log('Execute zone_timer_dump: '+data);
+    //logger('Execute zone_timer_dump: '+data);
 
     // Swap the couples of every four bytes (little endian to big endian)
     for (var i=0; i<data.length; i+=4) {
@@ -359,16 +365,16 @@ function Envisalink () {
         // notify
         updateZone(panel.partition, msg.zoneNumber, 'closed');
       }
-      //console.log(JSON.stringify(msg));
+      //logger(JSON.stringify(msg));
     }
   }
 
   function poll_response(data) {
-    //console.log('Execute poll_response: '+data);
+    //logger('Execute poll_response: '+data);
   }
 
   function command_response(data) {
-    //console.log('Execute command_response: '+data);
+    //logger('Execute command_response: '+data);
   }
 
   /**
@@ -378,7 +384,7 @@ function Envisalink () {
     panel.zones[zoneNumber] = state;
 
     var msg = JSON.stringify({type: 'zone', partition: partitionNumber, zone: zoneNumber, state: state});
-    console.log(msg);
+    logger(msg);
     notify(msg);
   }
 
@@ -386,7 +392,7 @@ function Envisalink () {
     panel.alpha = alpha;
 
     var msg = JSON.stringify({type: 'partition', partition: partitionNumber, state: state, alpha: alpha});
-    console.log(msg);
+    logger(msg);
     notify(msg);
   }
 
@@ -428,9 +434,10 @@ function Envisalink () {
     return dscCode;
   }
 
-  function getPartitionState(flags) {
+  function getPartitionState(flags, alpha) {
     if (flags.alarm || flags.alarm_fire_zone || flags.fire) { return 'alarm'; }
     else if (flags.alarm_in_memory) { return 'alarmcleared'; }
+    else if (alpha.indexOf('You may exit now') > 0) { return 'arming'; }
     else if (flags.armed_stay && flags.armed_zero_entry_delay) { return 'armedinstant'; }
     else if (flags.armed_away && flags.armed_zero_entry_delay) { return 'armedmax'; }
     else if (flags.armed_stay) { return 'armedstay'; }

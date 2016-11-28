@@ -33,6 +33,7 @@
     "port": "4025",               // Service port - default is 4025
     "password": "user",           // Service password - default is user
     "securityCode": "1234",       // Security code to arm/disarm the panel
+    "dumpZoneTimer": "5",         // Dump zone timers every X minutes
 
     "panelConfig": {              // Set this to manual define partitions and zones
       "type": "discover",
@@ -48,7 +49,7 @@
       ]
     }
   },
-  
+
   // SmartThings Hub (optional - will be set by SmartThings SmartApp)
   "notify": {
     "address": "192.168.1.12",    // SmartThings Hub IP

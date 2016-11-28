@@ -16,6 +16,10 @@ var express = require('express');
 var app = express();
 var nconf = require('nconf');
 var notify;
+var logger = function(str) {
+  mod = 'gnrc';
+  console.log("[%s] [%s] %s", new Date().toISOString(), mod, str);
+}
 
 /**
  * Routes
@@ -45,7 +49,7 @@ function Plugin() {
    * init (REQUIRED)
    */
   this.init = function() {
-    console.log('Doing something interesting during init...');
+    logger('Doing something interesting during init...');
     return;
   };
 
@@ -56,7 +60,7 @@ function Plugin() {
     // Send command back to SmartThings Hub
     var data = {type: 'command', deviceId: '1', command: cmd};
     notify(JSON.stringify(data));
-    console.log(JSON.stringify(data));
+    logger(JSON.stringify(data));
   };
 
 }

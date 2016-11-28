@@ -67,7 +67,8 @@ metadata {
     }
 
     // row
-    controlTile("volume", "device.volume", "slider", height: 2, width: 6, range:"(0..100)") {
+    //controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(0..100)") {
+    controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(-80..16)") {
       state "volume", label: "Volume", action:"music Player.setLevel", backgroundColor:"#ffffff"
     }
 
@@ -142,15 +143,29 @@ metadata {
  *
  */
 def on() {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Power_Control><Power>On</Power></Power_Control></${getZone()}></YAMAHA_AV>")
+  def zone = getZone()
+  def cmd = (zone != "Zone_B") ?
+    "<YAMAHA_AV cmd=\"PUT\"><${zone}><Power_Control><Power>On</Power></Power_Control></${zone}></YAMAHA_AV>" :
+    "<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Power_Control><Zone_B_Power>On</Zone_B_Power></Power_Control></Main_Zone></YAMAHA_AV>"
+  sendCommand(cmd)
   sendEvent(name: "switch", value: "on")
 }
 def off() {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Power_Control><Power>Standby</Power></Power_Control></${getZone()}></YAMAHA_AV>")
+  def zone = getZone()
+  def cmd = (zone != "Zone_B") ?
+    "<YAMAHA_AV cmd=\"PUT\"><${zone}><Power_Control><Power>Standby</Power></Power_Control></${zone}></YAMAHA_AV>" :
+    "<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Power_Control><Zone_B_Power>Standby</Zone_B_Power></Power_Control></Main_Zone></YAMAHA_AV>"
+  sendCommand(cmd)
   sendEvent(name: "switch", value: "off")
 }
 def setLevel(value) {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Lvl><Val>${(Math.round(value * 9 / 5) * 5 - 800).intValue()}</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Volume></${getZone()}></YAMAHA_AV>")
+  def zone = getZone()
+  //def int volLevel = (Math.round(value * 9 / 5) * 5 - 800).intValue()
+  def int volLevel = (value * 10).intValue()
+  def cmd = (zone != "Zone_B") ?
+    "<YAMAHA_AV cmd=\"PUT\"><${zone}><Volume><Lvl><Val>${volLevel}</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Volume></${zone}></YAMAHA_AV>" :
+    "<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Volume><Zone_B><Lvl><Val>${volLevel}</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Zone_B></Volume></Main_Zone></YAMAHA_AV>"
+  sendCommand(cmd)
   sendEvent(name: "volume", value: value)
 }
 def source0() {
@@ -172,11 +187,19 @@ def source5() {
   setSource(5)
 }
 def mutedOn() {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Mute>On</Mute></Volume></${getZone()}></YAMAHA_AV>")
+  def zone = getZone()
+  def cmd = (zone != "Zone_B") ?
+    "<YAMAHA_AV cmd=\"PUT\"><${zone}><Volume><Mute>On</Mute></Volume></${zone}></YAMAHA_AV>" :
+    "<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Volume><Zone_B><Mute>On</Mute></Zone_B></Volume></Main_Zone></YAMAHA_AV>"
+  sendCommand(cmd)
   sendEvent(name: "muted", value: "on")
 }
 def mutedOff() {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Mute>Off</Mute></Volume></${getZone()}></YAMAHA_AV>")
+  def zone = getZone()
+  def cmd = (zone != "Zone_B") ?
+    "<YAMAHA_AV cmd=\"PUT\"><${zone}><Volume><Mute>Off</Mute></Volume></${zone}></YAMAHA_AV>" :
+    "<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Volume><Zone_B><Mute>Off</Mute></Zone_B></Volume></Main_Zone></YAMAHA_AV>"
+  sendCommand(cmd)
   sendEvent(name: "muted", value: "off")
 }
 def partyModeOn() {
@@ -188,7 +211,8 @@ def partyModeOff() {
   sendEvent(name: "partyMode", value: "off")
 }
 def refresh() {
-  sendCommand("<YAMAHA_AV cmd=\"GET\"><${getZone()}><Basic_Status>GetParam</Basic_Status></${getZone()}></YAMAHA_AV>")
+  def zone = getRealZone();
+  sendCommand("<YAMAHA_AV cmd=\"GET\"><${zone}><Basic_Status>GetParam</Basic_Status></${zone}></YAMAHA_AV>")
   sendCommand("<YAMAHA_AV cmd=\"GET\"><System><Party_Mode><Mode>GetParam</Mode></Party_Mode></System></YAMAHA_AV>")
 }
 /**************************************************************************/
@@ -207,7 +231,8 @@ def parse(String description) {
 
 def setSource(id) {
   //log.debug "source: "+settings."source${id}"
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Input><Input_Sel>"+settings."source${id}"+"</Input_Sel></Input></${getZone()}></YAMAHA_AV>")
+  def zone = getRealZone();
+  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${zone}><Input><Input_Sel>"+settings."source${id}"+"</Input_Sel></Input></${zone}></YAMAHA_AV>")
   setSourceTile(settings."source${id}")
 }
 
@@ -224,26 +249,39 @@ def setSourceTile(name) {
 }
 
 def zone(evt) {
+  def val = ""
+  def zone = getZone()
+
   /*
   * Zone On/Off
   */
-  if (evt.Basic_Status.Power_Control.Power.text()) {
-    sendEvent(name: "switch", value: (evt.Basic_Status.Power_Control.Power.text() == "On") ? "on" : "off")
+  val = (zone != "Zone_B") ?
+    evt.Basic_Status.Power_Control.Power.text() :
+    evt.Basic_Status.Power_Control.Zone_B_Power_Info.text()
+  if (val) {
+    sendEvent(name: "switch", value: (val == "On") ? "on" : "off")
   }
 
   /*
   * Zone Volume
   */
-  if (evt.Basic_Status.Volume.Lvl.Val.text()) {
-    def int volLevel = evt.Basic_Status.Volume.Lvl.Val.toInteger() ?: -250
-    sendEvent(name: "volume", value: ((volLevel + 800) / 9).intValue())
+  val = (zone != "Zone_B") ?
+    evt.Basic_Status.Volume.Lvl.Val.text() :
+    evt.Basic_Status.Volume.Zone_B.Lvl.Val.text()
+  if (val) {
+    def int volLevel = val.toInteger() ?: -250
+    //sendEvent(name: "volume", value: ((volLevel + 800) / 9).intValue())
+    sendEvent(name: "volume", value: (volLevel / 10).intValue())
   }
 
   /*
   * Zone Muted
   */
-  if (evt.Basic_Status.Volume.Mute.text()) {
-    sendEvent(name: "muted", value: (evt.Basic_Status.Volume.Mute.text() == "On") ? "on" : "off")
+  val = (zone != "Zone_B") ? 
+    evt.Basic_Status.Volume.Mute.text() :
+    evt.Basic_Status.Volume.Zone_B.Mute.text()
+  if (val) {
+    sendEvent(name: "muted", value: (val == "On") ? "on" : "off")
   }
 
   /*
@@ -263,6 +301,14 @@ def zone(evt) {
 
 private sendCommand(body) {
   parent.sendCommand(body)
+}
+
+private getRealZone() {
+  def zone = getZone();
+  if (zone == "Zone_B") {
+    return "Main_Zone";
+  }
+  return zone;
 }
 
 private getZone() {

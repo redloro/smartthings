@@ -13,6 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  *
  *  https://github.com/PSeitz/yamaha-nodejs
+ *  http://<RECEIVER_IP_ADDRESS>/YamahaRemoteControl/desc.xml
  */
 definition(
   name: "Yamaha Network Receiver",
@@ -32,7 +33,7 @@ preferences {
   }
   section("Yamaha Receiver") {
     input name: "receiverIp", type: "text", title: "IP", required: true
-    input name: "receiverZones", type: "enum", title: "Zones", required: true, multiple: true, options: ["Main_Zone","Zone_2","Zone_3","Zone_4"]
+    input name: "receiverZones", type: "enum", title: "Zones", required: true, multiple: true, options: ["Main_Zone","Zone_B","Zone_2","Zone_3","Zone_4"]
   }
 }
 
@@ -64,7 +65,7 @@ def lanResponseHandler(evt) {
   def body = getHttpBody(map.body);
   //log.trace "Headers: ${headers}"
   //log.trace "Body: ${body}"
-  
+
   updateZoneDevices(body.children()[0])
 }
 
@@ -80,16 +81,22 @@ private updateZoneDevices(evt) {
   if (zonedevice) {
     zonedevice.zone(evt)
   }
+
+  //check for Zone_B
+  zonedevice = getChildDevice("yamaha|Zone_B")
+  if (zonedevice && evt.name() == "Main_Zone") {
+    zonedevice.zone(evt)
+  }
 }
 
 private addChildDevices() {
   // add yamaha device
-  settings.receiverZones.each { 
+  settings.receiverZones.each {
     def deviceId = 'yamaha|'+it
     if (!getChildDevice(deviceId)) {
       addChildDevice("redloro-smartthings", "Yamaha Zone", deviceId, hostHub.id, ["name": it, label: "Yamaha: "+it, completedSetup: true])
-      log.debug "Added zone device: ${deviceId}"
-    } 
+      log.debug "Added Yamaha zone: ${deviceId}"
+    }
   }
 
   childDevices*.refresh()
@@ -101,7 +108,7 @@ private removeChildDevices() {
 
 private sendCommand(body) {
   //log.debug "Yamaha Network Receiver send command: ${body}"
-  
+
   def hubAction = new physicalgraph.device.HubAction(
       headers: [HOST: getReceiverAddress()],
       method: "POST",
@@ -132,7 +139,7 @@ private getReceiverAddress() {
   return settings.receiverIp + ":80"
 }
 
-private String convertIPtoHex(ipAddress) { 
+private String convertIPtoHex(ipAddress) {
   String hex = ipAddress.tokenize( '.' ).collect {  String.format( '%02x', it.toInteger() ) }.join().toUpperCase()
   return hex
 }

@@ -34,6 +34,10 @@ var app = express();
 var nconf = require('nconf');
 nconf.file({ file: './config.json' });
 var notify;
+var logger = function(str) {
+  mod = 'mpr6';
+  console.log("[%s] [%s] %s", new Date().toISOString(), mod, str);
+}
 
 /**
  * Routes
@@ -45,7 +49,7 @@ app.get('/discover', function (req, res) {
   mpr6z.discover();
   res.end();
 });
- 
+
 /**
  * Parameter Getters
 */
@@ -159,7 +163,7 @@ function Mpr6z() {
     getSerialPorts();
 
     if (!nconf.get('mpr6z:serialPort')) {
-        console.log('** NOTICE ** MPR6Z serial port not set in config file!');
+        logger('** NOTICE ** MPR6Z serial port not set in config file!');
         return;
     }
 
@@ -177,11 +181,11 @@ function Mpr6z() {
 
     device.open(function (error) {
       if (error) {
-        console.log('MPR6Z connection error: '+error);
+        logger('MPR6Z connection error: '+error);
         device = null;
         return;
       } else {
-        console.log('Connected to MPR6Z: '+nconf.get('mpr6z:serialPort'));
+        logger('Connected to MPR6Z: '+nconf.get('mpr6z:serialPort'));
       }
     });
   };
@@ -204,14 +208,14 @@ function Mpr6z() {
    */
   function write(cmd) {
     if (!device || !device.isOpen()) {
-      console.log('MPR6Z not connected.');
+      logger('MPR6Z not connected.');
       return;
     }
 
     if (!cmd || cmd.length == 0) { return; }
-    //console.log('TX > '+cmd);
+    //logger('TX > '+cmd);
      device.write(cmd, function(err, results) {
-       if (err) console.log('MPR6Z write error: '+err);
+       if (err) logger('MPR6Z write error: '+err);
      });
   }
 
@@ -231,11 +235,11 @@ function Mpr6z() {
    */
   function read(data) {
   	data = data.trim()
-  	//console.log("data length : " + data.length);
+  	//logger("data length : " + data.length);
     if (data.length == 0) { return; }
-    //console.log("data");
-    //console.log("====");
-    //console.log(data);
+    //logger("data");
+    //logger("====");
+    //logger(data);
 
 	if ( data.length == 8 ) {
      var code = getCommandCode(data);
@@ -243,7 +247,7 @@ function Mpr6z() {
      var code = 'ALL';
     }
     if (!code) { return; }
-	
+
     var response = RESPONSE_TYPES[code];
     if (!response) { return; }
 
@@ -260,9 +264,9 @@ function Mpr6z() {
   this.discover = function() {
     if (nconf.get('mpr6z:controllerConfig')) {
       notify_handler(nconf.get('mpr6z:controllerConfig'));
-      console.log('Completed controller discovery');
+      logger('Completed controller discovery');
     } else {
-      console.log('** NOTICE ** Controller configuration not set in config file!');
+      logger('** NOTICE ** Controller configuration not set in config file!');
     }
     return;
   };
@@ -299,7 +303,7 @@ function Mpr6z() {
 	   for(var i = 0; i < zones.length; i++)
 	   {
    			this.setZoneState(zones[i]['zone'],state);
-	   } 
+	   }
 	   //I don't think I need this since each setZoneState sends its own notification
 	   //notify_handler({type: 'zone', controller: 1, zone: -1, state: state});
    };
@@ -314,14 +318,14 @@ function Mpr6z() {
   this.setZoneState = function(id, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 1) { value = 1; }
-    
+
     //Need to 0-pad number
     if ( value < 10 ) { value = "0" + value; };
     write('<' + id + 'PR' + value + '\r');
-    
+
     this.getZoneState(id);
   };
-  
+
   function zone_dnd(data) {
     z = (data[0]*10) + data[1]
     notify_handler({type: 'zone', controller: data[0], zone: z, state: data[2]});
@@ -332,11 +336,11 @@ function Mpr6z() {
   this.setZoneDoNotDisturb = function(id, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 1) { value = 1; }
-    
+
     //Need to 0-pad number
     if ( value < 10 ) { value = "0" + value; };
     write('<' + id + 'DT' + value + '\r');
-    
+
     this.getZoneDoNotDisturb(id);
   };
 
@@ -350,11 +354,11 @@ function Mpr6z() {
   this.setZoneSource = function(id, value) {
     if ( value < 1 ) { value = 1; }
     if ( value > 6) { value = 6; }
-    
+
     //Need to 0-pad number
     if ( value < 10 ) { value = "0" + value; };
     write('<' + id + 'CH' + value + '\r');
-    
+
     this.getZoneSource(id);
   };
 
@@ -368,11 +372,11 @@ function Mpr6z() {
   this.setZoneMute = function(id, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 1) { value = 1; }
-    
+
     //Need to 0-pad number
     if ( value < 10 ) { value = "0" + value; };
     write('<' + id + 'MU' + value + '\r');
-    
+
     this.getZoneMute(id);
   };
 
@@ -384,7 +388,7 @@ function Mpr6z() {
   this.getZoneKeypad = function(id) {
     write('?' + id + "LS" + '\r');
   };
-  
+
   //PA status is get-only
   function zone_pa(data) {
     z = (data[0]*10) + data[1]
@@ -404,11 +408,11 @@ function Mpr6z() {
   this.setZoneVolume = function(id, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 38) { value = 38; }
-    
+
     //Need to 0-pad number
     if ( value < 10 ) { value = "0" + value; };
     write('<' + id + 'VO' + value + '\r');
-    
+
     this.getZoneVolume(id);
   };
 
@@ -422,11 +426,11 @@ function Mpr6z() {
   this.setZoneBass = function(id, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 14) { value = 14; }
-    
+
     //Need to 0-pad number
     if ( value < 10 ) { value = "0" + value; };
     write('<' + id + 'BS' + value + '\r');
-    
+
     this.getZoneBass(id);
   };
 
@@ -440,11 +444,11 @@ function Mpr6z() {
   this.setZoneTreble = function(id, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 14) { value = 14; }
-    
+
     //Need to 0-pad number
     if ( value < 10 ) { value = "0" + value; };
     write('<' + id + 'TR' + value + '\r');
-    
+
     this.getZoneTreble(id);
   };
 
@@ -460,11 +464,11 @@ function Mpr6z() {
     //set Zone balance should look like <xxBLnn'CR' where xx is the zone number and nn is the value
     if ( balance < 0 ) { balance = 0; }
     if ( balance > 20) { balance = 20; }
-    
+
     //Need to 0-pad number
     if ( balance < 10 ) { balance = "0" + balance; };
     write('<' + id + 'BL' + balance + '\r');
-    
+
     //unit is supposed to respond with inquiry(2) response -- but it doesn't.
     this.getZoneBalance(id);
   };
@@ -474,7 +478,7 @@ function Mpr6z() {
    */
   function notify_handler(data) {
     notify(JSON.stringify(data));
-    //console.log(JSON.stringify(data));
+    //logger(JSON.stringify(data));
   }
 
   function getSerialPorts() {
@@ -483,7 +487,7 @@ function Mpr6z() {
       ports.forEach(function(port) {
         serialPorts.push(port.comName);
       });
-      console.log('Detected serial ports: ' + JSON.stringify(serialPorts));
+      logger('Detected serial ports: ' + JSON.stringify(serialPorts));
     });
   }
 
@@ -495,18 +499,18 @@ function Mpr6z() {
 
   function getMatches(arr, pattern) {
     if (!pattern) { return null; }
- 
+
     var re = new RegExp(pattern);
     var tmp = re.exec(arr);
- 
+
     if (!tmp) { return null; }
- 
+
     var matches = [];
     for(var i=1; i<tmp.length; i++) {
-      //console.log(parseInt(tmp[i]));
+      //logger(parseInt(tmp[i]));
       matches.push(tmp[i]);
     }
-    //console.log(matches);
+    //logger(matches);
     return matches;
   }
 

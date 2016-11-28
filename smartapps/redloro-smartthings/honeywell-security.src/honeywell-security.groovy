@@ -67,7 +67,7 @@ def updated() {
     //remove child devices as we will reload
     removeChildDevices()
   }
-  
+
   //subscribe to callback/notifications from STNP
   sendCommand('/subscribe/'+getNotifyAddress())
 
@@ -84,7 +84,7 @@ def updated() {
 
 def lanResponseHandler(evt) {
   def map = stringToMap(evt.stringValue)
- 
+
   //verify that this message is from STNP IP:Port
   //IP and Port are only set on HTTP GET response and we need the MAC
   if (map.ip == convertIPtoHex(settings.proxyAddress) &&
@@ -93,19 +93,19 @@ def lanResponseHandler(evt) {
         state.proxyMac = map.mac
       }
   }
-  
+
   //verify that this message is from STNP MAC
   //MAC is set on both HTTP GET response and NOTIFY
   if (map.mac != state.proxyMac) {
     return
   }
-  
+
   def headers = getHttpHeaders(map.headers);
   def body = getHttpBody(map.body);
   //log.trace "SmartThings Node Proxy: ${evt.stringValue}"
   //log.trace "Headers: ${headers}"
   //log.trace "Body: ${body}"
-    
+
   //verify that this message is for this plugin
   if (headers.'stnp-plugin' != 'envisalink') {
     return
@@ -117,19 +117,19 @@ def lanResponseHandler(evt) {
 
 private sendCommand(path) {
   //log.trace "Honeywell Security send command: ${path}"
-    
+
   if (settings.proxyAddress.length() == 0 ||
     settings.proxyPort.length() == 0) {
     log.error "SmartThings Node Proxy configuration not set!"
     return
   }
-    
+
   def host = getProxyAddress()
-  def headers = [:] 
+  def headers = [:]
   headers.put("HOST", host)
   headers.put("Content-Type", "application/json")
   headers.put("stnp-auth", settings.authCode)
-  
+
   def hubAction = new physicalgraph.device.HubAction(
       method: "GET",
       path: path,
@@ -152,21 +152,21 @@ private processEvent(evt) {
 }
 
 private addChildDevices(partitions, zones) {
-  partitions.each { 
+  partitions.each {
     def deviceId = 'envisalink|partition'+it.partition
     if (!getChildDevice(deviceId)) {
       addChildDevice("redloro-smartthings", "Honeywell Partition", deviceId, hostHub.id, ["name": "Honeywell Security", label: "Honeywell Security", completedSetup: true])
       //log.debug "Added partition device: ${deviceId}"
-    } 
+    }
   }
-    
-  zones.each { 
+
+  zones.each {
     def deviceId = 'envisalink|zone'+it.zone
     if (!getChildDevice(deviceId)) {
       it.type = it.type.capitalize()
       addChildDevice("redloro-smartthings", "Honeywell Zone "+it.type, deviceId, hostHub.id, ["name": it.name, label: it.name, completedSetup: true])
       //log.debug "Added zone device: ${deviceId}"
-    } 
+    }
   }
 }
 
@@ -198,11 +198,11 @@ def alarmHandler(evt) {
   if (!settings.enableSHM) {
     return
   }
-  
+
   if (state.alarmSystemStatus == evt.value) {
     return
   }
-  
+
   state.alarmSystemStatus = evt.value
   if (evt.value == "stay") {
     sendCommand('/plugins/envisalink/armStay')
@@ -216,10 +216,10 @@ def alarmHandler(evt) {
 }
 
 private updateAlarmSystemStatus(partitionstatus) {
-  if (!settings.enableSHM) {
+  if (!settings.enableSHM || partitionstatus == "arming") {
     return
   }
-  
+
   def lastAlarmSystemStatus = state.alarmSystemStatus
   if (partitionstatus == "armedstay" || partitionstatus == "armedinstant") {
     state.alarmSystemStatus = "stay"
@@ -262,7 +262,7 @@ private getNotifyAddress() {
   return settings.hostHub.localIP + ":" + settings.hostHub.localSrvPortTCP
 }
 
-private String convertIPtoHex(ipAddress) { 
+private String convertIPtoHex(ipAddress) {
   String hex = ipAddress.tokenize( '.' ).collect {  String.format( '%02x', it.toInteger() ) }.join().toUpperCase()
   return hex
 }

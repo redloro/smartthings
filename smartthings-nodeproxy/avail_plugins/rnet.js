@@ -31,6 +31,10 @@ var app = express();
 var nconf = require('nconf');
 nconf.file({ file: './config.json' });
 var notify;
+var logger = function(str) {
+  mod = 'rnet';
+  console.log("[%s] [%s] %s", new Date().toISOString(), mod, str);
+}
 
 /**
  * Routes
@@ -140,7 +144,7 @@ function Rnet() {
     getSerialPorts();
 
     if (!nconf.get('rnet:serialPort')) {
-        console.log('** NOTICE ** RNET serial port not set in config file!');
+        logger('** NOTICE ** RNET serial port not set in config file!');
         return;
     }
 
@@ -152,7 +156,7 @@ function Rnet() {
       for(var i=0; i<data.length; i++) {
         buffer.push(data[i]);
         if (data[i] == 0xf7) {
-          //console.log('data: ' + stringifyByteArray(data));
+          //logger('data: ' + stringifyByteArray(data));
           read(buffer);
           buffer = new Array();
         }
@@ -161,11 +165,11 @@ function Rnet() {
 
     device.open(function (error) {
       if (error) {
-        console.log('RNET connection error: '+error);
+        logger('RNET connection error: '+error);
         device = null;
         return;
       } else {
-        console.log('Connected to RNET: '+nconf.get('rnet:serialPort'));
+        logger('Connected to RNET: '+nconf.get('rnet:serialPort'));
       }
     });
   };
@@ -188,14 +192,14 @@ function Rnet() {
    */
   function write(cmd) {
     if (!device || !device.isOpen()) {
-      console.log('RNET not connected.');
+      logger('RNET not connected.');
       return;
     }
 
     if (!cmd || cmd.length == 0) { return; }
-    //console.log('TX > '+cmd);
+    //logger('TX > '+cmd);
     device.write(buildCommand(cmd), function(err, results) {
-      if (err) console.log('RNET write error: '+err);
+      if (err) logger('RNET write error: '+err);
     });
   }
 
@@ -209,32 +213,32 @@ function Rnet() {
   function read(data) {
     if (data.length == 0) { return; }
     data.splice(-2);
-    //console.log('RX < '+stringifyByteArray(data));
+    //logger('RX < '+stringifyByteArray(data));
 
     var code = getSignificantBytes(data);
     if (!code) {
-      //console.log('** no significant bytes found');
+      //logger('** no significant bytes found');
       unhandledMessage(data);
       return;
     }
 
     // generic handler
-    //console.log('Handler: '+JSON.stringify(RESPONSE_TYPES[code]));
+    //logger('Handler: '+JSON.stringify(RESPONSE_TYPES[code]));
     var response = RESPONSE_TYPES[code];
     if (!response) {
-      //console.log('** no response handler found: ' + code);
+      //logger('** no response handler found: ' + code);
       unhandledMessage(data);
       return;
     }
 
     var matches = getMatches(data, response['pattern']);
     if (!matches) {
-      //console.log('** no matches found for code: ' + code);
+      //logger('** no matches found for code: ' + code);
       unhandledMessage(data);
       return;
     }
 
-    //console.log('** OK matches: ' + matches);
+    //logger('** OK matches: ' + matches);
     responseHandler = response['handler'];
     responseHandler(matches);
   }
@@ -245,9 +249,9 @@ function Rnet() {
   this.discover = function() {
     if (nconf.get('rnet:controllerConfig')) {
       notify_handler(nconf.get('rnet:controllerConfig'));
-      console.log('Completed controller discovery');
+      logger('Completed controller discovery');
     } else {
-      console.log('** NOTICE ** Controller configuration not set in config file!');
+      logger('** NOTICE ** Controller configuration not set in config file!');
     }
     return;
   };
@@ -377,7 +381,7 @@ function Rnet() {
     var flashTimeHigh = buffer.shift();
     var msgText = byteArrayToString(buffer);
     //notify_handler({type: 'broadcast', controller: data[0], type: (msgTypeSource & 0x10) ? 'single' : 'multi', source: msgTypeSource & 0x0F, text: msgText});
-    console.log({type: 'broadcast', controller: controllerId, type: (msgTypeSource & 0x10) ? 'single' : 'multi', source: msgTypeSource & 0x0F, text: msgText});
+    logger({type: 'broadcast', controller: controllerId, type: (msgTypeSource & 0x10) ? 'single' : 'multi', source: msgTypeSource & 0x0F, text: msgText});
   }
 
   /**
@@ -385,7 +389,7 @@ function Rnet() {
    */
   function notify_handler(data) {
     notify(JSON.stringify(data));
-    console.log(JSON.stringify(data));
+    logger(JSON.stringify(data));
   }
 
   function getSerialPorts() {
@@ -394,7 +398,7 @@ function Rnet() {
       ports.forEach(function(port) {
         serialPorts.push(port.comName);
       });
-      console.log('Detected serial ports: ' + JSON.stringify(serialPorts));
+      logger('Detected serial ports: ' + JSON.stringify(serialPorts));
     });
   }
 
@@ -467,13 +471,13 @@ function Rnet() {
       chksum += cmd.length;
       chksum = chksum & 0x007F;
       cmd.push(chksum, 0xF7);
-      //console.log('command: ' + stringifyByteArray(cmd));
+      //logger('command: ' + stringifyByteArray(cmd));
       return cmd;
   }
 
   function unhandledMessage(data) {
     if (data[0] != 0xF0) {
-      console.log('** invalid message: ' + stringifyByteArray(data));
+      logger('** invalid message: ' + stringifyByteArray(data));
       return;
     }
 
@@ -492,7 +496,7 @@ function Rnet() {
                 "Message Type" : stringifyByte(data.shift()),
                 "Message Body" : stringifyByteArray(data)
               };
-    console.log('** unknown message: ' + JSON.stringify(msg));
+    logger('** unknown message: ' + JSON.stringify(msg));
   }
 
   /**

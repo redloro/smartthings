@@ -21,6 +21,10 @@ var http = require('http');
 var app = express();
 var nconf = require('nconf');
 nconf.file({ file: './config.json' });
+var logger = function(str) {
+  mod = 'stnp';
+  console.log("[%s] [%s] %s", new Date().toISOString(), mod, str);
+}
 
 /**
  * Root route
@@ -33,12 +37,12 @@ app.get('/', function (req, res) {
  * Enforce basic authentication route; verify that HTTP.HEADERS['stnp-auth'] == CONFIG['authCode']
  */
 app.use(function (req, res, next) {
-  console.log('%s %s %s', req.ip, req.method, req.url);
+  logger(req.ip+' '+req.method+' '+req.url);
 
   var headers = req.headers;
   if (!headers['stnp-auth'] ||
     headers['stnp-auth'] != nconf.get('authCode')) {
-    console.log('Authentication error');
+    logger('Authentication error');
     res.status(500).json({ error: 'Authentication error' });
     return;
   }
@@ -56,7 +60,7 @@ app.get('/subscribe/:host', function (req, res) {
   nconf.set('notify:port', parts[1]);
   nconf.save(function (err) {
     if (err) {
-      console.log('Configuration error: '+err.message);
+      logger('Configuration error: '+err.message);
       res.status(500).json({ error: 'Configuration error: '+err.message });
       return;
     }
@@ -68,7 +72,7 @@ app.get('/subscribe/:host', function (req, res) {
  * Startup
  */
 var server = app.listen(nconf.get('port'), function () {
-  console.log('SmartThings Node Proxy listening at http://%s:%s', server.address().address, server.address().port);
+  logger('SmartThings Node Proxy listening at http://'+server.address().address+':'+server.address().port);
 });
 
 /**
@@ -81,7 +85,7 @@ fs.readdir('./plugins', function(err, files) {
     .forEach(function(file) {
       var plugin = file.split(".")[0];
       app.use('/plugins/'+plugin, require('./plugins/'+plugin)(function(data){notify(plugin,data);}));
-      console.log('Loaded plugin: '+plugin);
+      logger('Loaded plugin: '+plugin);
     });
 });
 
@@ -93,7 +97,7 @@ fs.readdir('./plugins', function(err, files) {
 var notify = function(plugin, data) {
   if (!nconf.get('notify:address') || nconf.get('notify:address').length == 0 ||
     !nconf.get('notify:port') || nconf.get('notify:port') == 0) {
-    console.log("Notify server address and port not set!");
+    logger("Notify server address and port not set!");
     return;
   }
 
@@ -111,7 +115,7 @@ var notify = function(plugin, data) {
 
   var req = http.request(opts);
   req.on('error', function(err, req, res) {
-    console.log("Notify error: "+err);
+    logger("Notify error: "+err);
   });
   req.write(data);
   req.end();
