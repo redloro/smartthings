@@ -210,8 +210,12 @@ function Envisalink () {
       }
     } else {
       // generic handler
-      responseHandler = RESPONSE_TYPES[code]['handler'];
-      responseHandler(data);
+      if (RESPONSE_TYPES[code]) {
+        responseHandler = RESPONSE_TYPES[code]['handler'];
+        responseHandler(data);
+      } else {
+        logger("Error: ignoring invalid message code from Envisalink: "+code+", data: "+data);
+      }
     }
   }
 
@@ -243,7 +247,7 @@ function Envisalink () {
 
     var map = data.split(',');
     if (map.length != 5 || data.indexOf('%') != -1) {
-      logger("Data format invalid from Envisalink, ignoring...")
+      logger("Error: ignoring invalid data format from Envisalink: "+data)
       return;
     }
 
