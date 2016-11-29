@@ -71,7 +71,7 @@ app.get('/subscribe/:host', function (req, res) {
 /**
  * Startup
  */
-var server = app.listen(nconf.get('port'), function () {
+var server = app.listen(nconf.get('port') || 8080, function () {
   logger('SmartThings Node Proxy listening at http://'+server.address().address+':'+server.address().port);
 });
 
@@ -80,13 +80,17 @@ var server = app.listen(nconf.get('port'), function () {
  */
 var fs = require('fs');
 fs.readdir('./plugins', function(err, files) {
-  files
+  if (!err) {
+    files
     .filter(function(file) { return file.substr(-3) === '.js'; })
     .forEach(function(file) {
       var plugin = file.split(".")[0];
       app.use('/plugins/'+plugin, require('./plugins/'+plugin)(function(data){notify(plugin,data);}));
       logger('Loaded plugin: '+plugin);
     });
+  } else {
+    logger(err);
+  }
 });
 
 /**
