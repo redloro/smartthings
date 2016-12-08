@@ -38,6 +38,8 @@ metadata {
     command "source4"
     command "source5"
     command "source6"
+    command "partyModeOn"
+    command "partyModeOff"
     command "allOff"
     command "muteOn"
     command "muteOff"
@@ -66,8 +68,8 @@ metadata {
     }
 
     // Row 1
-    controlTile("volume", "device.volume", "slider", height: 2, width: 6, range:"(0..38)") {
-      state "volume", label: "Volume", action:"music Player.setLevel", backgroundColor:"#ffffff"
+    controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(0..38)") {
+      state "volume", label: "Volume", action:"music Player.setLevel", backgroundColor:"#00a0dc"
     }
 
     // Row 2-3
@@ -98,15 +100,21 @@ metadata {
 
     // Row 4
 	standardTile("mute", "device.mute", decoration: "flat", width: 2, height: 2) {
-      state("off", label:'Mute',  action:"muteOn", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/mute-off.png", backgroundColor:"#ffffff")
-      state( "on", label:'Mute', action:"muteOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/mute-on.png", backgroundColor:"#ffffff")
+      state("off", label:'Mute',  action:"muteOn", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
+      state( "on", label:'Mute', action:"muteOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-mute.png", backgroundColor:"#ffffff")
     }
-    standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
-      state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh", backgroundColor:"#ffffff"
+    standardTile("partyMode", "device.partyMode", decoration: "flat", width: 2, height: 2, inactiveLabel: false) {
+      state "off", label:'Party Mode', action:"partyModeOn", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff"
+      state "on", label:'Party Mode', action:"partyModeOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-party.png", backgroundColor:"#ffffff"
     }
     standardTile("alloff", "device.status", decoration: "flat", width: 2, height: 2, inactiveLabel: false) {
-      state "default", action:"allOff", icon:"st.thermostat.heating-cooling-off", backgroundColor:"#ffffff"
+      state "default", label:"All Off", action:"allOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-power.png", backgroundColor:"#ffffff"
     }
+
+    standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
+      state "default", label:"Refresh", action:"refresh.refresh", icon:"st.secondary.refresh-icon", backgroundColor:"#ffffff"
+    }
+
     // Defines which tile to show in the overview
     main "state"
 
@@ -115,7 +123,8 @@ metadata {
       "state",
       "volume",
       "1","2","3","4","5","6",
-      "mute","refresh","alloff"
+      "mute","partyMode","alloff",
+      "refresh"
     ])
   }
 }
@@ -129,19 +138,21 @@ metadata {
  * one place.
  *
  */
-def on() { sendCommand("/state/1") }
-def off() { sendCommand("/state/0") }
-def source1() { sendCommand("/source/1") }
-def source2() { sendCommand("/source/2") }
-def source3() { sendCommand("/source/3") }
-def source4() { sendCommand("/source/4") }
-def source5() { sendCommand("/source/5") }
-def source6() { sendCommand("/source/6") }
-def setLevel(value) { sendCommand("/volume/${value.intValue()}") }
-def muteOn() { sendCommand("/mute/1") }
-def muteOff() { sendCommand("/mute/0") }
-def allOff() { sendCommand("/all/0") }
-def refresh() { sendCommand("") }
+def on() { sendCommand(["state": 1], false) }
+def off() { sendCommand(["state": 0], false) }
+def source1() { sendCommand(["source": 1], true) }
+def source2() { sendCommand(["source": 2], true) }
+def source3() { sendCommand(["source": 3], true) }
+def source4() { sendCommand(["source": 4], true) }
+def source5() { sendCommand(["source": 5], true) }
+def source6() { sendCommand(["source": 6], true) }
+def setLevel(value) { sendCommand(["volume": value.intValue()], true) }
+def muteOn() { sendCommand(["mute": 1], false) }
+def muteOff() { sendCommand(["mute": 0], false) }
+def partyModeOn() { parent.partyMode(["state": 1, "master": getZone(), "source": getSource(), "volume": getVolume()]) }
+def partyModeOff() { partyMode(["state": 0]) }
+def allOff() { sendCommand(["all": 0], false) }
+def refresh() { sendCommand([], false) }
 /**************************************************************************/
 
 /**
@@ -159,6 +170,11 @@ def zone(evt) {
   if (evt.containsKey("state")) {
     //log.debug "setting state to ${result.state}"
     sendEvent(name: "switch", value: (evt.state == 1) ? "on" : "off")
+
+    //turn off party mode
+    if (evt.state == 0) {
+      partyMode(["state": 0])
+    }
   }
 
   /*
@@ -188,6 +204,7 @@ def zone(evt) {
     //log.debug "setting source to ${result.source}"
     for (def i = 1; i < 7; i++) {
       if (i == evt.source) {
+        state.source = i
         sendEvent(name: "source${i}", value: "on")
         sendEvent(name: "source", value: "Source ${i}: ${evt.sourceName}")
       }
@@ -198,7 +215,65 @@ def zone(evt) {
   }
 }
 
-private sendCommand(part) {
-  def id = new String(device.deviceNetworkId).tokenize('|')[1].replace('zone', '')
-  parent.sendCommand("/plugins/mpr-sg6z/zones/${id}${part}")
+def partyMode(evt) {
+  // ["state": "", "master": "", "source": "", "volume": ""]
+  //log.debug "ZONE${getZone()} partyMode(${evt})"
+  if (evt.containsKey("state")) {
+    sendEvent(name: "partyMode", value: (evt.state == 1) ? "on" : "off")
+    if (evt.state == 1) {
+      sendCommand(["state": 1], false)
+    }
+  } else {
+    // exit if partyMode is off
+    if (getPartyMode() == 0) {
+      return
+    }
+  }
+
+  if (evt.containsKey("volume")) {
+    sendCommand(["volume": evt.volume], false)
+  }
+
+  if (evt.containsKey("source")) {
+    sendCommand(["source": evt.source], false)
+  }
+}
+
+private sendCommand(evt, broadcast) {
+  //log.debug "ZONE${getZone()} sendCommand(${evt}, ${broadcast})"
+
+  // send command to partyMode
+  if (broadcast && getPartyMode()) {
+    parent.partyMode(evt)
+    return
+  }
+
+  // send command to Monoprice
+  def part = ""
+  if (evt.size() == 1) {
+    part = "/${evt.keySet()[0]}/${evt.values()[0]}"
+  }
+
+  //log.debug "ZONE${getZone()} calling parent.sendCommand"
+  parent.sendCommand("/plugins/mpr-sg6z/zones/${getZone()}${part}")
+}
+
+private getPartyMode() {
+  return (device.currentState("partyMode").getValue() == "on") ? 1 : 0;
+}
+
+private getVolume() {
+  return device.currentState("volume").getValue().toInteger()
+}
+
+private getSource() {
+    for (def i = 1; i < 7; i++) {
+      if (device.currentState("source${i}").getValue()  == "on") {
+        return i
+      }
+    }
+}
+
+private getZone() {
+  return new String(device.deviceNetworkId).tokenize('|')[1].replace('zone', '')
 }
