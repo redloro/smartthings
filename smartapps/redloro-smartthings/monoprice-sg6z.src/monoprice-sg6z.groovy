@@ -17,8 +17,8 @@
 import groovy.json.JsonSlurper
 
 definition(
-  name: "Monoprice 6-Zone Amplifier",
-  namespace: "tcjennings",
+  name: "Monoprice SG6Z",
+  namespace: "redloro-smartthings",
   author: "tcjennings@hotmail.com",
   description: "Monoprice 6-Zone Amplifier SmartApp",
   category: "My Apps",
