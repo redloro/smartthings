@@ -18,7 +18,7 @@
 import groovy.util.XmlSlurper
 
 definition(
-  name: "Yamaha Network Receiver",
+  name: "Yamaha Receiver",
   namespace: "redloro-smartthings",
   author: "redloro@gmail.com",
   description: "Yamaha SmartApp",
