@@ -15,6 +15,8 @@
  *  https://github.com/PSeitz/yamaha-nodejs
  *  http://<RECEIVER_IP_ADDRESS>/YamahaRemoteControl/desc.xml
  */
+import groovy.util.XmlSlurper
+
 definition(
   name: "Yamaha Network Receiver",
   namespace: "redloro-smartthings",
