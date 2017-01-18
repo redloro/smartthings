@@ -131,7 +131,7 @@ private addChildDevices(zones) {
   zones.each {
     def deviceId = 'mpr-sg6z|zone'+it.zone
     if (!getChildDevice(deviceId)) {
-      addChildDevice("tcjennings", "MPR6Z Zone", deviceId, hostHub.id, ["name": it.name, label: "MPR: "+it.name, completedSetup: true])
+      addChildDevice("redloro-smartthings", "MPR6Z Zone", deviceId, hostHub.id, ["name": it.name, label: "MPR: "+it.name, completedSetup: true])
       //log.debug "Added zone device: ${deviceId}"
     }
   }
