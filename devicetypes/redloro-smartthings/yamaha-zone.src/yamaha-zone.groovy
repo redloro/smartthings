@@ -56,7 +56,7 @@ metadata {
    * launch, instead of every time the event triggers.
    */
   tiles(scale: 2) {
-    multiAttributeTile(name:"state", type:"generic", width:6, height:4) {
+    multiAttributeTile(name:"state", type:"lighting", width:6, height:4) {
       tileAttribute ("device.switch", key: "PRIMARY_CONTROL") {
         attributeState "on", label:'On', action:"switch.off", icon:"st.Electronics.electronics16", backgroundColor:"#79b821", nextState:"off"
         attributeState "off", label:'Off', action:"switch.on", icon:"st.Electronics.electronics16", backgroundColor:"#ffffff", nextState:"on"
@@ -69,46 +69,46 @@ metadata {
     // row
     //controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(0..100)") {
     controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(-80..16)") {
-      state "volume", label: "Volume", action:"music Player.setLevel", backgroundColor:"#ffffff"
+      state "volume", label: "Volume", action:"music Player.setLevel", backgroundColor:"#00a0dc"
     }
 
     // row
     standardTile("0", "device.source0", decoration: "flat", width: 2, height: 2) {
-      state("off", label:"Source 1", action:"source0", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
-      state("on", label:"Source 1", action:"source0", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
+      state("off", label:"AV1", action:"source0", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
+      state("on", label:"AV1", action:"source0", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
     }
     standardTile("1", "device.source1", decoration: "flat", width: 2, height: 2) {
-      state("off", label:"Source 2", action:"source1", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
-      state("on", label:"Source 2", action:"source1", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
+      state("off", label:"AV2", action:"source1", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
+      state("on", label:"AV2", action:"source1", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
     }
     standardTile("2", "device.source2", decoration: "flat", width: 2, height: 2) {
-      state("off", label:"Source 3", action:"source2", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
-      state("on", label:"Source 3", action:"source2", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
+      state("off", label:"AV3", action:"source2", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
+      state("on", label:"AV3", action:"source2", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
     }
     standardTile("3", "device.source3", decoration: "flat", width: 2, height: 2) {
-      state("off", label:"Source 4", action:"source3", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
-      state("on", label:"Source 4", action:"source3", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
+      state("off", label:"AV4", action:"source3", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
+      state("on", label:"AV4", action:"source3", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
     }
     standardTile("4", "device.source4", decoration: "flat", width: 2, height: 2) {
-      state("off", label:"Source 5", action:"source4", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
-      state("on", label:"Source 5", action:"source4", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
+      state("off", label:"AV5", action:"source4", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
+      state("on", label:"AV5", action:"source4", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
     }
     standardTile("5", "device.source5", decoration: "flat", width: 2, height: 2) {
-      state("off", label:"Source 6", action:"source5", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
-      state("on", label:"Source 6", action:"source5", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
+      state("off", label:"AV6", action:"source5", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff")
+      state("on", label:"AV6", action:"source5", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff")
     }
 
     // row
     standardTile("muted", "device.muted", decoration: "flat", width: 2, height: 2) {
       state("off", label:'Muted', action:"mutedOn", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff", nextState:"on")
-      state("on", label:'Muted', action:"mutedOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff", nextState:"off")
+      state("on", label:'Muted', action:"mutedOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-mute.png", backgroundColor:"#ffffff", nextState:"off")
     }
     standardTile("partyMode", "device.partyMode", decoration: "flat", width: 2, height: 2, inactiveLabel: false) {
       state("off", label:'Party Mode', action:"partyModeOn", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff", nextState:"on")
-      state("on", label:'Party Mode', action:"partyModeOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-green.png", backgroundColor:"#ffffff", nextState:"off")
+      state("on", label:'Party Mode', action:"partyModeOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-party.png", backgroundColor:"#ffffff", nextState:"off")
     }
     standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
-      state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh", backgroundColor:"#ffffff"
+      state "default", label:"Refresh", action:"refresh.refresh", icon:"st.secondary.refresh-icon", backgroundColor:"#ffffff"
     }
 
     // Defines which tile to show in the overview
@@ -143,29 +143,16 @@ metadata {
  *
  */
 def on() {
-  def zone = getZone()
-  def cmd = (zone != "Zone_B") ?
-    "<YAMAHA_AV cmd=\"PUT\"><${zone}><Power_Control><Power>On</Power></Power_Control></${zone}></YAMAHA_AV>" :
-    "<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Power_Control><Zone_B_Power>On</Zone_B_Power></Power_Control></Main_Zone></YAMAHA_AV>"
-  sendCommand(cmd)
+  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Power_Control><Power>On</Power></Power_Control></${getZone()}></YAMAHA_AV>")
   sendEvent(name: "switch", value: "on")
 }
 def off() {
-  def zone = getZone()
-  def cmd = (zone != "Zone_B") ?
-    "<YAMAHA_AV cmd=\"PUT\"><${zone}><Power_Control><Power>Standby</Power></Power_Control></${zone}></YAMAHA_AV>" :
-    "<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Power_Control><Zone_B_Power>Standby</Zone_B_Power></Power_Control></Main_Zone></YAMAHA_AV>"
-  sendCommand(cmd)
+  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Power_Control><Power>Standby</Power></Power_Control></${getZone()}></YAMAHA_AV>")
   sendEvent(name: "switch", value: "off")
 }
 def setLevel(value) {
-  def zone = getZone()
-  //def int volLevel = (Math.round(value * 9 / 5) * 5 - 800).intValue()
-  def int volLevel = (value * 10).intValue()
-  def cmd = (zone != "Zone_B") ?
-    "<YAMAHA_AV cmd=\"PUT\"><${zone}><Volume><Lvl><Val>${volLevel}</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Volume></${zone}></YAMAHA_AV>" :
-    "<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Volume><Zone_B><Lvl><Val>${volLevel}</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Zone_B></Volume></Main_Zone></YAMAHA_AV>"
-  sendCommand(cmd)
+  //sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Lvl><Val>${(Math.round(value * 9 / 5) * 5 - 800).intValue()}</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Volume></${getZone()}></YAMAHA_AV>")
+  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Lvl><Val>${(value * 10).intValue()}</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Volume></${getZone()}></YAMAHA_AV>")
   sendEvent(name: "volume", value: value)
 }
 def source0() {
@@ -187,19 +174,11 @@ def source5() {
   setSource(5)
 }
 def mutedOn() {
-  def zone = getZone()
-  def cmd = (zone != "Zone_B") ?
-    "<YAMAHA_AV cmd=\"PUT\"><${zone}><Volume><Mute>On</Mute></Volume></${zone}></YAMAHA_AV>" :
-    "<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Volume><Zone_B><Mute>On</Mute></Zone_B></Volume></Main_Zone></YAMAHA_AV>"
-  sendCommand(cmd)
+  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Mute>On</Mute></Volume></${getZone()}></YAMAHA_AV>")
   sendEvent(name: "muted", value: "on")
 }
 def mutedOff() {
-  def zone = getZone()
-  def cmd = (zone != "Zone_B") ?
-    "<YAMAHA_AV cmd=\"PUT\"><${zone}><Volume><Mute>Off</Mute></Volume></${zone}></YAMAHA_AV>" :
-    "<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Volume><Zone_B><Mute>Off</Mute></Zone_B></Volume></Main_Zone></YAMAHA_AV>"
-  sendCommand(cmd)
+  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Mute>Off</Mute></Volume></${getZone()}></YAMAHA_AV>")
   sendEvent(name: "muted", value: "off")
 }
 def partyModeOn() {
@@ -211,8 +190,7 @@ def partyModeOff() {
   sendEvent(name: "partyMode", value: "off")
 }
 def refresh() {
-  def zone = getRealZone();
-  sendCommand("<YAMAHA_AV cmd=\"GET\"><${zone}><Basic_Status>GetParam</Basic_Status></${zone}></YAMAHA_AV>")
+  sendCommand("<YAMAHA_AV cmd=\"GET\"><${getZone()}><Basic_Status>GetParam</Basic_Status></${getZone()}></YAMAHA_AV>")
   sendCommand("<YAMAHA_AV cmd=\"GET\"><System><Party_Mode><Mode>GetParam</Mode></Party_Mode></System></YAMAHA_AV>")
 }
 /**************************************************************************/
@@ -230,16 +208,23 @@ def parse(String description) {
 }
 
 def setSource(id) {
-  //log.debug "source: "+settings."source${id}"
-  def zone = getRealZone();
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${zone}><Input><Input_Sel>"+settings."source${id}"+"</Input_Sel></Input></${zone}></YAMAHA_AV>")
-  setSourceTile(settings."source${id}")
+  //log.debug "source: "+getSourceName(id)
+  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Input><Input_Sel>"+getSourceName(id)+"</Input_Sel></Input></${getZone()}></YAMAHA_AV>")
+  setSourceTile(getSourceName(id))
+}
+
+def getSourceName(id) {
+  if (settings) {
+    return settings."source${id}"
+  } else {
+    return ['AV1', 'AV2', 'AV3', 'AV4', 'AV5', 'AV6'].get(id)
+  }
 }
 
 def setSourceTile(name) {
   sendEvent(name: "source", value: "Source: ${name}")
   for (def i = 0; i < 6; i++) {
-    if (name == settings."source${i}") {
+    if (name == getSourceName(i)) {
       sendEvent(name: "source${i}", value: "on")
     }
     else {
@@ -249,27 +234,18 @@ def setSourceTile(name) {
 }
 
 def zone(evt) {
-  def val = ""
-  def zone = getZone()
-
   /*
   * Zone On/Off
   */
-  val = (zone != "Zone_B") ?
-    evt.Basic_Status.Power_Control.Power.text() :
-    evt.Basic_Status.Power_Control.Zone_B_Power_Info.text()
-  if (val) {
-    sendEvent(name: "switch", value: (val == "On") ? "on" : "off")
+  if (evt.Basic_Status.Power_Control.Power.text()) {
+    sendEvent(name: "switch", value: (evt.Basic_Status.Power_Control.Power.text() == "On") ? "on" : "off")
   }
 
   /*
   * Zone Volume
   */
-  val = (zone != "Zone_B") ?
-    evt.Basic_Status.Volume.Lvl.Val.text() :
-    evt.Basic_Status.Volume.Zone_B.Lvl.Val.text()
-  if (val) {
-    def int volLevel = val.toInteger() ?: -250
+  if (evt.Basic_Status.Volume.Lvl.Val.text()) {
+    def int volLevel = evt.Basic_Status.Volume.Lvl.Val.toInteger() ?: -250
     //sendEvent(name: "volume", value: ((volLevel + 800) / 9).intValue())
     sendEvent(name: "volume", value: (volLevel / 10).intValue())
   }
@@ -277,11 +253,8 @@ def zone(evt) {
   /*
   * Zone Muted
   */
-  val = (zone != "Zone_B") ? 
-    evt.Basic_Status.Volume.Mute.text() :
-    evt.Basic_Status.Volume.Zone_B.Mute.text()
-  if (val) {
-    sendEvent(name: "muted", value: (val == "On") ? "on" : "off")
+  if (evt.Basic_Status.Volume.Mute.text()) {
+    sendEvent(name: "muted", value: (evt.Basic_Status.Volume.Mute.text() == "On") ? "on" : "off")
   }
 
   /*
@@ -303,14 +276,6 @@ private sendCommand(body) {
   parent.sendCommand(body)
 }
 
-private getRealZone() {
-  def zone = getZone();
-  if (zone == "Zone_B") {
-    return "Main_Zone";
-  }
-  return zone;
-}
-
 private getZone() {
-  return new String(device.deviceNetworkId).tokenize('|')[1]
+  return new String(device.deviceNetworkId).tokenize('|')[2]
 }

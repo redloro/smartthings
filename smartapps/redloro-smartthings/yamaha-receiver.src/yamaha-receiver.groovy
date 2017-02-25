@@ -15,16 +15,17 @@
  *  https://github.com/PSeitz/yamaha-nodejs
  *  http://<RECEIVER_IP_ADDRESS>/YamahaRemoteControl/desc.xml
  */
+import groovy.util.XmlSlurper
+
 definition(
-  name: "Yamaha Network Receiver",
+  name: "Yamaha Receiver",
   namespace: "redloro-smartthings",
   author: "redloro@gmail.com",
   description: "Yamaha SmartApp",
   category: "My Apps",
   iconUrl: "https://raw.githubusercontent.com/redloro/smartthings/master/images/yamaha-receiver.png",
   iconX2Url: "https://raw.githubusercontent.com/redloro/smartthings/master/images/yamaha-receiver.png",
-  iconX3Url: "https://raw.githubusercontent.com/redloro/smartthings/master/images/yamaha-receiver.png",
-  singleInstance: true
+  iconX3Url: "https://raw.githubusercontent.com/redloro/smartthings/master/images/yamaha-receiver.png"
 )
 
 preferences {
@@ -32,6 +33,7 @@ preferences {
     input "hostHub", "hub", title: "Select Hub", multiple: false, required: true
   }
   section("Yamaha Receiver") {
+    input name: "receiverName", type: "text", title: "Name", required: true, defaultValue: "Yamaha"
     input name: "receiverIp", type: "text", title: "IP", required: true
     input name: "receiverZones", type: "enum", title: "Zones", required: true, multiple: true, options: ["Main_Zone","Zone_B","Zone_2","Zone_3","Zone_4"]
   }
@@ -77,13 +79,13 @@ private updateZoneDevices(evt) {
     return
   }
 
-  def zonedevice = getChildDevice("yamaha|${evt.name()}")
+  def zonedevice = getChildDevice(getDeviceId(evt.name()))
   if (zonedevice) {
     zonedevice.zone(evt)
   }
 
   //check for Zone_B
-  zonedevice = getChildDevice("yamaha|Zone_B")
+  zonedevice = getChildDevice(getDeviceId("Zone_B"))
   if (zonedevice && evt.name() == "Main_Zone") {
     zonedevice.zone(evt)
   }
@@ -92,9 +94,9 @@ private updateZoneDevices(evt) {
 private addChildDevices() {
   // add yamaha device
   settings.receiverZones.each {
-    def deviceId = 'yamaha|'+it
+    def deviceId = getDeviceId(it)
     if (!getChildDevice(deviceId)) {
-      addChildDevice("redloro-smartthings", "Yamaha Zone", deviceId, hostHub.id, ["name": it, label: "Yamaha: "+it, completedSetup: true])
+      addChildDevice("redloro-smartthings", "Yamaha Zone", deviceId, hostHub.id, ["name": it, label: "${settings.receiverName}: ${it}", completedSetup: true])
       log.debug "Added Yamaha zone: ${deviceId}"
     }
   }
@@ -135,16 +137,18 @@ private getHttpBody(body) {
   return obj
 }
 
+private getDeviceId(zone) {
+  return "yamaha|${settings.receiverIp}|${zone}"
+}
+
 private getReceiverAddress() {
   return settings.receiverIp + ":80"
 }
 
 private String convertIPtoHex(ipAddress) {
-  String hex = ipAddress.tokenize( '.' ).collect {  String.format( '%02x', it.toInteger() ) }.join().toUpperCase()
-  return hex
+  return ipAddress.tokenize( '.' ).collect {  String.format( '%02x', it.toInteger() ) }.join().toUpperCase()
 }
 
 private String convertPortToHex(port) {
-  String hexport = port.toString().format( '%04x', port.toInteger() ).toUpperCase()
-  return hexport
+  return port.toString().format( '%04x', port.toInteger() ).toUpperCase()
 }
