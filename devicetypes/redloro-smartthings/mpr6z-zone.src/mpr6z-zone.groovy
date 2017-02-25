@@ -13,7 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-  definition (name: "MPR6Z Zone", namespace: "tcjennings", author: "tcjennings@hotmail.com") {
+  definition (name: "MPR6Z Zone", namespace: "redloro-smartthings", author: "tcjennings@hotmail.com") {
 
     /**
      * List our capabilties. Doing so adds predefined command(s) which

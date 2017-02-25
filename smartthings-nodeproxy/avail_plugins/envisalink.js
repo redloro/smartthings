@@ -181,7 +181,7 @@ function Envisalink () {
 
     if (!cmd || cmd.length == 0) { return; }
     //logger('TX > '+cmd);
-    device.write(cmd);
+    device.write(cmd+'\n');
   }
 
   this.command = function(cmd) {
