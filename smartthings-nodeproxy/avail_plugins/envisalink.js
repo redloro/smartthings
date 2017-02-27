@@ -73,6 +73,20 @@ app.get('/chime', function (req, res) {
   res.end();
 });
 
+app.get('/bypass/:zones', function (req, res) {
+  if (nconf.get('envisalink:securityCode')) {
+    var zones = req.params.zones.split(',').map(function(x) {
+      x = ('00'+x.trim()).slice(-2);
+      return (x === '00') ? '' : x;
+    }).join('');
+
+    if (zones) {
+      evl.command(nconf.get('envisalink:securityCode')+'6'+zones);
+    }
+  }
+  res.end();
+});
+
 app.get('/config/:host', function (req, res) {
   var parts = req.params.host.split(":");
   nconf.set('envisalink:address', parts[0]);

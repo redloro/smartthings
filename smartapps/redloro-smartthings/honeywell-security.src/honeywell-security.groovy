@@ -27,25 +27,36 @@ definition(
 )
 
 preferences {
-  section("SmartThings Hub") {
-    input "hostHub", "hub", title: "Select Hub", multiple: false, required: true
-  }
-  section("SmartThings Node Proxy") {
-    input "proxyAddress", "text", title: "Proxy Address", description: "(ie. 192.168.1.10)", required: true
-    input "proxyPort", "text", title: "Proxy Port", description: "(ie. 8080)", required: true, defaultValue: "8080"
-    input "authCode", "password", title: "Auth Code", description: "", required: true, defaultValue: "secret-key"
-  }
-  section("Envisalink Vista TPI") {
-    input "evlAddress", "text", title: "Host Address", description: "(ie. 192.168.1.11)", required: false
-    input "evlPort", "text", title: "Host Port", description: "(ie. 4025)", required: false
-    input "evlPassword", "password", title: "Password", description: "", required: false
-    input "enableDiscovery", "bool", title: "Enable Discovery of Partitions & Zones", required: false, defaultValue: false
-  }
-  section("Security Panel") {
-    input "securityCode", "password", title: "Security Code", description: "User code to arm/disarm the security panel", required: false
-  }
-  section("Smart Home Monitor") {
-    input "enableSHM", "bool", title: "Integrate with Smart Home Monitor", required: true, defaultValue: true
+	page(name: "page1")
+}
+
+def page1() {
+  dynamicPage(name: "page1", install: true, uninstall: true) {
+    section("SmartThings Hub") {
+      input "hostHub", "hub", title: "Select Hub", multiple: false, required: true
+    }
+    section("SmartThings Node Proxy") {
+      input "proxyAddress", "text", title: "Proxy Address", description: "(ie. 192.168.1.10)", required: true
+      input "proxyPort", "text", title: "Proxy Port", description: "(ie. 8080)", required: true, defaultValue: "8080"
+      input "authCode", "password", title: "Auth Code", description: "", required: true, defaultValue: "secret-key"
+    }
+    section("Honeywell Panel") {
+      input name: "pluginType", type: "enum", title: "Plugin Type", required: true, submitOnChange: true, options: ["envisalink", "ad2usb"]
+      input "securityCode", "password", title: "Security Code", description: "User code to arm/disarm the security panel", required: false
+      input "enableDiscovery", "bool", title: "Discover Zones (WARNING: all existing zones will be removed)", required: false, defaultValue: false
+    }
+
+    if (pluginType == "envisalink") {
+      section("Envisalink Vista TPI") {
+        input "evlAddress", "text", title: "Host Address", description: "(ie. 192.168.1.11)", required: false
+        input "evlPort", "text", title: "Host Port", description: "(ie. 4025)", required: false
+        input "evlPassword", "password", title: "Password", description: "", required: false
+      }
+    }
+
+    section("Smart Home Monitor") {
+      input "enableSHM", "bool", title: "Integrate with Smart Home Monitor", required: true, defaultValue: true
+    }
   }
 }
 
@@ -72,13 +83,19 @@ def updated() {
   sendCommand('/subscribe/'+getNotifyAddress())
 
   //save envisalink settings to STNP config
-  if (settings.evlAddress && settings.evlPort && settings.evlPassword && settings.securityCode) {
-    sendCommand('/plugins/envisalink/config/'+settings.evlAddress+":"+settings.evlPort+":"+settings.evlPassword+":"+settings.securityCode)
+  if (settings.pluginType == "envisalink" && settings.evlAddress && settings.evlPort && settings.evlPassword && settings.securityCode) {
+    sendCommandPlugin('/config/'+settings.evlAddress+":"+settings.evlPort+":"+settings.evlPassword+":"+settings.securityCode)
+  }
+
+  //save ad2usb settings to STNP config
+  if (settings.pluginType == "ad2usb" && settings.securityCode) {
+    sendCommandPlugin('/config/'+settings.securityCode)
   }
 
   if (settings.enableDiscovery) {
     //delay discovery for 5 seconds
     runIn(5, discoverChildDevices)
+    settings.enableDiscovery = false
   }
 }
 
@@ -107,12 +124,16 @@ def lanResponseHandler(evt) {
   //log.trace "Body: ${body}"
 
   //verify that this message is for this plugin
-  if (headers.'stnp-plugin' != 'envisalink') {
+  if (headers.'stnp-plugin' != settings.pluginType) {
     return
   }
 
   //log.trace "Honeywell Security event: ${evt.stringValue}"
   processEvent(body)
+}
+
+private sendCommandPlugin(path) {
+  sendCommand("/plugins/"+settings.pluginType+path)
 }
 
 private sendCommand(path) {
@@ -153,7 +174,7 @@ private processEvent(evt) {
 
 private addChildDevices(partitions, zones) {
   partitions.each {
-    def deviceId = 'envisalink|partition'+it.partition
+    def deviceId = 'honeywell|partition'+it.partition
     if (!getChildDevice(deviceId)) {
       addChildDevice("redloro-smartthings", "Honeywell Partition", deviceId, hostHub.id, ["name": "Honeywell Security", label: "Honeywell Security", completedSetup: true])
       //log.debug "Added partition device: ${deviceId}"
@@ -161,7 +182,7 @@ private addChildDevices(partitions, zones) {
   }
 
   zones.each {
-    def deviceId = 'envisalink|zone'+it.zone
+    def deviceId = 'honeywell|zone'+it.zone
     if (!getChildDevice(deviceId)) {
       it.type = it.type.capitalize()
       addChildDevice("redloro-smartthings", "Honeywell Zone "+it.type, deviceId, hostHub.id, ["name": it.name, label: it.name, completedSetup: true])
@@ -175,12 +196,12 @@ private removeChildDevices() {
 }
 
 def discoverChildDevices() {
-  sendCommand('/plugins/envisalink/discover')
+  sendCommandPlugin('/discover')
 }
 
 private updateZoneDevices(zonenum,zonestatus) {
   //log.debug "updateZoneDevices: ${zonenum} is ${zonestatus}"
-  def zonedevice = getChildDevice("envisalink|zone${zonenum}")
+  def zonedevice = getChildDevice("honeywell|zone${zonenum}")
   if (zonedevice) {
     zonedevice.zone("${zonestatus}")
   }
@@ -188,7 +209,7 @@ private updateZoneDevices(zonenum,zonestatus) {
 
 private updatePartitions(partitionnum, partitionstatus, panelalpha) {
   //log.debug "updatePartitions: ${partitionnum} is ${partitionstatus}"
-  def partitionDevice = getChildDevice("envisalink|partition${partitionnum}")
+  def partitionDevice = getChildDevice("honeywell|partition${partitionnum}")
   if (partitionDevice) {
     partitionDevice.partition("${partitionstatus}", "${panelalpha}")
   }
@@ -205,13 +226,13 @@ def alarmHandler(evt) {
 
   state.alarmSystemStatus = evt.value
   if (evt.value == "stay") {
-    sendCommand('/plugins/envisalink/armStay')
+    sendCommandPlugin('/armStay')
   }
   if (evt.value == "away") {
-    sendCommand('/plugins/envisalink/armAway')
+    sendCommandPlugin('/armAway')
   }
   if (evt.value == "off") {
-    sendCommand('/plugins/envisalink/disarm')
+    sendCommandPlugin('/disarm')
   }
 }
 
@@ -263,11 +284,9 @@ private getNotifyAddress() {
 }
 
 private String convertIPtoHex(ipAddress) {
-  String hex = ipAddress.tokenize( '.' ).collect {  String.format( '%02x', it.toInteger() ) }.join().toUpperCase()
-  return hex
+  return ipAddress.tokenize( '.' ).collect {  String.format( '%02x', it.toInteger() ) }.join().toUpperCase()
 }
 
 private String convertPortToHex(port) {
-  String hexport = port.toString().format( '%04x', port.toInteger() ).toUpperCase()
-  return hexport
+  return port.toString().format( '%04x', port.toInteger() ).toUpperCase()
 }

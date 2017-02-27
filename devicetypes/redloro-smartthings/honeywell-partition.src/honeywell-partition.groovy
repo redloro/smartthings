@@ -23,6 +23,7 @@ metadata {
     command "armAway"
     command "armInstant"
     command "chime"
+    command "bypass"
   }
 
   tiles(scale: 2) {
@@ -60,14 +61,22 @@ metadata {
     }
 
     standardTile("chimeButton","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
-      state "default", label: 'Chime', action: "chime", icon: "st.custom.sonos.unmuted", backgroundColor: "#79b821"
+      state "default", label: 'Chime', action: "chime", icon: "st.custom.sonos.unmuted"
+    }
+
+    standardTile("bypassButton","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
+      state "default", label: 'Bypass', action: "bypass", icon: "st.locks.lock.unlocked"
     }
 
     main "partition"
 
     details(["partition",
              "armAwayButton", "armStayButton", "disarmButton",
-             "armInstantButton", "chimeButton"])
+             "armInstantButton", "chimeButton", "bypassButton"])
+  }
+
+  preferences {
+    input name: "bypassZones", type: "text", title: "Bypass Zones", description: "Comma delimited list of zones to bypass", required: false
   }
 }
 
@@ -77,21 +86,25 @@ def partition(String state, String alpha) {
 }
 
 def disarm() {
-    parent.sendCommand('/plugins/envisalink/disarm');
+  parent.sendCommandPlugin('/disarm');
 }
 
 def armAway() {
-    parent.sendCommand('/plugins/envisalink/armAway');
+  parent.sendCommandPlugin('/armAway');
 }
 
 def armStay() {
-    parent.sendCommand('/plugins/envisalink/armStay');
+  parent.sendCommandPlugin('/armStay');
 }
 
 def armInstant() {
-    parent.sendCommand('/plugins/envisalink/armInstant');
+  parent.sendCommandPlugin('/armInstant');
 }
 
 def chime() {
-    parent.sendCommand('/plugins/envisalink/chime');
+  parent.sendCommandPlugin('/chime');
+}
+
+def bypass() {
+  parent.sendCommandPlugin('/bypass/'+settings.bypassZones);
 }

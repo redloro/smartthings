@@ -16,17 +16,20 @@
     ],
     "controllerConfig": {         // Set this to define zones
       "type": "discover",
-      "zones": [
-        {"zone": 0, "name": "Family Room"},
-        {"zone": 1, "name": "Kitchen"},
-        {"zone": 2, "name": "Living Room"},
-        {"zone": 3, "name": "Patio"},
-        {"zone": 4, "name": "Dining Room"},
-        {"zone": 5, "name": "Office"}
-      ]
+      "controllers": [{
+        "controller": 0,
+        "zones": [
+          {"zone": 0, "name": "Family Room"},
+          {"zone": 1, "name": "Kitchen"},
+          {"zone": 2, "name": "Living Room"},
+          {"zone": 3, "name": "Patio"},
+          {"zone": 4, "name": "Dining Room"},
+          {"zone": 5, "name": "Office"}
+        ]
+      }]
     }
   },
-  
+
   // Monoprice MPR-SG6Z
   "mpr6z": {
     "serialPort": "COM2",         // RS-232 port connected to Russound controller
@@ -59,6 +62,26 @@
     "password": "user",           // Service password - default is user
     "securityCode": "1234",       // Security code to arm/disarm the panel
     "dumpZoneTimer": "5",         // Dump zone timers every X minutes
+
+    "panelConfig": {              // Set this to manual define partitions and zones
+      "type": "discover",
+      "partitions": [
+        {"partition": 1, "name": "Security Panel"}
+      ],
+      "zones": [
+        {"zone": 1, "type": "smoke", "name": "Smoke Detector"},
+        {"zone": 2, "type": "contact", "name": "Front Door"},
+        {"zone": 3, "type": "contact", "name": "Back Door"},
+        {"zone": 4, "type": "contact", "name": "Kitchen Door"},
+        {"zone": 5, "type": "contact", "name": "Kitchen Window"}
+      ]
+    }
+  },
+
+  // AlarmDecoder AD2USB
+  "ad2usb": {
+    "serialPort": "COM2",         // RS-232 port connected to AD2USB
+    "securityCode": "1234",       // Security code to arm/disarm the panel
 
     "panelConfig": {              // Set this to manual define partitions and zones
       "type": "discover",
