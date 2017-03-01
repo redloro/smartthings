@@ -179,8 +179,8 @@ function Envisalink () {
   // check connection every 60 secs
   setInterval(function() { self.init(); }, 60*1000);
 
-  // dump zone timers
-  if (nconf.get('envisalink:dumpZoneTimer')) {
+  // experimental: dump zone timers
+  if (nconf.get('envisalink:dumpZoneTimer') != '0') {
     setInterval(function() { write('^02,$'); }, 60*1000*nconf.get('envisalink:dumpZoneTimer'));
   }
 
@@ -365,6 +365,7 @@ function Envisalink () {
 
   function zone_timer_dump(data) {
     //logger('Execute zone_timer_dump: '+data);
+    var queue = [];
 
     // Swap the couples of every four bytes (little endian to big endian)
     for (var i=0; i<data.length; i+=4) {
@@ -381,10 +382,16 @@ function Envisalink () {
       if (msg.zoneStatus == 'closed' &&
           panel.zones[msg.zoneNumber] != 'closed') {
         // notify
-        updateZone(panel.partition, msg.zoneNumber, 'closed');
+        queue.push({
+          partition: panel.partition,
+          zoneNumber: msg.zoneNumber,
+          state: 'closed'
+        });
       }
       //logger(JSON.stringify(msg));
     }
+
+    updateThrottler(queue);
   }
 
   function poll_response(data) {
@@ -412,6 +419,21 @@ function Envisalink () {
     var msg = JSON.stringify({type: 'partition', partition: partitionNumber, state: state, alpha: alpha});
     logger(msg);
     notify(msg);
+  }
+
+  function updateThrottler(queue) {
+    var i = 0;
+    while (queue.length) {
+      var x = queue.pop();
+
+      // notify
+      updateZone(x.partition, x.zoneNumber, x.state);
+      i++; if (i == 50) { break; }
+    }
+
+    if (!queue.length) { return; }
+
+    setTimeout(function() { updateThrottler(queue) }, 5000);
   }
 
   function cleanBuffer(data) {
