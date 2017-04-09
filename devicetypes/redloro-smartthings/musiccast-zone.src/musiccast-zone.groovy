@@ -1,5 +1,5 @@
 /**
- *  SmartThings Device Handler: Yamaha Zone
+ *  SmartThings Device Handler: Yamaha MusicCast Zone
  *
  *  Author: redloro@gmail.com
  *
@@ -13,7 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-  definition (name: "Yamaha Zone", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
+  definition (name: "MusicCast Zone", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
 
     /**
      * List our capabilties. Doing so adds predefined command(s) which
@@ -43,8 +43,6 @@ metadata {
     command "source5"
     command "mutedOn"
     command "mutedOff"
-    command "partyModeOn"
-    command "partyModeOff"
     command "zone"
   }
 
@@ -70,8 +68,7 @@ metadata {
     }
 
     // row
-    //controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(0..100)") {
-    controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(-80..16)") {
+    controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(0..100)") {
       state "volume", label: "Volume", action:"music Player.setLevel", backgroundColor:"#00a0dc"
     }
 
@@ -106,10 +103,6 @@ metadata {
       state("off", label:'Muted', action:"mutedOn", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff", nextState:"on")
       state("on", label:'Muted', action:"mutedOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-mute.png", backgroundColor:"#ffffff", nextState:"off")
     }
-    standardTile("partyMode", "device.partyMode", decoration: "flat", width: 2, height: 2, inactiveLabel: false) {
-      state("off", label:'Party Mode', action:"partyModeOn", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-gray.png", backgroundColor:"#ffffff", nextState:"on")
-      state("on", label:'Party Mode', action:"partyModeOff", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/indicator-dot-party.png", backgroundColor:"#ffffff", nextState:"off")
-    }
     standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
       state "default", label:"Refresh", action:"refresh.refresh", icon:"st.secondary.refresh-icon", backgroundColor:"#ffffff"
     }
@@ -122,17 +115,17 @@ metadata {
       "state",
       "volume",
       "0","1","2","3","4","5",
-      "muted", "partyMode","refresh"
+      "muted","refresh"
     ])
   }
 
   preferences {
-    input name: "source0", type: "text", title: "Source 1", defaultValue: "AV1"
-    input name: "source1", type: "text", title: "Source 2", defaultValue: "AV2"
-    input name: "source2", type: "text", title: "Source 3", defaultValue: "AV3"
-    input name: "source3", type: "text", title: "Source 4", defaultValue: "AV4"
-    input name: "source4", type: "text", title: "Source 5", defaultValue: "AV5"
-    input name: "source5", type: "text", title: "Source 6", defaultValue: "AV6"
+    input name: "source0", type: "text", title: "Source 1", defaultValue: "hdmi"
+    input name: "source1", type: "text", title: "Source 2", defaultValue: "tv"
+    input name: "source2", type: "text", title: "Source 3", defaultValue: "analog"
+    input name: "source3", type: "text", title: "Source 4", defaultValue: "pandora"
+    input name: "source4", type: "text", title: "Source 5", defaultValue: "spotify"
+    input name: "source5", type: "text", title: "Source 6", defaultValue: "airplay"
   }
 }
 
@@ -146,16 +139,15 @@ metadata {
  *
  */
 def on() {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Power_Control><Power>On</Power></Power_Control></${getZone()}></YAMAHA_AV>")
+  sendCommand("/${getZone()}/setPower?power=on")
   sendEvent(name: "switch", value: "on")
 }
 def off() {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Power_Control><Power>Standby</Power></Power_Control></${getZone()}></YAMAHA_AV>")
+  sendCommand("/${getZone()}/setPower?power=standby")
   sendEvent(name: "switch", value: "off")
 }
 def setLevel(value) {
-  //sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Lvl><Val>${(Math.round(value * 9 / 5) * 5 - 800).intValue()}</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Volume></${getZone()}></YAMAHA_AV>")
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Lvl><Val>${(value * 10).intValue()}</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Volume></${getZone()}></YAMAHA_AV>")
+  sendCommand("/${getZone()}/setVolume?volume=${value}")
   sendEvent(name: "volume", value: value)
 }
 def source0() {
@@ -177,24 +169,15 @@ def source5() {
   setSource(5)
 }
 def mutedOn() {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Mute>On</Mute></Volume></${getZone()}></YAMAHA_AV>")
+  sendCommand("/${getZone()}/setMute?enable=true")
   sendEvent(name: "muted", value: "on")
 }
 def mutedOff() {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Volume><Mute>Off</Mute></Volume></${getZone()}></YAMAHA_AV>")
+  sendCommand("/${getZone()}/setMute?enable=false")
   sendEvent(name: "muted", value: "off")
 }
-def partyModeOn() {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><System><Party_Mode><Mode>On</Mode></Party_Mode></System></YAMAHA_AV>")
-  sendEvent(name: "partyMode", value: "on")
-}
-def partyModeOff() {
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><System><Party_Mode><Mode>Off</Mode></Party_Mode></System></YAMAHA_AV>")
-  sendEvent(name: "partyMode", value: "off")
-}
 def refresh() {
-  sendCommand("<YAMAHA_AV cmd=\"GET\"><${getZone()}><Basic_Status>GetParam</Basic_Status></${getZone()}></YAMAHA_AV>")
-  sendCommand("<YAMAHA_AV cmd=\"GET\"><System><Party_Mode><Mode>GetParam</Mode></Party_Mode></System></YAMAHA_AV>")
+  sendCommand("/${getZone()}/getStatus")
 }
 /**************************************************************************/
 
@@ -212,7 +195,7 @@ def parse(String description) {
 
 def setSource(id) {
   //log.debug "source: "+getSourceName(id)
-  sendCommand("<YAMAHA_AV cmd=\"PUT\"><${getZone()}><Input><Input_Sel>"+getSourceName(id)+"</Input_Sel></Input></${getZone()}></YAMAHA_AV>")
+  sendCommand("/${getZone()}/setInput?input="+getSourceName(id)+"&mode=autoplay_disabled")
   setSourceTile(getSourceName(id))
 }
 
@@ -220,7 +203,7 @@ def getSourceName(id) {
   if (settings) {
     return settings."source${id}"
   } else {
-    return ['AV1', 'AV2', 'AV3', 'AV4', 'AV5', 'AV6'].get(id)
+    return ['hdmi', 'tv', 'analog', 'pandora', 'spotify', 'airplay'].get(id)
   }
 }
 
@@ -240,38 +223,30 @@ def zone(evt) {
   /*
   * Zone On/Off
   */
-  if (evt.Basic_Status.Power_Control.Power.text()) {
-    sendEvent(name: "switch", value: (evt.Basic_Status.Power_Control.Power.text() == "On") ? "on" : "off")
+  if (evt.power) {
+    sendEvent(name: "switch", value: (evt.power == "on") ? "on" : "off")
   }
 
   /*
   * Zone Volume
   */
-  if (evt.Basic_Status.Volume.Lvl.Val.text()) {
-    def int volLevel = evt.Basic_Status.Volume.Lvl.Val.toInteger() ?: -250
-    //sendEvent(name: "volume", value: ((volLevel + 800) / 9).intValue())
-    sendEvent(name: "volume", value: (volLevel / 10).intValue())
+  if (evt.volume) {
+    def int volLevel = evt.volume.toInteger()
+    sendEvent(name: "volume", value: volLevel)
   }
 
   /*
   * Zone Muted
   */
-  if (evt.Basic_Status.Volume.Mute.text()) {
-    sendEvent(name: "muted", value: (evt.Basic_Status.Volume.Mute.text() == "On") ? "on" : "off")
+  if (evt.mute) {
+    sendEvent(name: "muted", value: (evt.mute == true) ? "on" : "off")
   }
 
   /*
   * Zone Source
   */
-  if (evt.Basic_Status.Input.Input_Sel.text()) {
-    setSourceTile(evt.Basic_Status.Input.Input_Sel.text())
-  }
-
-  /*
-  * Party Mode
-  */
-  if (evt.Party_Mode.Mode.text()) {
-    sendEvent(name: "partyMode", value: (evt.Party_Mode.Mode.text() == "On") ? "on" : "off")
+  if (evt.input) {
+    setSourceTile(evt.input)
   }
 }
 

@@ -180,6 +180,7 @@ private processEvent(evt) {
 
 private updateDevice(evt) {
   //log.debug "updateDevice: ${evt}"
+  send("A button [${evt.address}] has been pressed")
 
   def devices = getDevices(evt.address)
   def deviceOn = false
@@ -199,6 +200,25 @@ private updateDevice(evt) {
 
 private getDevices(address) {
   return this."buttonSwitch${state.buttons[address]}"
+}
+
+private send(msg) {
+	if (location.contactBookEnabled) {
+    log.debug("sending notifications to: ${recipients?.size()}")
+    sendNotificationToContacts(msg, recipients)
+	}
+	else  {
+		if (sendPushMessage != "No") {
+			log.debug("sending push message")
+			sendPush(msg)
+		}
+
+		if (phone) {
+			log.debug("sending text message")
+			sendSms(phone, msg)
+		}
+	}
+	log.debug msg
 }
 
 private getHttpHeaders(headers) {

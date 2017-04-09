@@ -23,6 +23,8 @@ metadata {
     capability "Switch"
     capability "Refresh"
     capability "Polling"
+    capability "Sensor"
+    capability "Actuator"
 
     /**
      * Define all commands, ie, if you have a custom action not
@@ -172,7 +174,7 @@ def zone(evt) {
     sendEvent(name: "switch", value: (evt.state == 1) ? "on" : "off")
 
     //turn off party mode
-    if (evt.state == 0) {
+    if (evt.state == 0 || !device.currentState("partyMode")) {
       partyMode(["state": 0])
     }
   }
@@ -255,7 +257,7 @@ private sendCommand(evt, broadcast) {
   }
 
   //log.debug "ZONE${getZone()} calling parent.sendCommand"
-  parent.sendCommand("/plugins/mpr-sg6z/zones/${getZone()}${part}")
+  parent.sendCommand("/plugins/mpr-sg6z/controllers/${getController()}/zones/${getZone()}${part}")
 }
 
 private getPartyMode() {
@@ -267,13 +269,17 @@ private getVolume() {
 }
 
 private getSource() {
-    for (def i = 1; i < 7; i++) {
-      if (device.currentState("source${i}").getValue()  == "on") {
-        return i
-      }
+  for (def i = 1; i < 7; i++) {
+    if (device.currentState("source${i}").getValue()  == "on") {
+      return i
     }
+  }
+}
+
+private getController() {
+  return new String(device.deviceNetworkId).tokenize('|')[1]
 }
 
 private getZone() {
-  return new String(device.deviceNetworkId).tokenize('|')[1].replace('zone', '')
+  return new String(device.deviceNetworkId).tokenize('|')[2]
 }

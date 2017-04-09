@@ -46,76 +46,76 @@ app.get('/discover', function (req, res) {
   rnet.discover();
   res.end();
 });
-app.get('/zones/:id/partyMode/:partyMode', function (req, res) {
-  rnet.setZonePartyMode(Number(req.params.id), Number(req.params.partyMode));
+app.get('/controllers/:controller/zones/:zone/partyMode/:partyMode', function (req, res) {
+  rnet.setZonePartyMode(Number(req.params.controller), Number(req.params.zone), Number(req.params.partyMode));
   res.end();
 });
-app.get('/zones/:id/partyMode', function (req, res) {
-  rnet.getZonePartyMode(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/partyMode', function (req, res) {
+  rnet.getZonePartyMode(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/balance/:balance', function (req, res) {
-  rnet.setZoneBalance(Number(req.params.id), Number(req.params.balance));
+app.get('/controllers/:controller/zones/:zone/balance/:balance', function (req, res) {
+  rnet.setZoneBalance(Number(req.params.controller), Number(req.params.zone), Number(req.params.balance));
   res.end();
 });
-app.get('/zones/:id/balance', function (req, res) {
-  rnet.getZoneBalance(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/balance', function (req, res) {
+  rnet.getZoneBalance(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/treble/:treble', function (req, res) {
-  rnet.setZoneTreble(Number(req.params.id), Number(req.params.treble));
+app.get('/controllers/:controller/zones/:zone/treble/:treble', function (req, res) {
+  rnet.setZoneTreble(Number(req.params.controller), Number(req.params.zone), Number(req.params.treble));
   res.end();
 });
-app.get('/zones/:id/treble', function (req, res) {
-  rnet.getZoneTreble(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/treble', function (req, res) {
+  rnet.getZoneTreble(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/bass/:bass', function (req, res) {
-  rnet.setZoneBass(Number(req.params.id), Number(req.params.bass));
+app.get('/controllers/:controller/zones/:zone/bass/:bass', function (req, res) {
+  rnet.setZoneBass(Number(req.params.controller), Number(req.params.zone), Number(req.params.bass));
   res.end();
 });
-app.get('/zones/:id/bass', function (req, res) {
-  rnet.getZoneBass(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/bass', function (req, res) {
+  rnet.getZoneBass(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/loudness/:loudness', function (req, res) {
-  rnet.setZoneLoudness(Number(req.params.id), Number(req.params.loudness));
+app.get('/controllers/:controller/zones/:zone/loudness/:loudness', function (req, res) {
+  rnet.setZoneLoudness(Number(req.params.controller), Number(req.params.zone), Number(req.params.loudness));
   res.end();
 });
-app.get('/zones/:id/loudness', function (req, res) {
-  rnet.getZoneLoudness(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/loudness', function (req, res) {
+  rnet.getZoneLoudness(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/volume/:volume', function (req, res) {
-  rnet.setZoneVolume(Number(req.params.id), Number(req.params.volume));
+app.get('/controllers/:controller/zones/:zone/volume/:volume', function (req, res) {
+  rnet.setZoneVolume(Number(req.params.controller), Number(req.params.zone), Number(req.params.volume));
   res.end();
 });
-app.get('/zones/:id/volume', function (req, res) {
-  rnet.getZoneVolume(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/volume', function (req, res) {
+  rnet.getZoneVolume(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/source/:source', function (req, res) {
-  rnet.setZoneSource(Number(req.params.id), Number(req.params.source));
+app.get('/controllers/:controller/zones/:zone/source/:source', function (req, res) {
+  rnet.setZoneSource(Number(req.params.controller), Number(req.params.zone), Number(req.params.source));
   res.end();
 });
-app.get('/zones/:id/source', function (req, res) {
-  rnet.getZoneSource(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/source', function (req, res) {
+  rnet.getZoneSource(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/state/:state', function (req, res) {
-  rnet.setZoneState(Number(req.params.id), Number(req.params.state));
+app.get('/controllers/:controller/zones/:zone/state/:state', function (req, res) {
+  rnet.setZoneState(Number(req.params.controller), Number(req.params.zone), Number(req.params.state));
   res.end();
 });
-app.get('/zones/:id/state', function (req, res) {
-  rnet.getZoneState(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/state', function (req, res) {
+  rnet.getZoneState(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/all/:state', function (req, res) {
+app.get('/all/:state', function (req, res) {
   rnet.setAllZones(Number(req.params.state));
   res.end();
 });
-app.get('/zones/:id', function (req, res) {
-  rnet.getZone(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone', function (req, res) {
+  rnet.getZone(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
 
@@ -135,7 +135,6 @@ function Rnet() {
   var device = null;
   var buffer = new Array();
   var serialPorts = new Array();
-  var controllerId = 0x00;
 
   /**
    * init
@@ -277,101 +276,102 @@ function Rnet() {
       partyMode: data[11],
       doNotDisturb: data[12] });
   }
-  this.getZone = function(id) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x04, 0x02, 0x00, id, 0x07, 0x00, 0x00]);
+  this.getZone = function(controller, zone) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x04, 0x02, 0x00, zone, 0x07, 0x00, 0x00]);
   };
   this.setAllZones = function(state) {
     write([0xF0, 0x7E, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x05, 0x02, 0x02, 0x00, 0x00, 0xF1, 0x22, 0x00, 0x00, state, 0x00, 0x00, 0x01]);
-    notify_handler({type: 'zone', controller: controllerId, zone: -1, state: state});
+    notify_handler({type: 'zone', controller: -1, zone: -1, state: state});
   };
 
   function zone_state(data) {
     notify_handler({type: 'zone', controller: data[0], zone: data[1], state: data[2]});
   }
-  this.getZoneState = function(id) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x04, 0x02, 0x00, id, 0x06, 0x00, 0x00]);
+  this.getZoneState = function(controller, zone) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x04, 0x02, 0x00, zone, 0x06, 0x00, 0x00]);
   };
-  this.setZoneState = function(id, state) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x05, 0x02, 0x02, 0x00, 0x00, 0xF1, 0x23, 0x00, state, 0x00, id, 0x00, 0x01]);
-    zone_state([controllerId, id, state]);
+  this.setZoneState = function(controller, zone, state) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x05, 0x02, 0x02, 0x00, 0x00, 0xF1, 0x23, 0x00, state, 0x00, zone, 0x00, 0x01]);
+    zone_state([controller, zone, state]);
   };
 
   function zone_source(data) {
     notify_handler({type: 'zone', controller: data[0], zone: data[1], source: data[2], sourceName: nconf.get('rnet:sources')[data[2]]});
   }
-  this.getZoneSource = function(id) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x04, 0x02, 0x00, id, 0x02, 0x00, 0x00]);
+  this.getZoneSource = function(controller, zone) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x04, 0x02, 0x00, zone, 0x02, 0x00, 0x00]);
   };
-  this.setZoneSource = function(id, source) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, id, 0x70, 0x05, 0x02, 0x00, 0x00, 0x00, 0xF1, 0x3E, 0x00, 0x00, 0x00, source, 0x00, 0x01]);
-    zone_source([controllerId, id, source, nconf.get('rnet:sources')[source]]);
+  this.setZoneSource = function(controller, zone, source) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, zone, 0x70, 0x05, 0x02, 0x00, 0x00, 0x00, 0xF1, 0x3E, 0x00, 0x00, 0x00, source, 0x00, 0x01]);
+    // TODO: NEED TO CHECK AND SEE IF SOURCES ARE TIED TO CONTROLLER
+    zone_source([controller, zone, source, nconf.get('rnet:sources')[source]]);
   };
 
   function zone_volume(data) {
     notify_handler({type: 'zone', controller: data[0], zone: data[1], volume: data[2]});
   }
-  this.getZoneVolume = function(id) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x04, 0x02, 0x00, id, 0x01, 0x00, 0x00]);
+  this.getZoneVolume = function(controller, zone) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x04, 0x02, 0x00, zone, 0x01, 0x00, 0x00]);
   };
-  this.setZoneVolume = function(id, volume) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x05, 0x02, 0x02, 0x00, 0x00, 0xF1, 0x21, 0x00, volume, 0x00, id, 0x00, 0x01]);
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, id, 0x00, 0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, volume]);
-    zone_volume([controllerId, id, volume]);
+  this.setZoneVolume = function(controller, zone, volume) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x05, 0x02, 0x02, 0x00, 0x00, 0xF1, 0x21, 0x00, volume, 0x00, zone, 0x00, 0x01]);
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, zone, 0x00, 0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, volume]);
+    zone_volume([controller, zone, volume]);
   };
 
   function zone_bass(data) {
     notify_handler({type: 'zone', controller: data[0], zone: data[1], bass: data[2]});
   }
-  this.getZoneBass = function(id) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x05, 0x02, 0x00, id, 0x00, 0x00, 0x00, 0x00]);
+  this.getZoneBass = function(controller, zone) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x05, 0x02, 0x00, zone, 0x00, 0x00, 0x00, 0x00]);
   };
-  this.setZoneBass = function(id, bass) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, id, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, bass]);
-    zone_bass([controllerId, id, bass]);
+  this.setZoneBass = function(controller, zone, bass) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, zone, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, bass]);
+    zone_bass([controller, zone, bass]);
   };
 
   function zone_treble(data) {
     notify_handler({type: 'zone', controller: data[0], zone: data[1], treble: data[2]});
   }
-  this.getZoneTreble = function(id) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x05, 0x02, 0x00, id, 0x00, 0x01, 0x00, 0x00]);
+  this.getZoneTreble = function(controller, zone) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x05, 0x02, 0x00, zone, 0x00, 0x01, 0x00, 0x00]);
   };
-  this.setZoneTreble = function(id, treble) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, id, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, treble]);
-    zone_treble([controllerId, id, treble]);
+  this.setZoneTreble = function(controller, zone, treble) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, zone, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, treble]);
+    zone_treble([controller, zone, treble]);
   };
 
   function zone_loudness(data) {
     notify_handler({type: 'zone', controller: data[0], zone: data[1], loudness: data[2]});
   }
-  this.getZoneLoudness = function(id) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x05, 0x02, 0x00, id, 0x00, 0x02, 0x00, 0x00]);
+  this.getZoneLoudness = function(controller, zone) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x05, 0x02, 0x00, zone, 0x00, 0x02, 0x00, 0x00]);
   };
-  this.setZoneLoudness = function(id, loudness) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, id, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, loudness]);
-    zone_loudness([controllerId, id, loudness]);
+  this.setZoneLoudness = function(controller, zone, loudness) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, zone, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, loudness]);
+    zone_loudness([controller, zone, loudness]);
   };
 
   function zone_balance(data) {
     notify_handler({type: 'zone', controller: data[0], zone: data[1], balance: data[2]});
   }
-  this.getZoneBalance = function(id) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x05, 0x02, 0x00, id, 0x00, 0x03, 0x00, 0x00]);
+  this.getZoneBalance = function(controller, zone) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x05, 0x02, 0x00, zone, 0x00, 0x03, 0x00, 0x00]);
   };
-  this.setZoneBalance = function(id, balance) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, id, 0x00, 0x03, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, balance]);
-    zone_balance([controllerId, id, balance]);
+  this.setZoneBalance = function(controller, zone, balance) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, zone, 0x00, 0x03, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, balance]);
+    zone_balance([controller, zone, balance]);
   };
 
   function zone_party_mode(data) {
     notify_handler({type: 'zone', controller: data[0], zone: data[1], partyMode: data[2]});
   }
-  this.getZonePartyMode = function(id) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x05, 0x02, 0x00, id, 0x00, 0x07, 0x00, 0x00]);
+  this.getZonePartyMode = function(controller, zone) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x01, 0x05, 0x02, 0x00, zone, 0x00, 0x07, 0x00, 0x00]);
   };
-  this.setZonePartyMode = function(id, partyMode) {
-    write([0xF0, controllerId, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, id, 0x00, 0x07, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, partyMode]);
-    zone_party_mode([controllerId, id, partyMode]);
+  this.setZonePartyMode = function(controller, zone, partyMode) {
+    write([0xF0, controller, 0x00, 0x7F, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, zone, 0x00, 0x07, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, partyMode]);
+    zone_party_mode([controller, zone, partyMode]);
   };
 
   function display_feedback(data) {
@@ -381,7 +381,7 @@ function Rnet() {
     var flashTimeHigh = buffer.shift();
     var msgText = byteArrayToString(buffer);
     //notify_handler({type: 'broadcast', controller: data[0], type: (msgTypeSource & 0x10) ? 'single' : 'multi', source: msgTypeSource & 0x0F, text: msgText});
-    logger({type: 'broadcast', controller: controllerId, type: (msgTypeSource & 0x10) ? 'single' : 'multi', source: msgTypeSource & 0x0F, text: msgText});
+    logger({type: 'broadcast', controller: data[0], type: (msgTypeSource & 0x10) ? 'single' : 'multi', source: msgTypeSource & 0x0F, text: msgText});
   }
 
   /**

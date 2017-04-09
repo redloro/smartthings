@@ -88,16 +88,16 @@ def lanResponseHandler(evt) {
 
   def headers = getHttpHeaders(map.headers);
   def body = getHttpBody(map.body);
-  //log.trace "SmartThings Node Proxy: ${evt.stringValue}"
-  //log.trace "Headers: ${headers}"
-  //log.trace "Body: ${body}"
+  log.trace "SmartThings Node Proxy: ${evt.stringValue}"
+  log.trace "Headers: ${headers}"
+  log.trace "Body: ${body}"
 
   //verify that this message is for this plugin
   if (headers.'stnp-plugin' != 'rnet') {
     return
   }
 
-  //log.trace "Russound RNET event: ${evt.stringValue}"
+  log.trace "Russound RNET event: ${evt.stringValue}"
   processEvent(body)
 }
 
@@ -126,19 +126,22 @@ private sendCommand(path) {
 
 private processEvent(evt) {
   if (evt.type == "discover") {
-    addChildDevices(evt.zones)
+    //for each controller
+    evt.controllers.each {
+      addChildDevices(it.controller, it.zones)
+    }
   }
   if (evt.type == "zone") {
     updateZoneDevices(evt)
   }
 }
 
-private addChildDevices(zones) {
+private addChildDevices(controller, zones) {
   zones.each {
-    def deviceId = 'rnet|zone'+it.zone
+    def deviceId = getDeviceId(controller, it.zone)
     if (!getChildDevice(deviceId)) {
       addChildDevice("redloro-smartthings", "Russound Zone", deviceId, hostHub.id, ["name": it.name, label: "RNET: "+it.name, completedSetup: true])
-      //log.debug "Added zone device: ${deviceId}"
+      log.debug "Added zone device: ${deviceId}"
     }
   }
 
@@ -163,7 +166,7 @@ private updateZoneDevices(evt) {
     return
   }
 
-  def zonedevice = getChildDevice("rnet|zone${evt.zone}")
+  def zonedevice = getChildDevice(getDeviceId(evt.controller, evt.zone))
   if (zonedevice) {
     zonedevice.zone(evt)
   }
@@ -171,6 +174,10 @@ private updateZoneDevices(evt) {
 
 private partyMode(evt) {
   childDevices*.partyMode(evt)
+}
+
+private getDeviceId(controller, zone) {
+  return "rnet|${controller}|${zone}"
 }
 
 private getHttpHeaders(headers) {

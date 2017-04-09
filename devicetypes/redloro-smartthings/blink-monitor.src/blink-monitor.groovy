@@ -17,7 +17,9 @@ metadata {
     capability "Switch"
     capability "Refresh"
     capability "Polling"
-
+    capability "Sensor"
+    capability "Actuator"
+    
     command "monitor"
   }
 

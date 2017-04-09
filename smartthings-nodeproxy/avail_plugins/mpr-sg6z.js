@@ -53,87 +53,87 @@ app.get('/discover', function (req, res) {
 /**
  * Parameter Getters
 */
-app.get('/zones/:id/balance', function (req, res) {
-  mpr6z.getZoneBalance(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/balance', function (req, res) {
+  mpr6z.getZoneBalance(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/treble', function (req, res) {
-  mpr6z.getZoneTreble(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/treble', function (req, res) {
+  mpr6z.getZoneTreble(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/bass', function (req, res) {
-  mpr6z.getZoneBass(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/bass', function (req, res) {
+  mpr6z.getZoneBass(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/volume', function (req, res) {
-  mpr6z.getZoneVolume(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/volume', function (req, res) {
+  mpr6z.getZoneVolume(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/mute', function (req, res) {
-  mpr6z.getZoneMute(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/mute', function (req, res) {
+  mpr6z.getZoneMute(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/source', function (req, res) {
-  mpr6z.getZoneSource(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/source', function (req, res) {
+  mpr6z.getZoneSource(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/state', function (req, res) {
-  mpr6z.getZoneState(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/state', function (req, res) {
+  mpr6z.getZoneState(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/dnd', function (req, res) {
-  mpr6z.getZoneDoNotDisturb(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/dnd', function (req, res) {
+  mpr6z.getZoneDoNotDisturb(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/keypad', function (req, res) {
-  mpr6z.getZoneKeypad(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/keypad', function (req, res) {
+  mpr6z.getZoneKeypad(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id/pa', function (req, res) {
-  mpr6z.getZonePublicAddress(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone/pa', function (req, res) {
+  mpr6z.getZonePublicAddress(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
-app.get('/zones/:id', function (req, res) {
-  mpr6z.getZone(Number(req.params.id));
+app.get('/controllers/:controller/zones/:zone', function (req, res) {
+  mpr6z.getZone(Number(req.params.controller), Number(req.params.zone));
   res.end();
 });
 
 /**
  * Parameter Setters
 */
-app.get('/zones/:id/balance/:balance', function (req, res) {
-  mpr6z.setZoneBalance(Number(req.params.id), Number(req.params.balance));
+app.get('/controllers/:controller/zones/:zone/balance/:balance', function (req, res) {
+  mpr6z.setZoneBalance(Number(req.params.controller), Number(req.params.zone), Number(req.params.balance));
   res.end();
 });
-app.get('/zones/:id/treble/:treble', function (req, res) {
-  mpr6z.setZoneTreble(Number(req.params.id), Number(req.params.treble));
+app.get('/controllers/:controller/zones/:zone/treble/:treble', function (req, res) {
+  mpr6z.setZoneTreble(Number(req.params.controller), Number(req.params.zone), Number(req.params.treble));
   res.end();
 });
-app.get('/zones/:id/bass/:bass', function (req, res) {
-  mpr6z.setZoneBass(Number(req.params.id), Number(req.params.bass));
+app.get('/controllers/:controller/zones/:zone/bass/:bass', function (req, res) {
+  mpr6z.setZoneBass(Number(req.params.controller), Number(req.params.zone), Number(req.params.bass));
   res.end();
 });
-app.get('/zones/:id/volume/:volume', function (req, res) {
-  mpr6z.setZoneVolume(Number(req.params.id), Number(req.params.volume));
+app.get('/controllers/:controller/zones/:zone/volume/:volume', function (req, res) {
+  mpr6z.setZoneVolume(Number(req.params.controller), Number(req.params.zone), Number(req.params.volume));
   res.end();
 });
-app.get('/zones/:id/mute/:mute', function (req, res) {
-  mpr6z.setZoneMute(Number(req.params.id), Number(req.params.mute));
+app.get('/controllers/:controller/zones/:zone/mute/:mute', function (req, res) {
+  mpr6z.setZoneMute(Number(req.params.controller), Number(req.params.zone), Number(req.params.mute));
   res.end();
 });
-app.get('/zones/:id/source/:source', function (req, res) {
-  mpr6z.setZoneSource(Number(req.params.id), Number(req.params.source));
+app.get('/controllers/:controller/zones/:zone/source/:source', function (req, res) {
+  mpr6z.setZoneSource(Number(req.params.controller), Number(req.params.zone), Number(req.params.source));
   res.end();
 });
-app.get('/zones/:id/state/:state', function (req, res) {
-  mpr6z.setZoneState(Number(req.params.id), Number(req.params.state));
+app.get('/controllers/:controller/zones/:zone/state/:state', function (req, res) {
+  mpr6z.setZoneState(Number(req.params.controller), Number(req.params.zone), Number(req.params.state));
   res.end();
 });
-app.get('/zones/:id/dnd/:state', function (req, res) {
-  mpr6z.setZoneDoNotDisturb(Number(req.params.id), Number(req.params.state));
+app.get('/controllers/:controller/zones/:zone/dnd/:state', function (req, res) {
+  mpr6z.setZoneDoNotDisturb(Number(req.params.controller), Number(req.params.zone), Number(req.params.state));
   res.end();
 });
-app.get('/zones/:id/all/:state', function (req, res) {
+app.get('/all/:state', function (req, res) {
   mpr6z.setAllZones(Number(req.params.state));
   res.end();
 });
@@ -172,11 +172,11 @@ function Mpr6z() {
     device = new serialport(nconf.get('mpr6z:serialPort'),
                             { baudrate: nconf.get('mpr6z:baudRate'),
                               parser: serialport.parsers.readline('\n'),
-			      autoOpen: false
+                              autoOpen: false
                             });
 
     device.on('data', function(data) {
-		read(data);
+		  read(data);
     });
 
     device.open(function (error) {
@@ -213,10 +213,10 @@ function Mpr6z() {
     }
 
     if (!cmd || cmd.length == 0) { return; }
-    //logger('TX > '+cmd);
-     device.write(cmd, function(err, results) {
-       if (err) logger('MPR6Z write error: '+err);
-     });
+    logger('TX > '+cmd);
+    device.write(cmd, function(err, results) {
+      if (err) logger('MPR6Z write error: '+err);
+    });
   }
 
   this.command = function(cmd) {
@@ -237,14 +237,12 @@ function Mpr6z() {
   	data = data.trim()
   	//logger("data length : " + data.length);
     if (data.length == 0) { return; }
-    //logger("data");
-    //logger("====");
-    //logger(data);
+    logger('RX < '+data);
 
-	if ( data.length == 8 ) {
-     var code = getCommandCode(data);
+	  if ( data.length == 8 ) {
+      var code = getCommandCode(data);
     } else if ( data.length == 24) {
-     var code = 'ALL';
+      var code = 'ALL';
     }
     if (!code) { return; }
 
@@ -275,11 +273,10 @@ function Mpr6z() {
    * Generic Handlers
    */
   function zone_info(data) {
-    z = (data[0]*10) + data[1]
     notify_handler({
       type: 'zone',
       controller: data[0],
-      zone: z,
+      zone: data[1],
       pa: data[2],
       state: data[3],
       mute: data[4],
@@ -292,185 +289,172 @@ function Mpr6z() {
       sourceName: nconf.get('mpr6z:sources')[data[10]-1],
       keypad: data[11] });
   }
-  this.getZone = function(id) {
+
+  this.getZone = function(controller, zone) {
     //this one wants to get all the things for a zone
     // inquiry '?xx\r' where xx is the zone #
-    write('?' + id + '\r');
+    write('?' + controller + zone + '\r');
   };
-   this.setAllZones = function(state) {
-	   //MPR-6Z doesn't have an "all-off" or "all-on" function, but we can build one.
-	   zones = nconf.get('mpr6z:controllerConfig')['zones'];
-	   for(var i = 0; i < zones.length; i++)
-	   {
-   			this.setZoneState(zones[i]['zone'],state);
-	   }
-	   //I don't think I need this since each setZoneState sends its own notification
-	   //notify_handler({type: 'zone', controller: 1, zone: -1, state: state});
-   };
+
+  this.setAllZones = function(state) {
+    //MPR-6Z doesn't have an "all-off" or "all-on" function, but we can build one.
+    var controllers = nconf.get('mpr6z:controllerConfig')['controllers'];
+    for (var i = 0; i < controllers.length; i++)
+    {
+      var zones = controllers[i]['zones'];
+      for (var j = 0; j < zones.length; j++)
+      {
+        this.setZoneState(controllers[i]['controller'], zones[j]['zone'], state);
+      }
+    }
+    //I don't think I need this since each setZoneState sends its own notification
+    //notify_handler({type: 'zone', controller: 1, zone: -1, state: state});
+  };
 
   function zone_state(data) {
-    z = (data[0]*10) + data[1]
-    notify_handler({type: 'zone', controller: data[0], zone: z, state: data[2]});
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], state: data[2]});
   }
-  this.getZoneState = function(id) {
-    write('?' + id + "PR" + '\r');
+  this.getZoneState = function(controller, zone) {
+    write('?' + controller + zone + 'PR' + '\r');
   };
-  this.setZoneState = function(id, value) {
+  this.setZoneState = function(controller, zone, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 1) { value = 1; }
 
     //Need to 0-pad number
-    if ( value < 10 ) { value = "0" + value; };
-    write('<' + id + 'PR' + value + '\r');
+    write('<' + controller + zone + 'PR' + value + '\r');
 
-    this.getZoneState(id);
+    this.getZoneState(controller, zone);
   };
 
   function zone_dnd(data) {
-    z = (data[0]*10) + data[1]
-    notify_handler({type: 'zone', controller: data[0], zone: z, state: data[2]});
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], state: data[2]});
   }
-  this.getZoneDoNotDisturb = function(id) {
-    write('?' + id + "DT" + '\r');
+  this.getZoneDoNotDisturb = function(controller, zone) {
+    write('?' + controller + zone + 'DT' + '\r');
   };
-  this.setZoneDoNotDisturb = function(id, value) {
+  this.setZoneDoNotDisturb = function(controller, zone, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 1) { value = 1; }
 
     //Need to 0-pad number
-    if ( value < 10 ) { value = "0" + value; };
-    write('<' + id + 'DT' + value + '\r');
+    write('<' + controller + zone + 'DT' + value + '\r');
 
-    this.getZoneDoNotDisturb(id);
+    this.getZoneDoNotDisturb(controller, zone);
   };
 
   function zone_source(data) {
-    z = (data[0]*10) + data[1]
-    notify_handler({type: 'zone', controller: data[0], zone: z, source: data[2], sourceName: nconf.get('mpr6z:sources')[data[2]-1]});
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], source: data[2], sourceName: nconf.get('mpr6z:sources')[data[2]-1]});
   }
-  this.getZoneSource = function(id) {
-    write('?' + id + "CH" + '\r');
+  this.getZoneSource = function(controller, zone) {
+    write('?' + controller + zone + 'CH' + '\r');
   };
-  this.setZoneSource = function(id, value) {
+  this.setZoneSource = function(controller, zone, value) {
     if ( value < 1 ) { value = 1; }
     if ( value > 6) { value = 6; }
 
     //Need to 0-pad number
-    if ( value < 10 ) { value = "0" + value; };
-    write('<' + id + 'CH' + value + '\r');
+    write('<' + controller + zone + 'CH' + value + '\r');
 
-    this.getZoneSource(id);
+    this.getZoneSource(controller, zone);
   };
 
   function zone_mute(data) {
-    z = (data[0]*10) + data[1]
-    notify_handler({type: 'zone', controller: data[0], zone: z, mute: data[2]});
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], mute: data[2]});
   }
-  this.getZoneMute = function(id) {
-    write('?' + id + "MU" + '\r');
+  this.getZoneMute = function(controller, zone) {
+    write('?' + controller + zone + 'MU' + '\r');
   };
-  this.setZoneMute = function(id, value) {
+  this.setZoneMute = function(controller, zone, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 1) { value = 1; }
 
     //Need to 0-pad number
-    if ( value < 10 ) { value = "0" + value; };
-    write('<' + id + 'MU' + value + '\r');
+    write('<' + controller + zone + 'MU' + value + '\r');
 
-    this.getZoneMute(id);
+    this.getZoneMute(controller, zone);
   };
 
   //Keypad status is get-only
   function zone_keypad(data) {
-    z = (data[0]*10) + data[1]
-    notify_handler({type: 'zone', controller: data[0], zone: z, keypad: data[2]});
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], keypad: data[2]});
   }
-  this.getZoneKeypad = function(id) {
-    write('?' + id + "LS" + '\r');
+  this.getZoneKeypad = function(controller, zone) {
+    write('?' + controller + zone + 'LS' + '\r');
   };
 
   //PA status is get-only
   function zone_pa(data) {
-    z = (data[0]*10) + data[1]
-    notify_handler({type: 'zone', controller: data[0], zone: z, pa: data[2]});
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], pa: data[2]});
   }
-  this.getZonePublicAddress = function(id) {
-    write('?' + id + "PA" + '\r');
+  this.getZonePublicAddress = function(controller, zone) {
+    write('?' + controller + zone + 'PA' + '\r');
   };
 
   function zone_volume(data) {
-    z = (data[0]*10) + data[1]
-    notify_handler({type: 'zone', controller: data[0], zone: z, volume: data[2]});
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], volume: data[2]});
   }
-  this.getZoneVolume = function(id) {
-    write('?' + id + "VO" + '\r');
+  this.getZoneVolume = function(controller, zone) {
+    write('?' + controller + zone + 'VO' + '\r');
   };
-  this.setZoneVolume = function(id, value) {
+  this.setZoneVolume = function(controller, zone, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 38) { value = 38; }
 
     //Need to 0-pad number
-    if ( value < 10 ) { value = "0" + value; };
-    write('<' + id + 'VO' + value + '\r');
+    write('<' + controller + zone + 'VO' + value + '\r');
 
-    this.getZoneVolume(id);
+    this.getZoneVolume(controller, zone);
   };
 
   function zone_bass(data) {
-    z = (data[0]*10) + data[1]
-    notify_handler({type: 'zone', controller: data[0], zone: z, bass: data[2]});
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], bass: data[2]});
   }
-  this.getZoneBass = function(id) {
-    write('?' + id + "BS" + '\r');
+  this.getZoneBass = function(controller, zone) {
+    write('?' + controller + zone + 'BS' + '\r');
   };
-  this.setZoneBass = function(id, value) {
+  this.setZoneBass = function(controller, zone, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 14) { value = 14; }
 
     //Need to 0-pad number
-    if ( value < 10 ) { value = "0" + value; };
-    write('<' + id + 'BS' + value + '\r');
+    write('<' + controller + zone + 'BS' + value + '\r');
 
-    this.getZoneBass(id);
+    this.getZoneBass(controller, zone);
   };
 
   function zone_treble(data) {
-    z = (data[0]*10) + data[1]
-    notify_handler({type: 'zone', controller: data[0], zone: z, treble: data[2]});
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], treble: data[2]});
   }
-  this.getZoneTreble = function(id) {
-    write('?' + id + "TR" + '\r');
+  this.getZoneTreble = function(controller, zone) {
+    write('?' + controller + zone + 'TR' + '\r');
   };
-  this.setZoneTreble = function(id, value) {
+  this.setZoneTreble = function(controller, zone, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 14) { value = 14; }
 
     //Need to 0-pad number
-    if ( value < 10 ) { value = "0" + value; };
-    write('<' + id + 'TR' + value + '\r');
+    write('<' + controller + zone + 'TR' + value + '\r');
 
-    this.getZoneTreble(id);
+    this.getZoneTreble(controller, zone);
   };
 
   function zone_balance(data) {
-    z = (data[0]*10) + data[1]
-    notify_handler({type: 'zone', controller: data[0], zone: z, balance: data[2]});
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], balance: data[2]});
   }
-  this.getZoneBalance = function(id) {
+  this.getZoneBalance = function(controller, zone) {
     //get Zone balance should look like ?xxBL'CR' where xx is the zone number
-    write('?' + id + "BL" + '\r');
+    write('?' + controller + zone + 'BL' + '\r');
   };
-  this.setZoneBalance = function(id, balance) {
-    //set Zone balance should look like <xxBLnn'CR' where xx is the zone number and nn is the value
+  this.setZoneBalance = function(controller, zone, balance) {
     if ( balance < 0 ) { balance = 0; }
     if ( balance > 20) { balance = 20; }
 
-    //Need to 0-pad number
-    if ( balance < 10 ) { balance = "0" + balance; };
-    write('<' + id + 'BL' + balance + '\r');
+    //set Zone balance should look like <xxBLnn'CR' where xx is the zone number and nn is the value
+    write('<' + controller + zone + 'BL' + balance + '\r');
 
     //unit is supposed to respond with inquiry(2) response -- but it doesn't.
-    this.getZoneBalance(id);
+    this.getZoneBalance(controller, zone);
   };
 
   /**

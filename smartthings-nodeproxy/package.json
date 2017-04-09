@@ -6,7 +6,9 @@
   "dependencies": {
     "express": "^4.13.4",
     "nconf": "^0.8.4",
-    "serialport": "^4.0.6"
+    "pcap": "git+https://github.com/mranney/node_pcap.git",
+    "serialport": "^4.0.6",
+    "split": "^1.0.0"
   },
   "scripts": {
     "start": "node server.js"

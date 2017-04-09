@@ -180,8 +180,9 @@ function Envisalink () {
   setInterval(function() { self.init(); }, 60*1000);
 
   // experimental: dump zone timers
-  if (nconf.get('envisalink:dumpZoneTimer') != '0') {
-    setInterval(function() { write('^02,$'); }, 60*1000*nconf.get('envisalink:dumpZoneTimer'));
+  var zoneTimer = (nconf.get('envisalink:dumpZoneTimer')) ? parseInt(nconf.get('envisalink:dumpZoneTimer')) : 0;
+  if (zoneTimer > 0) {
+    setInterval(function() { write('^02,$'); }, 60*1000*zoneTimer);
   }
 
   /**

@@ -48,7 +48,7 @@ def subscribeToEvents() {
 }
 
 def uninstalled() {
-    removeChildDevices()
+  removeChildDevices()
 }
 
 def updated() {
@@ -120,16 +120,19 @@ private sendCommand(path) {
 
 private processEvent(evt) {
   if (evt.type == "discover") {
-    addChildDevices(evt.zones)
+    //for each controller
+    evt.controllers.each {
+      addChildDevices(it.controller, it.zones)
+    }
   }
   if (evt.type == "zone") {
     updateZoneDevices(evt)
   }
 }
 
-private addChildDevices(zones) {
+private addChildDevices(controller, zones) {
   zones.each {
-    def deviceId = 'mpr-sg6z|zone'+it.zone
+    def deviceId = getDeviceId(controller, it.zone)
     if (!getChildDevice(deviceId)) {
       addChildDevice("redloro-smartthings", "MPR6Z Zone", deviceId, hostHub.id, ["name": it.name, label: "MPR: "+it.name, completedSetup: true])
       //log.debug "Added zone device: ${deviceId}"
@@ -157,7 +160,7 @@ private updateZoneDevices(evt) {
     return
   }
 
-  def zonedevice = getChildDevice("mpr-sg6z|zone${evt.zone}")
+  def zonedevice = getChildDevice(getDeviceId(evt.controller, evt.zone))
   if (zonedevice) {
     zonedevice.zone(evt)
   }
@@ -165,6 +168,10 @@ private updateZoneDevices(evt) {
 
 private partyMode(evt) {
   childDevices*.partyMode(evt)
+}
+
+private getDeviceId(controller, zone) {
+  return "mpr-sg6z|${controller}|${zone}"
 }
 
 private getHttpHeaders(headers) {
@@ -194,11 +201,9 @@ private getNotifyAddress() {
 }
 
 private String convertIPtoHex(ipAddress) {
-  String hex = ipAddress.tokenize( '.' ).collect {  String.format( '%02x', it.toInteger() ) }.join().toUpperCase()
-  return hex
+  return ipAddress.tokenize( '.' ).collect {  String.format( '%02x', it.toInteger() ) }.join().toUpperCase()
 }
 
 private String convertPortToHex(port) {
-  String hexport = port.toString().format( '%04x', port.toInteger() ).toUpperCase()
-  return hexport
+  return port.toString().format( '%04x', port.toInteger() ).toUpperCase()
 }

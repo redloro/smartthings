@@ -16,7 +16,9 @@ metadata {
   definition (name: "Honeywell Partition", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
     capability "Button"
     capability "Alarm"
-
+    capability "Sensor"
+    capability "Actuator"
+    
     command "partition"
     command "disarm"
     command "armStay"

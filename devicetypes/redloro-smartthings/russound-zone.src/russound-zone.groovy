@@ -14,7 +14,7 @@
  */
 metadata {
   definition (name: "Russound Zone", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
-    
+
     /**
      * List our capabilties. Doing so adds predefined command(s) which
      * belong to the capability.
@@ -23,7 +23,9 @@ metadata {
     capability "Switch"
     capability "Refresh"
     capability "Polling"
-        
+    capability "Sensor"
+    capability "Actuator"
+
     /**
      * Define all commands, ie, if you have a custom action not
      * covered by a capability, you NEED to define it here or
@@ -127,12 +129,12 @@ metadata {
     controlTile("trebleLevel", "device.trebleLevel", "slider", height: 1, width: 3, range:"(-10..10)") {
       state "default", action:"trebleLevel", backgroundColor:"#00a0dc"
     }
-    
+
     standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
       state "default", label:"Refresh", action:"refresh.refresh", icon:"st.secondary.refresh-icon", backgroundColor:"#ffffff"
     }
 
-    // Defines which tile to show in the overview    
+    // Defines which tile to show in the overview
     main "state"
 
     // Defines which tile(s) to show when user opens the detailed view
@@ -193,9 +195,9 @@ def zone(evt) {
   if (evt.containsKey("state")) {
     //log.debug "setting state to ${result.state}"
     sendEvent(name: "switch", value: (evt.state == 1) ? "on" : "off")
-    
+
     //turn off party mode
-    if (evt.state == 0) {
+    if (evt.state == 0 || !device.currentState("partyMode")) {
       partyMode(["state": 0])
     }
   }
@@ -215,7 +217,7 @@ def zone(evt) {
     //log.debug "setting loudness to ${result.loudness}"
     sendEvent(name: "loudness", value: (evt.loudness == 1) ? "on" : "off")
   }
-  
+
   /*
   * Zone Bass level (0x00 = -10 ... 0x0A = Flat ... 0x14 = +10)
   */
@@ -223,7 +225,7 @@ def zone(evt) {
     //log.debug "setting bass to ${result.bass - 10}"
     sendEvent(name: "bassLevel", value: evt.bass - 10)
   }
-  
+
   /*
   * Zone Treble level (0x00 = -10 ... 0x0A = Flat ... 0x14 = +10)
   */
@@ -264,7 +266,7 @@ def partyMode(evt) {
       return
     }
   }
-    
+
   if (evt.containsKey("volume")) {
     sendCommand(["volume": evt.volume], false)
   }
@@ -276,7 +278,7 @@ def partyMode(evt) {
 
 private sendCommand(evt, broadcast) {
   //log.debug "ZONE${getZone()} sendCommand(${evt}, ${broadcast})"
-  
+
   // send command to partyMode
   if (broadcast && getPartyMode()) {
     parent.partyMode(evt)
@@ -288,9 +290,9 @@ private sendCommand(evt, broadcast) {
   if (evt.size() == 1) {
     part = "/${evt.keySet()[0]}/${evt.values()[0]}"
   }
-  
+
   //log.debug "ZONE${getZone()} calling parent.sendCommand"
-  parent.sendCommand("/plugins/rnet/zones/${getZone()}${part}")
+  parent.sendCommand("/plugins/rnet/controllers/${getController()}/zones/${getZone()}${part}")
 }
 
 private getTrebelLevel() {
@@ -317,6 +319,10 @@ private getSource() {
     }
 }
 
+private getController() {
+  return new String(device.deviceNetworkId).tokenize('|')[1]
+}
+
 private getZone() {
-  return new String(device.deviceNetworkId).tokenize('|')[1].replace('zone', '')
+  return new String(device.deviceNetworkId).tokenize('|')[2]
 }
