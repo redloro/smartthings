@@ -5,6 +5,7 @@
 
   // Russound RNET
   "rnet": {
+    "c-series": false,            // For CAV/CAM/CAA set to false; for MCA-C4/C5 set to true
     "serialPort": "/dev/usbser",  // RS-232 port connected to Russound controller
     "sources": [                  // Set this to define sources
       "Sonos",

@@ -133,7 +133,7 @@ app.get('/controllers/:controller/zones/:zone/dnd/:state', function (req, res) {
   mpr6z.setZoneDoNotDisturb(Number(req.params.controller), Number(req.params.zone), Number(req.params.state));
   res.end();
 });
-app.get('/all/:state', function (req, res) {
+app.get('/controllers/:controller/zones/:zone/all/:state', function (req, res) {
   mpr6z.setAllZones(Number(req.params.state));
   res.end();
 });

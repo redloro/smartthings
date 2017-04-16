@@ -1,0 +1,43 @@
+Russound RS232 v2.00.07.zip
+
+	Added additional set volume strings for Russound RS232 hex codes &
+	Russound conroller2 and 3 rs232 hex codes
+	
+
+Russound RS232 v2.00.08.zip
+
+	Added SMS3 XML Interface.pdf
+
+
+EVERYTHING RS232 for ALL Russound v2.00.09.zip
+
+	Added additional all on and set volume strings to the RS232 hex codes pdf
+
+
+EVERYTHING RS232 for ALL Russound v2.00.10.zip
+
+	Added RNET_Dual_Tuner_Protocol_V1.00.03.pdf
+
+
+EVERYTHING RS232 for ALL Russound v2.00.11.zip
+
+	Fixed docklight strings for z2 off/on
+
+
+EVERYTHING RS232 for ALL Russound v2.00.12.zip
+
+	Fixed fixing C2/C3 Z4/Z7 strings in Russound controller2 and 3 rs232 hex codes.pdf
+
+
+EVERYTHING RS232 for ALL Russound v2.00.13.zip
+
+	Fixed C1 Z3 Treble and Loudness strings in "Russound RS232 hex codes v1_00_6.pdf"
+
+
+EVERYTHING RS232 for ALL Russound v2.00.14.zip
+
+	Added C3 VM1 strings to VM1 Hex Code listing doc and rev'd to 1.00.03
+
+EVERYTHING RS232 for ALL Russound v2.00.15.zip
+
+	Added PartyModeMaster strings to hex codes/rev'd Russound RS232 hex code.pdf and controller2 and 3 hex.pdf
