@@ -200,7 +200,7 @@ function Rnet() {
     }
 
     if (!cmd || cmd.length == 0) { return; }
-    logger('TX > '+cmd);
+    //logger('TX > '+cmd);
     device.write(buildCommand(cmd), function(err, results) {
       if (err) logger('RNET write error: '+err);
     });
@@ -216,11 +216,11 @@ function Rnet() {
   function read(data) {
     if (data.length == 0) { return; }
     data.splice(-2);
-    logger('RX < '+stringifyByteArray(data));
+    //logger('RX < '+stringifyByteArray(data));
 
     var code = getSignificantBytes(data);
     if (!code) {
-      logger('** no significant bytes found');
+      //logger('** no significant bytes found');
       unhandledMessage(data);
       return;
     }
@@ -229,19 +229,19 @@ function Rnet() {
     //logger('Handler: '+JSON.stringify(RESPONSE_TYPES[code]));
     var response = RESPONSE_TYPES[code];
     if (!response) {
-      logger('** no response handler found: ' + code);
+      //logger('** no response handler found: ' + code);
       unhandledMessage(data);
       return;
     }
 
     var matches = getMatches(data, response['pattern']);
     if (!matches) {
-      logger('** no matches found for code: ' + code);
+      //logger('** no matches found for code: ' + code);
       unhandledMessage(data);
       return;
     }
 
-    logger('** OK matches: ' + matches);
+    //logger('** OK matches: ' + matches);
     responseHandler = response['handler'];
     responseHandler(matches);
   }
