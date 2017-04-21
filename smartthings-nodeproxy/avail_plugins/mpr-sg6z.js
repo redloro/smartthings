@@ -322,6 +322,7 @@ function Mpr6z() {
     if ( value > 1) { value = 1; }
 
     //Need to 0-pad number
+    value = ("0"+value).slice(-2);
     write('<' + controller + zone + 'PR' + value + '\r');
 
     this.getZoneState(controller, zone);
@@ -338,6 +339,7 @@ function Mpr6z() {
     if ( value > 1) { value = 1; }
 
     //Need to 0-pad number
+    value = ("0"+value).slice(-2);
     write('<' + controller + zone + 'DT' + value + '\r');
 
     this.getZoneDoNotDisturb(controller, zone);
@@ -354,6 +356,7 @@ function Mpr6z() {
     if ( value > 6) { value = 6; }
 
     //Need to 0-pad number
+    value = ("0"+value).slice(-2);
     write('<' + controller + zone + 'CH' + value + '\r');
 
     this.getZoneSource(controller, zone);
@@ -370,6 +373,7 @@ function Mpr6z() {
     if ( value > 1) { value = 1; }
 
     //Need to 0-pad number
+    value = ("0"+value).slice(-2);
     write('<' + controller + zone + 'MU' + value + '\r');
 
     this.getZoneMute(controller, zone);
@@ -402,6 +406,7 @@ function Mpr6z() {
     if ( value > 38) { value = 38; }
 
     //Need to 0-pad number
+    value = ("0"+value).slice(-2);
     write('<' + controller + zone + 'VO' + value + '\r');
 
     this.getZoneVolume(controller, zone);
@@ -418,6 +423,7 @@ function Mpr6z() {
     if ( value > 14) { value = 14; }
 
     //Need to 0-pad number
+    value = ("0"+value).slice(-2);
     write('<' + controller + zone + 'BS' + value + '\r');
 
     this.getZoneBass(controller, zone);
@@ -434,6 +440,7 @@ function Mpr6z() {
     if ( value > 14) { value = 14; }
 
     //Need to 0-pad number
+    value = ("0"+value).slice(-2);
     write('<' + controller + zone + 'TR' + value + '\r');
 
     this.getZoneTreble(controller, zone);
@@ -447,11 +454,12 @@ function Mpr6z() {
     write('?' + controller + zone + 'BL' + '\r');
   };
   this.setZoneBalance = function(controller, zone, balance) {
-    if ( balance < 0 ) { balance = 0; }
-    if ( balance > 20) { balance = 20; }
+    if ( value < 0 ) { value = 0; }
+    if ( value > 20) { value = 20; }
 
     //set Zone balance should look like <xxBLnn'CR' where xx is the zone number and nn is the value
-    write('<' + controller + zone + 'BL' + balance + '\r');
+    value = ("0"+value).slice(-2);
+    write('<' + controller + zone + 'BL' + value + '\r');
 
     //unit is supposed to respond with inquiry(2) response -- but it doesn't.
     this.getZoneBalance(controller, zone);
