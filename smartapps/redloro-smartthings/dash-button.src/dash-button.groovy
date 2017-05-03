@@ -69,6 +69,8 @@ def pageMain() {
 }
 
 def buttonSettings(params) {
+  params.num = (int)params.num;
+  
   if (params.new) {
     //log.debug "Adding button ${params.num}"
     state.buttonCount = params.num + 1;

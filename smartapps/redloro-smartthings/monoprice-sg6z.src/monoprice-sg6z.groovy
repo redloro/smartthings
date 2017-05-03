@@ -37,6 +37,9 @@ preferences {
     input "proxyPort", "text", title: "Proxy Port", description: "(ie. 8080)", required: true, defaultValue: "8080"
     input "authCode", "password", title: "Auth Code", description: "", required: true, defaultValue: "secret-key"
   }
+  section("Monoprice Controller") {
+    input "enableDiscovery", "bool", title: "Discover Zones (WARNING: all existing zones will be removed)", required: false, defaultValue: false
+  }
 }
 
 def installed() {
@@ -52,14 +55,19 @@ def uninstalled() {
 }
 
 def updated() {
-  //remove child devices as we will reload
-  removeChildDevices()
+  if (settings.enableDiscovery) {
+    //remove child devices as we will reload
+    removeChildDevices()
+  }
 
   //subscribe to callback/notifications from STNP
   sendCommand('/subscribe/'+getNotifyAddress())
 
-  //delay discovery for 5 seconds
-  runIn(5, discoverChildDevices)
+  if (settings.enableDiscovery) {
+    //delay discovery for 5 seconds
+    runIn(5, discoverChildDevices)
+    settings.enableDiscovery = false
+  }
 }
 
 def lanResponseHandler(evt) {
