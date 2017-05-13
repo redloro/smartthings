@@ -269,7 +269,7 @@ function Envisalink () {
     var msg = {};
     msg.partitionNumber = parseInt(map[0]);
     msg.flags = getLedFlag(map[1]);
-    msg.userOrZone = parseInt(map[2]);
+    msg.userOrZone = parseInt(map[2], 10);
     msg.beep = VIRTUAL_KEYPAD_BEEP[map[3]];
     msg.alpha = map[4].trim();
     msg.dscCode = getDscCode(msg.flags);
