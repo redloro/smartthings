@@ -140,6 +140,9 @@ function Envisalink () {
     write(deviceRequest);
   };
 
+  // check connection every 60 secs
+  setInterval(function() { self.init(); }, 60*1000);
+
   /**
    * init
    */
@@ -175,9 +178,6 @@ function Envisalink () {
       logger('Connected to Envisalink at '+nconf.get('envisalink:address')+':'+nconf.get('envisalink:port'));
     });
   };
-
-  // check connection every 60 secs
-  setInterval(function() { self.init(); }, 60*1000);
 
   // experimental: dump zone timers
   var zoneTimer = (nconf.get('envisalink:dumpZoneTimer')) ? parseInt(nconf.get('envisalink:dumpZoneTimer')) : 0;
