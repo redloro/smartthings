@@ -37,7 +37,7 @@ app.get('/', function (req, res) {
  * Enforce basic authentication route; verify that HTTP.HEADERS['stnp-auth'] == CONFIG['authCode']
  */
 app.use(function (req, res, next) {
-  logger(req.ip+' '+req.method+' '+req.url);
+  logger(req.ip+' '+req.method+' '+ sanitizeOutput(req.url));
 
   var headers = req.headers;
   if (!headers['stnp-auth'] ||
@@ -123,4 +123,14 @@ var notify = function(plugin, data) {
   });
   req.write(data);
   req.end();
-}
+};
+
+var sanitizeOutput = function(url) {
+  var password = nconf.get('envisalink:password');
+  var securityCode = nconf.get('envisalink:securityCode');
+
+  url = url.replace(':' + password + ':', ':<password>:');
+  url = url.replace(new RegExp(':' + securityCode + '$'), ':<securityCode>');
+
+  return url;
+};
