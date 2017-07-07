@@ -1,7 +1,7 @@
 {
   // SmartThings Node Proxy (required)
   "port": 8080,                   // STNP service port
-  "authCode": "0927",       // Set the auth code to access STNP
+  "authCode": "1989",       // Set the auth code to access STNP
 
   // Russound RNET
   "rnet": {
@@ -64,7 +64,7 @@
     "address": "10.0.1.136",    // Address of Envisalink Vista TPI
     "port": "8080",               // Service port - default is 4025
     "password": "user",           // Service password - default is user
-    "securityCode": "1234",       // Security code to arm/disarm the panel
+    "securityCode": "1989",       // Security code to arm/disarm the panel
     "dumpZoneTimer": "0",         // Experimental: dump zone timers every X minutes
 
     "panelConfig": {              // Set this to manual define partitions and zones
@@ -85,13 +85,13 @@
   // AlarmDecoder AD2USB
   "ad2usb": {
     "mode": "serial",             // Set this to serial OR ip
-    "securityCode": "0927",       // Security code to arm/disarm the panel
+    "securityCode": "1989",       // Security code to arm/disarm the panel
     "clearFaults": true,          // Experimental automatically clear faults by sending *
 
     "serialPort": "COM2",         // ONLY USE WHEN MODE=SERIAL - RS-232 port connected to AD2USB
 
-    "address": "192.168.2.22",    // ONLY USE WHEN MODE=IP - IP address of ser2sock connected to AD2USB
-    "port": "9001",               // ONLY USE WHEN MODE=IP - IP port of ser2sock connected to AD2USB
+    "address": "10.0.1.136",    // ONLY USE WHEN MODE=IP - IP address of ser2sock connected to AD2USB
+    "port": "8080",               // ONLY USE WHEN MODE=IP - IP port of ser2sock connected to AD2USB
 
     "panelConfig": {              // Set this to manual define partitions and zones
       "type": "discover",
