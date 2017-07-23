@@ -453,7 +453,7 @@ function Mpr6z() {
     //get Zone balance should look like ?xxBL'CR' where xx is the zone number
     write('?' + controller + zone + 'BL' + '\r');
   };
-  this.setZoneBalance = function(controller, zone, balance) {
+  this.setZoneBalance = function(controller, zone, value) {
     if ( value < 0 ) { value = 0; }
     if ( value > 20) { value = 20; }
 
