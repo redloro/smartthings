@@ -75,5 +75,5 @@ At a minimum, you will want to specify a port mapping, a value for the `ENABLED_
 
 ```
 docker run -itd -p 8080:8080 -v ./config.json:/sntp/config.json -e ENABLED_PLUGINS="generic" \
---device /dev/ttyUSB0 smartthings-node-proxy:latest --name smartthings-node-proxy-generic
+--device /dev/ttyUSB0:/dev/ttyUSB0 smartthings-node-proxy:latest --name smartthings-node-proxy-generic
 ```
