@@ -18,6 +18,8 @@ Build a Docker container with the `docker build` command. Specify custom build a
 docker build -t smartthings-node-proxy:latest .
 ```
 
+Alternately, you can use an already-built image from a public repository on Docker Hub, e.g., http://hub.docker.com/u/tcjennings/rpi-smarttthings-nodeproxy
+
 ## Build Arguments
 
 There are a few build arguments you can send to the Docker build process. These are defined in the `Dockerfile` with the `ARG` keyword:
