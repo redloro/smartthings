@@ -40,7 +40,7 @@ RUN apt-get install python2.7 build-essential libpcap-dev wget \
  && rm -rf /tmp/* 
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
-COPY config.json /stnp/config.json
+COPY config.sample /stnp/config.json
 
 EXPOSE 8080
 
