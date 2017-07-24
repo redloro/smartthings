@@ -23,7 +23,7 @@ docker build -t smartthings-node-proxy:latest .
 There are a few build arguments you can send to the Docker build process. These are defined in the `Dockerfile` with the `ARG` keyword:
 
 * `node_version`: The version of Node to install. Defaults to 6.11.1.
-* `architecture`: The architecture of the cpu. This defaults to `armv6` which is appropriate for any Raspberry Pi. If you have a Pi 3 you can change this to `arm7`.
+* `architecture`: The architecture of the cpu. This defaults to `armv6` which is appropriate for any Raspberry Pi. If you have a Pi 3 you can change this to `armv7`.
 * `repo` and `branch`: The git repository and branch name from which to fetch the SmartThings Node Proxy code. This defaults to `redloro` and `master`, respectively, but can be changed if you need to build from a fork or a different code branch.
 * `build_date`: Defaults to a blank string, can be populated to insert a build date into the resulting Docker image's `LABEL`s.
 
@@ -77,3 +77,13 @@ At a minimum, you will want to specify a port mapping, a value for the `ENABLED_
 docker run -itd -p 8080:8080 -v ./config.json:/sntp/config.json -e ENABLED_PLUGINS="generic" \
 --device /dev/ttyUSB0:/dev/ttyUSB0 smartthings-node-proxy:latest --name smartthings-node-proxy-generic
 ```
+
+# Using on Other Platforms
+
+This Dockerfile is designed for building and running on a Raspberry Pi. With a couple of modifications this can be modified to build and run on a x64 Linux machine:
+
+* Specify "x64" as the `architecture` build argument.
+* Change the `FROM` line from `FROM resin/rpi-raspbian:jessie` to `FROM debian:jessie`
+* Change the node download URL on line 20 from `node-v${node_version}-linux-${architecture}l.tar.xz` to `node-v${node_version}-linux-${architecture}.tar.xz`; i.e., remove the "l" from the file name.
+
+
