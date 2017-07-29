@@ -71,6 +71,18 @@ app.get('/chime', function (req, res) {
   res.end();
 });
 
+app.get('/trigger/:output', function (req, res) {
+  if (nconf.get('ad2usb:securityCode')) {
+    if (req.params.output === '17' || req.params.output === '18') {
+      ad2.command(nconf.get('ad2usb:securityCode')+'#7'+req.params.output);
+      setTimeout(function() {
+        ad2.command(nconf.get('ad2usb:securityCode')+'#8'+req.params.output);
+      }, 2000);
+    }
+  }
+  res.end();
+});
+
 app.get('/bypass/:zones', function (req, res) {
   if (nconf.get('ad2usb:securityCode')) {
     var zones = req.params.zones.split(',').map(function(x) {
