@@ -73,6 +73,18 @@ app.get('/chime', function (req, res) {
   res.end();
 });
 
+app.get('/trigger/:output', function (req, res) {
+  if (nconf.get('envisalink:securityCode')) {
+    if (req.params.output === '17' || req.params.output === '18') {
+      evl.command(nconf.get('envisalink:securityCode')+'#7'+req.params.output);
+      setTimeout(function() {
+        evl.command(nconf.get('envisalink:securityCode')+'#8'+req.params.output);
+      }, 2000);
+    }
+  }
+  res.end();
+});
+
 app.get('/bypass/:zones', function (req, res) {
   if (nconf.get('envisalink:securityCode')) {
     var zones = req.params.zones.split(',').map(function(x) {
