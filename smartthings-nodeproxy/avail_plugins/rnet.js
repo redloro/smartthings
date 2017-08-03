@@ -151,7 +151,7 @@ function Rnet() {
         return;
     }
 
-    if (device && device.isOpen()) { return };
+    if (device && device.isOpen) { return };
 
     device = new serialport(nconf.get('rnet:serialPort'), { baudrate: 19200, autoOpen: false });
 
@@ -194,7 +194,7 @@ function Rnet() {
    * write
    */
   function write(cmd) {
-    if (!device || !device.isOpen()) {
+    if (!device || !device.isOpen) {
       logger('RNET not connected.');
       return;
     }

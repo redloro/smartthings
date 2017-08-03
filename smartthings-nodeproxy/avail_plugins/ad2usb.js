@@ -152,7 +152,7 @@ function AD2USB () {
           return;
       }
 
-      if (device && device.isOpen()) { return };
+      if (device && device.isOpen) { return };
 
       device = new serialport(nconf.get('ad2usb:serialPort'), {
           parser: serialport.parsers.readline('\n'),
@@ -252,7 +252,7 @@ function AD2USB () {
    */
 
   function checkDevice() {
-    if (mode === 'serial') { return device.isOpen(); }
+    if (mode === 'serial') { return device.isOpen; }
     if (mode === 'ip') { return device.writable; }
     return false;
   }

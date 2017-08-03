@@ -167,7 +167,7 @@ function Mpr6z() {
         return;
     }
 
-    if (device && device.isOpen()) { return };
+    if (device && device.isOpen) { return };
 
     device = new serialport(nconf.get('mpr6z:serialPort'),
                             { baudrate: nconf.get('mpr6z:baudRate'),
@@ -207,7 +207,7 @@ function Mpr6z() {
    * write
    */
   function write(cmd) {
-    if (!device || !device.isOpen()) {
+    if (!device || !device.isOpen) {
       logger('MPR6Z not connected.');
       return;
     }
