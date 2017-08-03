@@ -170,7 +170,7 @@ function Mpr6z() {
     if (device && device.isOpen) { return };
 
     device = new serialport(nconf.get('mpr6z:serialPort'),
-                            { baudrate: nconf.get('mpr6z:baudRate'),
+                            { baudRate: nconf.get('mpr6z:baudRate'),
                               parser: serialport.parsers.readline('\n'),
                               autoOpen: false
                             });

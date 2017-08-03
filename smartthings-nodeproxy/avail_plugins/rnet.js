@@ -153,7 +153,7 @@ function Rnet() {
 
     if (device && device.isOpen) { return };
 
-    device = new serialport(nconf.get('rnet:serialPort'), { baudrate: 19200, autoOpen: false });
+    device = new serialport(nconf.get('rnet:serialPort'), { baudRate: 19200, autoOpen: false });
 
     device.on('data', function(data) {
       for(var i=0; i<data.length; i++) {

@@ -156,7 +156,7 @@ function AD2USB () {
 
       device = new serialport(nconf.get('ad2usb:serialPort'), {
           parser: serialport.parsers.readline('\n'),
-          baudrate: 115200,
+          baudRate: 115200,
           autoOpen: false
         });
 
