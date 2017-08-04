@@ -171,11 +171,11 @@ function Mpr6z() {
     if (device && device.isOpen) { return };
 
     device = new serialport(nconf.get('mpr6z:serialPort'),
-                            { baudRate: nconf.get('mpr6z:baudRate'),
-                              autoOpen: false
-                            });
-                            
-    parser = device.pipe(new Readline());
+      { baudRate: nconf.get('mpr6z:baudRate'),
+        autoOpen: false
+      });
+
+    parser = device.pipe(new serialport.parsers.Readline());
     parser.on('data', function(data) {
 		  read(data);
     });

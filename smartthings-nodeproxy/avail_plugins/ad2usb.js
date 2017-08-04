@@ -160,7 +160,7 @@ function AD2USB () {
           autoOpen: false
         });
 
-      parser = device.pipe(new Readline());
+      parser = device.pipe(new serialport.parsers.Readline());
       parser.on('data', function(data) {
         read(data);
       });
