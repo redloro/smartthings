@@ -152,6 +152,7 @@ mpr6z.init();
 function Mpr6z() {
   var self = this;
   var device = null;
+  var parser = null;
   var buffer = new Array();
   var serialPorts = new Array();
   var controllerId = 0x00;
@@ -171,11 +172,11 @@ function Mpr6z() {
 
     device = new serialport(nconf.get('mpr6z:serialPort'),
                             { baudRate: nconf.get('mpr6z:baudRate'),
-                              parser: serialport.parsers.readline('\n'),
                               autoOpen: false
                             });
-
-    device.on('data', function(data) {
+                            
+    parser = device.pipe(new Readline());
+    parser.on('data', function(data) {
 		  read(data);
     });
 

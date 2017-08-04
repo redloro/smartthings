@@ -134,6 +134,7 @@ ad2.init();
 function AD2USB () {
   var self = this;
   var device = null;
+  var parser = null;
   var mode = nconf.get('ad2usb:mode') || 'serial';
   var serialPorts = new Array();
   var panel = {alpha: '', timer: [], partition: 1, zones: []};
@@ -155,12 +156,12 @@ function AD2USB () {
       if (device && device.isOpen) { return };
 
       device = new serialport(nconf.get('ad2usb:serialPort'), {
-          parser: serialport.parsers.readline('\n'),
           baudRate: 115200,
           autoOpen: false
         });
 
-      device.on('data', function(data) {
+      parser = device.pipe(new Readline());
+      parser.on('data', function(data) {
         read(data);
       });
 
