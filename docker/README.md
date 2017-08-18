@@ -55,7 +55,7 @@ sudo pip install docker-compose
 
 Some fields you may want to update:
 
-* Environment: specify the name of the STNP plugin(s) you want to run in the container.
+* Environment: specify the name of the STNP plugin(s) you want to run in the container. you can specify multiple plugs by delimiting them with a space.
 * Volumes: specify the path to the `config.json` the container should use.
 * Devices: specify the name of the USB serial device on the host to grant to the container.
 
