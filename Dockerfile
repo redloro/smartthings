@@ -26,11 +26,10 @@ ENV NODE=/usr/local/bin/node
 ENV NPM=/usr/local/bin/npm
 ENV PYTHON=/usr/bin/python2.7
 
+ADD smartthings-nodeproxy /stnp
+WORKDIR /stnp
+RUN mkdir -p /stnp/plugins
 RUN apt-get install python2.7 build-essential libpcap-dev wget \
- && mkdir -p /stnp/plugins \
- && wget -O - https://github.com/${repo}/smartthings/tarball/${branch} \
-  | tar -xzvf - --wildcards --strip-components=2 -C /stnp/ ${repo}-smartthings-*/smartthings-nodeproxy/ \
- && cd /stnp \
  && rm -f restart.me smartthings-nodeproxy.service config.json \
  && npm install \
  && npm install serialport@4.0.7 \
@@ -39,8 +38,8 @@ RUN apt-get install python2.7 build-essential libpcap-dev wget \
  && apt-get clean \
  && rm -rf /tmp/* 
 
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-COPY config.sample /stnp/config.json
+COPY docker/docker-entrypoint.sh /docker-entrypoint.sh
+COPY docker/config.sample /stnp/config.json
 
 EXPOSE 8080
 
