@@ -39,8 +39,7 @@ config.json
   cd ~/smartthings-nodeproxy
   npm install
   ```
-4. Edit `config.json`
-  * Remove all comments
+4. Rename `config.json.sample` to `config.json`
   * Set *port*
   * Set *authCode*
 5. Create folder `~/smartthings-nodeproxy/plugins`
