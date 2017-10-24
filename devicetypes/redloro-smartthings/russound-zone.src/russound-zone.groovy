@@ -21,6 +21,7 @@ metadata {
      */
     capability "Music Player"
     capability "Switch"
+    capability "Switch Level"
     capability "Refresh"
     capability "Polling"
     capability "Sensor"
