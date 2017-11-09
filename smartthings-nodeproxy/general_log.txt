@@ -1,0 +1,127 @@
+The log was reduced in size and restarted a new one at this point. 
+11-09T03:51:20.082Z: stnp Logs were accessed
+2017-11-09T03:51:20.291Z: stnp Logs were accessed
+2017-11-09T03:51:20.471Z: stnp Logs were accessed
+2017-11-09T03:51:20.682Z: stnp Logs were accessed
+2017-11-09T03:51:20.906Z: stnp Logs were accessed
+2017-11-09T03:51:21.090Z: stnp Logs were accessed
+2017-11-09T03:51:23.642Z: stnp Logs were accessed
+2017-11-09T03:51:23.952Z: stnp Logs were accessed
+2017-11-09T03:51:24.200Z: stnp Logs were access2017-11-09T03:51:24.385Z: stnp Logs were accessed
+2017-11-09T03:51:24.576Z: stnp Logs were accessed
+2017-11-09T03:51:24.749Z: stnp Logs were accessed
+2017-11-09T03:51:24.953Z: stnp Logs were accessed
+2017-11-09T03:51:31.033Z: stnp Logs were accessed
+2017-11-09T03:51:31.808Z: stnp Logs were accessed
+2017-11-09T03:51:32.317Z: stnp Logs were accessed
+2017-11-09T03:51:32.742Z: stnp Logs were accessed
+2017-11-09T03:51:33.240Z: stnp Logs were accessed
+2017-11-09T03:51:33.578Z: stnp Logs were accessed
+2017-11-09T03:51:33.829Z: stnp Logs were accessed
+2017-11-09T03:51:34.032Z: stnp Logs were accessed
+2017-11-09T03:51:34.365Z: stnp Logs were accessed
+2017-11-09T03:51:34.641Z: stnp Logs were accessed
+2017-11-09T03:51:34.897Z: stnp Logs were accessed
+2017-11-09T03:51:35.160Z: stnp Logs were accessed
+2017-11-09T03:51:35.758Z: stnp Logs were accessed
+2017-11-09T03:51:37.061Z: stnp Logs were accessed
+2017-11-09T03:51:37.328Z: stnp Logs were accessed
+2017-11-09T03:51:37.520Z: stnp Logs were accessed
+2017-11-09T03:51:37.712Z: stnp Logs were accessed
+2017-11-09T03:51:37.880Z: stnp Logs were accessed
+2017-11-09T03:51:38.057Z: stnp Logs were accessed
+2017-11-09T03:51:38.240Z: stnp Logs were accessed
+2017-11-09T03:51:38.432Z: stnp Logs were accessed
+2017-11-09T03:51:38.600Z: stnp Logs were accessed
+2017-11-09T03:51:38.792Z: stnp Logs were accessed
+2017-11-09T03:51:39.361Z: stnp Logs were accessed
+2017-11-09T03:51:39.536Z: stnp Logs were accessed
+2017-11-09T03:51:39.696Z: stnp Logs were accessed
+2017-11-09T03:51:39.873Z: stnp Logs were accessed
+2017-11-09T03:51:40.040Z: stnp Logs were accessed
+2017-11-09T03:51:40.194Z: stnp Logs were accessed
+2017-11-09T03:51:40.366Z: stnp Logs were accessed
+2017-11-09T03:51:40.568Z: stnp Logs were accessed
+2017-11-09T03:51:40.745Z: stnp Logs were accessed
+2017-11-09T03:51:40.879Z: stnp Logs were accessed
+2017-11-09T03:51:41.039Z: stnp Logs were accessed
+2017-11-09T03:51:41.224Z: stnp Logs were accessed
+2017-11-09T03:51:41.406Z: stnp Logs were accessed
+2017-11-09T03:51:41.553Z: stnp Logs were accessed
+2017-11-09T03:51:41.713Z: stnp Logs were accessed
+2017-11-09T03:51:41.905Z: stnp Logs were accessed
+2017-11-09T03:51:42.062Z: stnp Logs were accessed
+2017-11-09T03:51:42.171Z: stnp Logs were accessed
+2017-11-09T03:51:42.353Z: stnp Logs were accessed
+2017-11-09T03:51:42.525Z: stnp Logs were accessed
+2017-11-09T03:51:42.697Z: stnp Logs were accessed
+2017-11-09T03:51:42.872Z: stnp Logs were accessed
+2017-11-09T03:51:43.024Z: stnp Logs were accessed
+2017-11-09T03:51:43.203Z: stnp Logs were accessed
+2017-11-09T03:51:43.369Z: stnp Logs were accessed
+2017-11-09T03:51:43.553Z: stnp Logs were accessed
+2017-11-09T03:51:43.745Z: stnp Logs were accessed
+2017-11-09T03:51:43.937Z: stnp Logs were accessed
+2017-11-09T03:51:44.125Z: stnp Logs were accessed
+2017-11-09T03:51:44.321Z: stnp Logs were accessed
+2017-11-09T03:51:44.504Z: stnp Logs were accessed
+2017-11-09T03:51:44.693Z: stnp Logs were accessed
+2017-11-09T03:51:44.889Z: stnp Logs were accessed
+2017-11-09T03:51:45.081Z: stnp Logs were accessed
+2017-11-09T03:51:45.269Z: stnp Logs were accessed
+2017-11-09T03:51:45.496Z: stnp Logs were accessed
+2017-11-09T03:51:45.682Z: stnp Logs were accessed
+2017-11-09T03:51:45.897Z: stnp Logs were accessed
+2017-11-09T03:51:46.097Z: stnp Logs were accessed
+2017-11-09T03:51:46.325Z: stnp Logs were accessed
+2017-11-09T03:51:46.528Z: stnp Logs were accessed
+2017-11-09T03:51:46.737Z: stnp Logs were accessed
+2017-11-09T03:51:46.913Z: stnp Logs were accessed
+2017-11-09T03:51:47.096Z: stnp Logs were accessed
+2017-11-09T03:51:47.296Z: stnp Logs were accessed
+2017-11-09T03:51:47.488Z: stnp Logs were accessed
+2017-11-09T03:51:47.680Z: stnp Logs were accessed
+2017-11-09T03:51:47.849Z: stnp Logs were accessed
+2017-11-09T03:51:48.033Z: stnp Logs were accessed
+2017-11-09T03:51:48.216Z: stnp Logs were accessed
+2017-11-09T03:51:48.400Z: stnp Logs were accessed
+2017-11-09T03:51:48.601Z: stnp Logs were accessed
+2017-11-09T03:51:48.856Z: stnp Logs were accessed
+2017-11-09T03:51:51.233Z: stnp Logs were accessed
+2017-11-09T03:51:52.793Z: stnp Logs were accessed
+2017-11-09T03:51:53.569Z: stnp Logs were accessed
+2017-11-09T03:51:54.100Z: stnp Logs were accessed
+2017-11-09T03:51:54.404Z: stnp Logs were accessed
+2017-11-09T03:51:54.721Z: stnp Logs were accessed
+2017-11-09T03:51:55.009Z: stnp Logs were accessed
+2017-11-09T03:51:55.289Z: stnp Logs were accessed
+2017-11-09T03:51:55.525Z: stnp Logs were accessed
+2017-11-09T03:51:55.771Z: stnp Logs were accessed
+2017-11-09T03:51:56.017Z: stnp Logs were accessed
+2017-11-09T03:51:56.264Z: stnp Logs were accessed
+2017-11-09T03:51:57.568Z: stnp Logs were accessed
+2017-11-09T03:51:58.005Z: stnp Logs were accessed
+2017-11-09T03:51:58.200Z: stnp Logs were accessed
+2017-11-09T03:51:58.401Z: stnp Logs were accessed
+2017-11-09T03:51:58.593Z: stnp Logs were accessed
+2017-11-09T03:51:58.785Z: stnp Logs were accessed
+2017-11-09T03:51:58.977Z: stnp Logs were accessed
+2017-11-09T03:51:59.167Z: stnp Logs were accessed
+2017-11-09T03:51:59.361Z: stnp Logs were accessed
+2017-11-09T03:52:03.306Z: stnp Error Logs were accessed
+2017-11-09T03:53:11.998Z: stnp Error Logs were accessed
+2017-11-09T03:57:33.248Z: stnp Error Logs were accessed
+2017-11-09T04:01:53.548Z: [stnp] SmartThings Node Proxy listening at http://:::8080
+2017-11-09T04:02:52.933Z: [stnp] SmartThings Node Proxy listening at http://:::8080
+2017-11-09T04:07:49.442Z: [stnp] Error Logs were accessed
+2017-11-09T04:08:10.951Z: [stnp] Logs were accessed
+2017-11-09T04:08:59.377Z: [stnp] Error Logs were accessed
+2017-11-09T04:10:41.894Z: [stnp] SmartThings Node Proxy listening at http://:::8080
+2017-11-09T04:10:50.715Z: [stnp] Error Logs were accessed
+2017-11-09T04:11:29.421Z: [stnp] Error Logs were accessed
+2017-11-09T04:12:25.469Z: [stnp] SmartThings Node Proxy listening at http://:::8080
+2017-11-09T04:15:35.077Z: [stnp] SmartThings Node Proxy listening at http://:::8080
+2017-11-09T04:15:44.196Z: [stnp] Error Logs were accessed
+2017-11-09T04:16:27.197Z: [stnp] SmartThings Node Proxy listening at http://:::8080
+2017-11-09T04:16:33.626Z: [stnp] Error Logs were accessed
+2017-11-09T04:16:53.203Z: [stnp] Error Logs were accessed

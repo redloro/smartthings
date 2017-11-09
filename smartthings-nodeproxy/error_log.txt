@@ -1,0 +1,11 @@
+The log was reduced in size and restarted a new one at this point. 
+Z: [stnp] Error Logs were accessed
+2017-11-09T04:16:27.212Z: [stnp] Error: ENOENT: no such file or directory, scandir C:\Users\Berto\Documents\smartthings-node-proxy\smartthings\smartthings-nodeproxy\plugins
+2017-11-09T04:16:36.823Z: [stnp] 2017-11-09T04:16:36.823Z: [stnp] ::1 GET /error
+Authentication error
+2017-11-09T04:16:40.299Z: [stnp] 2017-11-09T04:16:40.299Z: [stnp] ::1 GET /error
+Authentication error
+2017-11-09T04:16:43.219Z: [stnp] 2017-11-09T04:16:43.219Z: [stnp] ::1 GET /error
+Authentication error
+2017-11-09T04:16:46.285Z: [stnp] 2017-11-09T04:16:46.285Z: [stnp] ::1 GET /error
+Authentication error
