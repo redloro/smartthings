@@ -21,10 +21,8 @@ var http = require('http');
 var app = express();
 var nconf = require('nconf');
 var fs = require('fs');
-var chokidar = require('chokidar')
+var chokidar = require('chokidar');
 nconf.file({ file: './config.json' });
-
-var logFileWatcher = null; 
 
 function fileWatchComponent(){
 
@@ -37,9 +35,11 @@ function fileWatchComponent(){
     })
   }
 }
+
 function reduceLogSize (path){
   const tempwritestream = fs.createWriteStream('temp_'+path); //create a temp file so we don't mess with the one we are replacing. it's currently being used by readstream.
   const readstream = fs.createReadStream(path);
+  
   readstream.on('readable',()=>{
     let chunk;
     let chunks;
@@ -80,6 +80,9 @@ function reduceLogSize (path){
   })
 
 } 
+
+
+
 
 var logger = function(err,str) {
   const mod = 'stnp';

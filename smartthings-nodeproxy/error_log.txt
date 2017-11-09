@@ -9,3 +9,12 @@ Authentication error
 Authentication error
 2017-11-09T04:16:46.285Z: [stnp] 2017-11-09T04:16:46.285Z: [stnp] ::1 GET /error
 Authentication error
+2017-11-09T05:23:14.276Z: [stnp] Error: ENOENT: no such file or directory, scandir C:\Users\Berto\Documents\smartthings-node-proxy\smartthings\smartthings-nodeproxy\plugins
+2017-11-09T05:28:37.576Z: [stnp] Error: ENOENT: no such file or directory, scandir C:\Users\Berto\Documents\smartthings-node-proxy\smartthings\smartthings-nodeproxy\plugins
+2017-11-09T05:30:06.533Z: [stnp] Error: ENOENT: no such file or directory, scandir C:\Users\Berto\Documents\smartthings-node-proxy\smartthings\smartthings-nodeproxy\plugins
+2017-11-09T05:31:42.039Z: [stnp] Error: ENOENT: no such file or directory, scandir C:\Users\Berto\Documents\smartthings-node-proxy\smartthings\smartthings-nodeproxy\plugins
+2017-11-09T05:42:08.892Z: [stnp] Error: ENOENT: no such file or directory, scandir C:\Users\Berto\Documents\smartthings-node-proxy\smartthings\smartthings-nodeproxy\plugins
+2017-11-09T05:59:49.851Z: [stnp] Error: ENOENT: no such file or directory, scandir C:\Users\Berto\Documents\smartthings-node-proxy\smartthings\smartthings-nodeproxy\plugins
+2017-11-09T05:59:57.931Z: [stnp] Error: ENOENT: no such file or directory, scandir C:\Users\Berto\Documents\smartthings-node-proxy\smartthings\smartthings-nodeproxy\plugins
+2017-11-09T06:13:16.331Z: [stnp] Error: ENOENT: no such file or directory, scandir C:\Users\Berto\Documents\smartthings-node-proxy\smartthings\smartthings-nodeproxy\plugins
+2017-11-09T06:13:57.852Z: [stnp] Error: ENOENT: no such file or directory, scandir C:\Users\Berto\Documents\smartthings-node-proxy\smartthings\smartthings-nodeproxy\plugins
