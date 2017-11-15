@@ -3,6 +3,9 @@
   "port": 8080,                   // STNP service port
   "authCode": "secret-key",       // Set the auth code to access STNP
   "maxLogSizeBytes":"12400",      // about 12.4 kbs of file can go bigger or smaller.
+  "mailkey":"MAILGUN-APIKEY",
+  "maildomain": "MAILGUN-DOMAIN-FROM-MAILGUN-DASHBOARD",
+  "myEmail":"Insert the email that is getting notifications",
   // Russound RNET
   "rnet": {
     "c-series": false,            // For CAV/CAM/CAA set to false; for MCA-C4/C5 set to true
