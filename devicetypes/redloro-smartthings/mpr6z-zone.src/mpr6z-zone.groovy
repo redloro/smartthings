@@ -11,9 +11,11 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
+ *
+ *  2017-12-26 Bartsch Labs: Added bass and treble based on tcjennings' Russound DH & adjusted for a 15 value range
  */
 metadata {
-  definition (name: "MPR6Z Zone", namespace: "redloro-smartthings", author: "tcjennings@hotmail.com") {
+  definition (name: "MPR6Z Zone - bass & treble", namespace: "redloro-smartthings", author: "tcjennings@hotmail.com") {
 
     /**
      * List our capabilties. Doing so adds predefined command(s) which
@@ -41,6 +43,8 @@ metadata {
     command "source4"
     command "source5"
     command "source6"
+    command "bassLevel"
+    command "trebleLevel"
     command "partyModeOn"
     command "partyModeOff"
     command "allOff"
@@ -117,6 +121,20 @@ metadata {
     standardTile("refresh", "device.status", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
       state "default", label:"Refresh", action:"refresh.refresh", icon:"st.secondary.refresh-icon", backgroundColor:"#ffffff"
     }
+    
+    // Row 5-6
+    standardTile("bassLevelLabel", "default", decoration: "flat", height: 1, width: 1) {
+      state "default", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/bass.png"
+    }
+    controlTile("bassLevel", "device.bassLevel", "slider", height: 1, width: 1, range:"(-07..07)") {
+      state "default", action:"bassLevel", backgroundColor:"#00a0dc"
+    }
+    standardTile("trebleLevelLabel", "default", decoration: "flat", height: 1, width: 1) {
+      state "default", icon:"https://raw.githubusercontent.com/redloro/smartthings/master/images/treble.png"
+    }
+    controlTile("trebleLevel", "device.trebleLevel", "slider", height: 1, width: 1, range:"(-07..07)") {
+      state "default", action:"trebleLevel", backgroundColor:"#00a0dc"
+    }
 
     // Defines which tile to show in the overview
     main "state"
@@ -127,7 +145,9 @@ metadata {
       "volume",
       "1","2","3","4","5","6",
       "mute","partyMode","alloff",
-      "refresh"
+      "refresh",
+      "bassLevelLabel", "bassLevel",
+      "trebleLevelLabel", "trebleLevel"
     ])
   }
 }
@@ -154,6 +174,8 @@ def muteOn() { sendCommand(["mute": 1], false) }
 def muteOff() { sendCommand(["mute": 0], false) }
 def partyModeOn() { parent.partyMode(["state": 1, "master": getZone(), "source": getSource(), "volume": getVolume()]) }
 def partyModeOff() { partyMode(["state": 0]) }
+def bassLevel(value) { sendCommand(["bass": value+7], false) }
+def trebleLevel(value) { sendCommand(["treble": value+7], false) }
 def allOff() { sendCommand(["all": 0], false) }
 def refresh() { sendCommand([], false) }
 /**************************************************************************/
@@ -171,7 +193,7 @@ def zone(evt) {
   * Zone On/Off state (00 = OFF or 01 = ON)
   */
   if (evt.containsKey("state")) {
-    //log.debug "setting state to ${result.state}"
+    log.debug "setting switch to $state"
     sendEvent(name: "switch", value: (evt.state == 1) ? "on" : "off")
 
     //turn off party mode
@@ -184,7 +206,7 @@ def zone(evt) {
   * Zone Volume level (00 - 38)
   */
   if (evt.containsKey("volume")) {
-    //log.debug "setting volume to ${result.volume}"
+    log.debug "setting volume to ${volume - 1}"
     sendEvent(name: "volume", value: evt.volume)
   }
 
@@ -196,7 +218,24 @@ def zone(evt) {
     sendEvent(name: "loudness", value: (evt.loudness == 1) ? "on" : "off")
   }
   */
-  if (evt.containsKey("mute")) {
+ 
+   /*
+  * Zone Bass level (0x00 = -7 ... 0x08 = Flat ... 0x0E = +7)
+  */
+  if (evt.containsKey("bass")) {
+    log.debug "setting bassLevel to ${bassLevel + 1}"
+    sendEvent(name: "bassLevel", value: evt.bass - 7)
+  }
+
+  /*
+  * Zone Treble level (0x00 = -7 ... 0x08 = Flat ... 0x0E = +7)
+  */
+  if (evt.containsKey("treble")) {
+    //log.debug "setting trebleLevel to ${trebleLevel + 1}"
+    sendEvent(name: "trebleLevel", value: evt.treble - 7)
+  }
+ 
+ if (evt.containsKey("mute")) {
     sendEvent(name: "mute", value: (evt.mute == 1) ? "on" : "off")
   }
 
@@ -261,6 +300,16 @@ private sendCommand(evt, broadcast) {
   parent.sendCommand("/plugins/mpr-sg6z/controllers/${getController()}/zones/${getZone()}${part}")
 }
 
+private getTrebelLevel() {
+  return device.currentState("trebleLevel").getValue().toInteger()
+}
+
+private getBassLevel() {
+  //log.debug "bassLevel is $device.currentState("bassLevel").getValue().toInteger()"
+  //log.debug "bassLevel is ${bassLevel}"
+  return device.currentState("bassLevel").getValue().toInteger()
+}
+
 private getPartyMode() {
   return (device.currentState("partyMode").getValue() == "on") ? 1 : 0;
 }
@@ -274,7 +323,7 @@ private getSource() {
     if (device.currentState("source${i}").getValue()  == "on") {
       return i
     }
-  }
+}
 }
 
 private getController() {
