@@ -12,15 +12,20 @@
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
  *
+ *  UPDATE 01/06/2018
+ *  - Switched to mscdex/cap: https://github.com/mscdex/cap
+ * 
  *  https://community.smartthings.com/t/hack-the-amazon-dash-button-to-control-a-smartthings-switch/20427
  *  https://github.com/hortinstein/node-dash-button
- *
- *  npm install https://github.com/mranney/node_pcap.git
+ *  
+ *  npm install cap
  *  sudo node server.js
  */
 var express = require('express');
-var pcap = require('pcap');
-var stream = require('stream');
+var pcap = require('cap').Cap;
+var pcap_decoders = require('cap').decoders;
+var buffer = new Buffer(65535);
+var util = require('util');
 var app = express();
 var nconf = require('nconf');
 var notify;
@@ -62,7 +67,7 @@ function DashButton() {
       return;
     }
 
-    register(nconf.get('dash:buttons'));
+    register(nconf.get('dash:buttons'), nconf.get('dash:iface'));
     return;
   };
 
@@ -71,30 +76,28 @@ function DashButton() {
    */
 
   this.discover = function(timeout) {
-    var pcap = require('pcap');
-    var pcap_session = create_session(null);
-    if (!pcap_session) { return; }
+    logger('Network devices...');
+    logger(util.inspect(pcap.deviceList(), false, null));
+    var iface = nconf.get('dash:iface') || pcap.findDevice();
 
-    logger('Discovering Dash Buttons on local network...');
+    logger(`Discovering Dash Buttons on local network with iface [${iface}]...`);
+    var pcap_session = create_session(iface);
+    
     var just_emitted = [];
-    pcap_session.on('packet', function(raw) {
-      var packet = pcap.decode.packet(raw);
+    pcap_session.on('packet', function(nbytes, trunc) {
+      var ret = pcap_decoders.Ethernet(buffer);
+      var packet = pcap_decoders.ARP(buffer, ret.offset);
 
-      if(packet.payload.ethertype === 2054 || packet.payload.ethertype === 2048) {
-        var address = getMAC(packet);
-        var protocol = (packet.payload.ethertype === 2054) ? 'arp' : 'udp';
+      var address = packet.info.sendermac;
+      var protocol = (packet.info.protocol === 2054) ? 'arp' : 'udp';
 
-        // only report udp broadcasts
-        if (protocol === 'arp') { return; }
+      if (address !== '' && !just_emitted[address]) {
+        setTimeout(function() { just_emitted[address] = false; }, 5000);
+        just_emitted[address] = true;
 
-        if (!just_emitted[address]) {
-          setTimeout(function() { just_emitted[address] = false; }, 5000);
-          just_emitted[address] = true;
-
-          var data = { address: address, protocol: protocol };
-          logger(JSON.stringify(data));
-          //notify(JSON.stringify(data));
-        }
+        var data = { address: address, protocol: protocol };
+        logger(JSON.stringify(data));
+        //notify(JSON.stringify(data));
       }
     });
 
@@ -107,6 +110,7 @@ function DashButton() {
 
   function register(addresses, iface, timeout) {
     addresses = (Array.isArray(addresses)) ? addresses : [addresses];
+    iface = iface || pcap.findDevice();
     timeout = timeout || 5000;
 
     var just_emitted = {};
@@ -115,17 +119,13 @@ function DashButton() {
     });
 
     var pcap_session = create_session(iface);
-    pcap_session.on('packet', function(raw) {
-      var packet;
-      try {
-        packet = pcap.decode.packet(raw);
-      } catch (err) {
-        return;
-      }
+    pcap_session.on('packet', function(nbytes, trunc) {
+      var ret = pcap_decoders.Ethernet(buffer);
+      var packet = pcap_decoders.ARP(buffer, ret.offset);
 
-      if (packet.payload.ethertype === 2054 || packet.payload.ethertype === 2048) {
-        var address = getMAC(packet);
-        if (addresses.indexOf(address) !== -1 && !just_emitted[address]) {
+      if (packet.info.protocol === 2054 || packet.info.protocol === 2048) {
+        var address = packet.info.sendermac;
+        if (address !== '' && addresses.indexOf(address) !== -1 && !just_emitted[address]) {
           setTimeout(function() { just_emitted[address] = false; }, timeout);
           just_emitted[address] = true;
 
@@ -138,30 +138,14 @@ function DashButton() {
   };
 
   function create_session(iface) {
-    var session;
+    var session = new pcap();
     try {
-      session = pcap.createSession(iface, 'arp or ( udp and ( port 67 or port 68 ) )');
+      session.open(iface, 'arp or ( udp and ( port 67 or port 68 ) )', 10 * 1024 * 1024, buffer);
+      session.setMinBytes && session.setMinBytes(0);
     } catch (err) {
       logger('Failed to create pcap session: no devices to listen on...');
       logger(err);
     }
     return session;
-  }
-
-  function getMAC(packet) {
-    return (packet.payload.ethertype === 2054) ?
-      int_array_to_hex(packet.payload.payload.sender_ha.addr) :
-      int_array_to_hex(packet.payload.shost.addr);
-  }
-
-  function int_array_to_hex(int_array) {
-    var hex = '';
-    for (var i in int_array) {
-      var h = int_array[i].toString(16);
-      if (h.length < 2) {h = '0' + h};
-      if (i !== int_array.length) {hex+=":"};
-      hex += h;
-    }
-    return hex.slice(1);
   }
 }

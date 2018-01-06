@@ -20,7 +20,7 @@
   "scripts": {
     "start": "node server.js",
     "install:ad2usb": "npm install && npm install serialport@5.0.0",
-    "install:dash": "npm install && npm install git+https://github.com/mranney/node_pcap.git",
+    "install:dash": "npm install && npm install cap",
     "install:envisalink": "npm install",
     "install:generic": "npm install",
     "install:mpr-sg6z": "npm install && npm install serialport@5.0.0",
