@@ -56,6 +56,7 @@ def page1() {
 
     section("Smart Home Monitor") {
       input "enableSHM", "bool", title: "Integrate with Smart Home Monitor", required: true, defaultValue: true
+      input "useStayInstant", "bool", title: "Use Arm Instant when handling setting stay from Smart Home Monitor", required: true, defaultValue: false
     }
   }
 }
@@ -226,7 +227,11 @@ def alarmHandler(evt) {
 
   state.alarmSystemStatus = evt.value
   if (evt.value == "stay") {
-    sendCommandPlugin('/armStay')
+    if (useStayInstant.useStayInstant) {
+      sendCommandPlugin('/armInstant')
+    } else {
+      sendCommandPlugin('/armStay')
+    }
   }
   if (evt.value == "away") {
     sendCommandPlugin('/armAway')
