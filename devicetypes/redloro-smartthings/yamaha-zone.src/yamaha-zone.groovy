@@ -70,8 +70,8 @@ metadata {
     }
 
     // row
-    //controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(0..100)") {
-    controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(-80..16)") {
+    controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(0..100)") {
+    //controlTile("volume", "device.volume", "slider", height: 1, width: 6, range:"(-80..16)") {
       state "volume", label: "Volume", action:"music Player.setLevel", backgroundColor:"#00a0dc"
     }
 
