@@ -93,10 +93,12 @@ SmartThings Node Proxy sample plugin with corresponding SmartThings SmartApp and
 ### Envisalink Vista TPI Plugin / AlarmDecoder AD2USB
 SmartThings Node Proxy plugin to connect over local lan to a Honeywell / Ademco Vista 20p alarm panel.
 
-Supports the following zone types:
-- Door, Window Contact
-- Motion Sensor
-- Smoke Detector
+Supports the following zone types (Correct syntax to use in config.json is in quotes):
+- Door, Window Contact ("contact")
+- Motion Sensor ("motion")
+- Smoke Detector ("smoke")
+- Carbon Monoxide Detector ("carbonMonoxide") (Smart Home Monitor will only see it as a Smoke Detector)
+- Water Leak Detector ("water")
 
 Supports the following actions:
 - Arm Away
@@ -313,6 +315,8 @@ In the future, should you wish to update, simply repeat steps 2 and 3. The only 
   - [`honeywell-zone-contact.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/honeywell-zone-contact.src/honeywell-zone-contact.groovy)
   - [`honeywell-zone-motion.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/honeywell-zone-motion.src/honeywell-zone-motion.groovy)
   - [`honeywell-zone-smoke.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/honeywell-zone-smoke.src/honeywell-zone-smoke.groovy)
+  - [`honeywell-zone-carbonMonoxide.groovy`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/honeywell-zone-carbonMonoxide.src/honeywell-zone-carbonMonoxide.groovy)
+  - [`honeywell-zone-smoke.water`](https://raw.githubusercontent.com/redloro/smartthings/master/devicetypes/redloro-smartthings/honeywell-zone-water.src/honeywell-zone-water.groovy)
 3. Add the Honeywell Security SmartApp from the SmartThings marketplace
 4. Configure the SmartApp
   - SmartThings Hub: REQUIRED
