@@ -26,6 +26,10 @@ metadata {
     command "disarm"
     command "trigger1"
     command "trigger2"
+    command "keyA"
+    command "keyB"
+    command "keyC"
+    command "keyD"
     command "chime"
     command "bypass"
   }
@@ -71,7 +75,23 @@ metadata {
     standardTile("trigger2Button","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
       state "default", label: 'Trigger 2', action: "trigger2", icon: "st.Home.home30"
     }
-
+    
+    standardTile("keyAButton","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
+      state "default", label: 'Key A', action: "keyA", icon: "st.Home.home30"
+    }
+    
+    standardTile("keyBButton","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
+      state "default", label: 'Key B', action: "keyB", icon: "st.Home.home30"
+    }
+    
+    standardTile("keyCButton","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
+      state "default", label: 'Key C', action: "keyC", icon: "st.Home.home30"
+    }
+    
+    standardTile("keyDButton","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
+      state "default", label: 'Key D', action: "keyD", icon: "st.Home.home30"
+    }
+    
     standardTile("chimeButton","device.button", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
       state "default", label: 'Chime', action: "chime", icon: "st.custom.sonos.unmuted"
     }
@@ -85,6 +105,7 @@ metadata {
     details(["partition",
              "armAwayButton", "armStayButton", "armInstantButton",
              "disarmButton", "trigger1Button", "trigger2Button",
+             "keyAButton", "keyBButton", "keyCButton", "keyDButton",
              "chimeButton", "bypassButton"])
   }
 
@@ -120,6 +141,22 @@ def trigger1() {
 
 def trigger2() {
   parent.sendCommandPlugin('/trigger/18');
+}
+
+def keyA() {
+  parent.sendCommandPlugin('/speedkey/A');
+}
+
+def keyB() {
+  parent.sendCommandPlugin('/speedkey/B');
+}
+
+def keyC() {
+  parent.sendCommandPlugin('/speedkey/C');
+}
+
+def keyD() {
+  parent.sendCommandPlugin('/speedkey/D');
 }
 
 def chime() {
