@@ -68,6 +68,7 @@ def installed() {
 def subscribeToEvents() {
   subscribe(location, null, lanResponseHandler, [filterEvents:false])
   subscribe(location, "alarmSystemStatus", alarmHandler)
+  subscribe(alarm, "alarm", allAlarmHandler) 
 }
 
 def uninstalled() {
@@ -220,7 +221,7 @@ def alarmHandler(evt) {
   if (!settings.enableSHM) {
     return
   }
-
+  log.debug "AlarmHandler: ${evt} is ${evt.value}"
   if (state.alarmSystemStatus == evt.value) {
     return
   }
@@ -240,6 +241,11 @@ def alarmHandler(evt) {
   if (evt.value == "off") {
     sendCommandPlugin('/disarm')
   }
+  //log.debug "AlarmHandler: ${evt} is ${evt.value}"
+}
+
+def allAlarmHandler(evt) {
+  log.trace "allAlarmHandler: ${evt} is ${evt.value}"
 }
 
 private updateAlarmSystemStatus(partitionstatus) {
