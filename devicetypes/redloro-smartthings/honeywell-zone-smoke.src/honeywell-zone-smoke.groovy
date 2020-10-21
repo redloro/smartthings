@@ -13,7 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-  definition (name: "Honeywell Zone Smoke", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
+  definition (name: "Honeywell Zone Smoke", namespace: "redloro-smartthings", author: "redloro@gmail.com", vid: "generic-smoke") {
     capability "Smoke Detector"
     capability "Sensor"
 

@@ -13,7 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-  definition (name: "Honeywell Zone Motion", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
+  definition (name: "Honeywell Zone Motion", namespace: "redloro-smartthings", author: "redloro@gmail.com", vid: "generic-motion") {
     capability "Motion Sensor"
     capability "Sensor"
 
