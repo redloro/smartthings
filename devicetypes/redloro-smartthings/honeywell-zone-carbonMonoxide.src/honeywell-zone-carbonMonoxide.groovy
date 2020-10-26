@@ -13,7 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-  definition (name: "Honeywell Zone CarbonMonoxide", namespace: "redloro-smartthings", author: "redloro@gmail.com") {
+  definition (name: "Honeywell Zone CarbonMonoxide", namespace: "redloro-smartthings", author: "redloro@gmail.com", vid: "generic-smoke-co") {
     capability "Carbon Monoxide Detector"
     // Only including Smoke Detector capability so that Smart Home Monitor recognizes it. SHM will not see a CO detector.
     capability "Smoke Detector"

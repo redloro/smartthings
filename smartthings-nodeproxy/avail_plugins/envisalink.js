@@ -85,6 +85,15 @@ app.get('/trigger/:output', function (req, res) {
   res.end();
 });
 
+app.get('/speedkey/:letter', function (req, res) {
+  if (nconf.get('envisalink:securityCode')) {
+    if (req.params.letter === 'A' || req.params.letter === 'B' || req.params.letter === 'C' || req.params.letter === 'D') {
+      evl.command(req.params.letter);
+    }
+  }
+  res.end();
+});
+
 app.get('/bypass/:zones', function (req, res) {
   if (nconf.get('envisalink:securityCode')) {
     var zones = req.params.zones.split(',').map(function(x) {
