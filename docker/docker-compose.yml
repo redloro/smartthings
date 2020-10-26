@@ -3,7 +3,7 @@ services:
   #Rename, add, or change the name of the service as necessary
   stnp:
     #Specify build if you have the Dockerfile etc and need to build a new version. Otherwise use image.
-    build: .
+    build: ..
     image: rpi-smartthings-nodeproxy:latest
     ports:
       - "8080:8080"

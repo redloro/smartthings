@@ -1,0 +1,5 @@
+.DS_Store
+smartthings-nodeproxy/config.json
+smartthings-nodeproxy/node_modules
+smartthings-nodeproxy/plugins
+Dockerfile

@@ -12,7 +12,7 @@ Optionally, you can add the `pi` user to the `docker` group and avoid having to 
 
 # Build a Docker Container
 
-Build a Docker container with the `docker build` command. Specify custom build arguments as necessary:
+Build a Docker container by running the `docker build` command from the root of this project. Specify custom build arguments as necessary:
 
 ```
 docker build -t smartthings-node-proxy:latest .
