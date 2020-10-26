@@ -1,4 +1,4 @@
-# SmartThings Node Proxy
+# SmartThings [![Donate](https://img.shields.io/badge/donate-cash.me-brightgreen.svg)](https://cash.me/$redloro)
 
 Repository for all things related to SmartThings.
 - SmartThing Node Proxy
