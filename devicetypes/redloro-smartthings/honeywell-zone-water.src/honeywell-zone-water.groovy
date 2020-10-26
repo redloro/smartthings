@@ -51,5 +51,5 @@ def zone(String state) {
   ]
   def desc = descMap."${state}"
 
-  sendEvent (name: "water", value: "${newstate}", descriptionText: "${desc}")
+  sendEvent (name: "water", value: "${newState}", descriptionText: "${desc}")
 }
