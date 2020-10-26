@@ -20,7 +20,7 @@ import groovy.json.JsonSlurper
 
 definition(
   name: "Honeywell Security",
-  namespace: "jrod-smartthings",
+  namespace: "redloro-smartthings",
   author: "redloro@gmail.com",
   description: "Honeywell Security SmartApp",
   category: "Safety & Security",
@@ -270,7 +270,7 @@ private addChildDevices(partitions, zones) {
   partitions.each {
     def deviceId = 'honeywell|partition'+it.partition
     if (!getChildDevice(deviceId)) {
-      addChildDevice("jrod-smartthings", "Honeywell Partition", deviceId, hostHub, ["name": it.name, label: it.name, completedSetup: true])
+      addChildDevice("redloro-smartthings", "Honeywell Partition", deviceId, hostHub, ["name": it.name, label: it.name, completedSetup: true])
       logger("Added partition device: ${deviceId}","info")
     }
     else {
@@ -284,7 +284,7 @@ private addChildDevices(partitions, zones) {
     def deviceId = 'honeywell|zone'+it.zone
     if (!getChildDevice(deviceId)) {
       it.type = it.type.capitalize()
-      addChildDevice("jrod-smartthings", "Honeywell Zone "+it.type, deviceId, hostHub, ["name": it.name, label: it.name, completedSetup: true])
+      addChildDevice("redloro-smartthings", "Honeywell Zone "+it.type, deviceId, hostHub, ["name": it.name, label: it.name, completedSetup: true])
       logger("Added zone device: ${deviceId}","info")
     }
     else {
@@ -313,7 +313,7 @@ private updateZoneDevices(zonenum,zonestatus) {
   	logger("Unknown zone reported status: Zone ${zonenum}","error")
     if(enableAutoDiscovery) {
       def deviceId = 'honeywell|zone'+zonenum
-      addChildDevice("jrod-smartthings", "Honeywell Zone Contact", deviceId, hostHub, ["name": deviceId, label: deviceId, completedSetup: true])
+      addChildDevice("redloro-smartthings", "Honeywell Zone Contact", deviceId, hostHub, ["name": deviceId, label: deviceId, completedSetup: true])
       logger("Added zone device: ${deviceId}","info")
     }
   }
@@ -330,7 +330,7 @@ private updatePartitions(partitionnum, partitionstatus, panelalpha) {
   	logger("Unknown partition reported status: Partition ${partitionnum}","error")
     if(enableAutoDiscovery) {
       def deviceId = 'honeywell|partition'+partitionnum
-      addChildDevice("jrod-smartthings", "Honeywell Partition", deviceId, hostHub, ["name": deviceId, label: deviceId, completedSetup: true])
+      addChildDevice("redloro-smartthings", "Honeywell Partition", deviceId, hostHub, ["name": deviceId, label: deviceId, completedSetup: true])
       logger("Added partition device: ${deviceId}","info")
     }
   }
