@@ -368,26 +368,32 @@ private updateAlarmSystemStatus(partitionstatus) {
   def lastAlarmSystemStatus = state.alarmSystemStatus
   if (partitionstatus == "armedstay" || partitionstatus == "armedinstant") {
     //state.alarmSystemStatus = "stay"
-    if (armStaySHM.latestState("switch").value == "off") {
-        armStaySHM.on()
+    if (armStaySHM.latestState("switch").value == "on") {
+    	//already armed
     } else {
-        armStaySHM.off()
+        armStaySHM.on()
+        armAwaySHM.off()
+        disarmSHM.off()
     }
   }
   if (partitionstatus == "armedaway" || partitionstatus == "armedmax") {
     //state.alarmSystemStatus = "away"
-    if (armAwaySHM.latestState("switch").value == "off") {
-        armAwaySHM.on()
+    if (armAwaySHM.latestState("switch").value == "on") {
+        //already armed
     } else {
-        armAwaySHM.off()
+        armStaySHM.off()
+        armAwaySHM.on()
+        disarmSHM.off()
     }
   }
   if (partitionstatus == "ready") {
     //state.alarmSystemStatus = "off"
-    if (disarmSHM.latestState("switch").value == "off") {
-        disarmSHM.on()
+    if (disarmSHM.latestState("switch").value == "on") {
+        //already disarmed
     } else {
-        disarmSHM.off()
+        armStaySHM.off()
+        armAwaySHM.off()
+        disarmSHM.on()
     }
   }
 
