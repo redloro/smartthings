@@ -41,6 +41,7 @@ metadata {
     command "keyD"
     command "chime"
     command "bypass"
+    command "soundSiren"
   }
 
   tiles(scale: 2) {
@@ -128,6 +129,7 @@ metadata {
 
   preferences {
     input name: "bypassZones", type: "text", title: "Bypass Zones", description: "Comma delimited list of zones to bypass", required: false
+    input name: "sirenKey", type: "text", title: "Siren Key", description: "Speedy Key (ABCD) to trigger to sound siren", required: false
   }
 }
 
@@ -214,6 +216,18 @@ def keyC() {
 
 def keyD() {
   sendPartitionCommand('speedkey/D')
+}
+
+def soundSiren() {
+  sendPartitionCommand('speedkey/${settings.sirenKey}')
+}
+
+def both() {
+  soundSiren()
+}
+
+def siren() {
+  soundSiren()
 }
 
 def getPrettyName()

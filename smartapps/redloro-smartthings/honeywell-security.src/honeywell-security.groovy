@@ -81,6 +81,9 @@ def page1() {
 
     section("Smart Home Monitor") {
       input "enableSHM", "bool", title: "Integrate with Smart Home Monitor", required: true, defaultValue: true
+      input "armStaySHM", "capability.switch", title: "SHM Arm Stay virtual switch", required: true
+      input "armAwaySHM", "capability.switch", title: "SHM Arm Away virtual switch", required: true
+      input "disarmSHM", "capability.switch", title: "SHM Disarm virtual switch", required: true
     }
     
     section("Logging") {
@@ -364,13 +367,34 @@ private updateAlarmSystemStatus(partitionstatus) {
 
   def lastAlarmSystemStatus = state.alarmSystemStatus
   if (partitionstatus == "armedstay" || partitionstatus == "armedinstant") {
-    state.alarmSystemStatus = "stay"
+    //state.alarmSystemStatus = "stay"
+    if (armStaySHM.latestState("switch").value == "on") {
+    	//already armed
+    } else {
+        armStaySHM.on()
+        armAwaySHM.off()
+        disarmSHM.off()
+    }
   }
   if (partitionstatus == "armedaway" || partitionstatus == "armedmax") {
-    state.alarmSystemStatus = "away"
+    //state.alarmSystemStatus = "away"
+    if (armAwaySHM.latestState("switch").value == "on") {
+        //already armed
+    } else {
+        armStaySHM.off()
+        armAwaySHM.on()
+        disarmSHM.off()
+    }
   }
   if (partitionstatus == "ready") {
-    state.alarmSystemStatus = "off"
+    //state.alarmSystemStatus = "off"
+    if (disarmSHM.latestState("switch").value == "on") {
+        //already disarmed
+    } else {
+        armStaySHM.off()
+        armAwaySHM.off()
+        disarmSHM.on()
+    }
   }
 
   if (lastAlarmSystemStatus != state.alarmSystemStatus) {
