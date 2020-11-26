@@ -218,16 +218,16 @@ def keyD() {
   sendPartitionCommand('speedkey/D')
 }
 
-def soundAlarm() {
+def soundSiren() {
   sendPartitionCommand('speedkey/${settings.sirenKey}')
 }
 
 def both() {
-  soundAlarm()
+  soundSiren()
 }
 
 def siren() {
-  soundAlarm()
+  soundSiren()
 }
 
 def getPrettyName()
