@@ -330,7 +330,7 @@ function Mpr6z() {
   };
 
   function zone_dnd(data) {
-    notify_handler({type: 'zone', controller: data[0], zone: data[1], state: data[2]});
+    notify_handler({type: 'zone', controller: data[0], zone: data[1], doNotDisturb: data[2]});
   }
   this.getZoneDoNotDisturb = function(controller, zone) {
     write('?' + controller + zone + 'DT' + '\r');
